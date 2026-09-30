@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>ATIVE · Quem somos</title>
+<style>
+@font-face{font-family:M;src:url(../assets/Manrope-SemiBold.ttf);font-weight:600}
+@font-face{font-family:M;src:url(../assets/Manrope-Bold.ttf);font-weight:700}
+@font-face{font-family:M;src:url(../assets/Manrope-ExtraBold.ttf);font-weight:800}
+:root{--navy:#000050;--blue:#008DE6;--cyan:#2FE1F2}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-family:M,sans-serif}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden}
+.bg{position:absolute;inset:0;opacity:0}
+#bgNavy{background:radial-gradient(ellipse at 50% 55%,#14147a 0%,#06065a 45%,#000044 100%)}
+#bgBlue{background:radial-gradient(ellipse at 50% 45%,#1e9ff0 0%,#008DE6 55%,#0079cf 100%)}
+#bgWhite{background:#fff}
+.el{position:absolute;left:50%;top:50%;opacity:0;will-change:transform,filter,opacity}
+.t{color:#fff;font-weight:700;font-size:70px;line-height:1.18;text-align:center;letter-spacing:-.5px;white-space:nowrap;text-shadow:0 4px 30px rgba(0,0,40,.45)}
+.eyb{font-weight:800;font-size:30px;letter-spacing:9px;color:var(--cyan);margin-bottom:26px;text-align:center;white-space:nowrap}
+.legal{position:absolute;left:0;right:0;bottom:30px;text-align:center;color:rgba(255,255,255,.85);font-weight:600;font-size:22px;opacity:0;text-shadow:0 2px 10px rgba(0,0,40,.6)}
+/* camadas de vídeo real */
+.clip{position:absolute;inset:0;width:1920px;height:1080px;opacity:0;object-fit:cover;will-change:transform,opacity,filter}
+#tint{position:absolute;inset:0;opacity:0;background:radial-gradient(ellipse 75% 70% at 50% 50%,rgba(0,0,70,.22) 0%,rgba(0,0,45,.62) 100%)}
+#tintB{position:absolute;inset:0;opacity:0;background:linear-gradient(180deg,rgba(0,0,50,0) 55%,rgba(0,0,50,.75) 100%)}
+/* foto do time em cartão de vidro */
+#team{width:1600px;height:900px;border-radius:34px;overflow:hidden;box-shadow:0 50px 100px rgba(0,0,30,.55),inset 0 0 0 1px rgba(255,255,255,.35)}
+#teamIn{position:absolute;inset:0;transform-origin:55% 45%}
+#teamIn .ph{position:absolute;inset:0;background:url(../qs_img/time.webp) center/cover no-repeat;filter:saturate(1.05) contrast(1.04)}
+#tv{position:absolute;left:526px;top:197px;width:314px;height:188px;background:radial-gradient(ellipse at 50% 45%,#14147a 0%,#06065a 55%,#000044 100%);display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:inset 0 0 18px rgba(0,0,0,.5)}
+#tv img.s{height:62px}#tv img.w{height:34px}
+.blurp{position:absolute;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);border-radius:6px}
+#teamGlass{position:absolute;left:545px;top:655px;padding:22px 34px 26px;border-radius:24px;background:rgba(255,255,255,.14);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);border:1px solid rgba(255,255,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 12px 34px rgba(0,0,40,.35);opacity:0}
+#teamGlass .k{font-weight:800;font-size:18px;letter-spacing:6px;color:var(--cyan)}
+#teamGlass .d{margin-top:8px;font-weight:800;font-size:46px;line-height:1.12;color:#fff;white-space:nowrap}
+/* pílulas de vidro */
+.pills{display:flex;gap:22px;justify-content:center}
+.pill{padding:18px 30px;border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.5);color:#fff;font-weight:700;font-size:32px;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 30px rgba(0,0,40,.3)}
+.num{display:flex;align-items:center;gap:34px}
+.num .big{font-weight:800;font-size:200px;color:var(--cyan);letter-spacing:-5px;line-height:1;text-shadow:0 6px 40px rgba(0,0,40,.5)}
+.num .lab{font-weight:800;font-size:50px;color:#fff;line-height:1.1;letter-spacing:.5px;text-shadow:0 4px 24px rgba(0,0,40,.5)}
+.dot{color:var(--cyan);padding:0 22px}
+</style></head>
+<body><div id="stage">
+<div class="bg" id="bgNavy"></div><div class="bg" id="bgBlue"></div><div class="bg" id="bgWhite"></div>
+<div class="bg" id="bgEnd" style="background:radial-gradient(ellipse 62% 72% at 50% 40%,#0a1a33 0%,#071427 32%,#030b19 62%,#01050d 100%)"></div>
+
+<img class="clip" id="cA"><img class="clip" id="cB"><img class="clip" id="cC"><img class="clip" id="cD">
+<img class="clip" id="cE"><img class="clip" id="cF"><img class="clip" id="cG">
+<div id="tint"></div><div id="tintB"></div>
+<canvas id="gl" width="1920" height="1080" style="position:absolute;inset:0;opacity:0"></canvas>
+
+<!-- 0–3.4 LOGO (igual ao inst.html) -->
+<div id="tile" class="el" style="width:340px;height:340px;border-radius:72px;background:#fff;overflow:hidden">
+  <div id="sheen" style="position:absolute;top:-50%;width:120px;height:200%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.85),rgba(255,255,255,0));transform:rotate(20deg);left:-200px;z-index:2"></div>
+</div>
+<img id="sym" class="el" src="../assets/logo3d_simbolo.png" style="height:190px">
+<img id="wm" class="el" src="../assets/ative_wordmark_navy.png" style="height:96px">
+
+<!-- 3.4–9.3 TIME -->
+<div id="team" class="el"><div id="teamIn"><div class="ph"></div>
+  <div id="tv"><img class="s" src="../assets/logo3d_simbolo.png"><img class="w" src="../crops/wordmark_branco_limpo.png"></div>
+  <div class="blurp" style="left:782px;top:442px;width:175px;height:132px"></div>
+  <div class="blurp" style="left:825px;top:596px;width:228px;height:72px"></div>
+</div>
+  <div id="teamGlass"><div class="k">QUEM SOMOS</div><div class="d">Por trás de cada decisão,<br>existe um time.</div></div>
+</div>
+
+<!-- A · conhecimento -->
+<div id="tA1" class="el t" style="font-size:84px">Conhecimento técnico.</div>
+<div id="tA2" class="el t" style="font-size:84px;color:var(--cyan)">Vivência de campo.</div>
+<!-- B · áreas -->
+<div id="tB0" class="el eyb">ESPECIALISTAS NAS ÁREAS</div>
+<div id="tB1" class="el t" style="font-size:86px"><span id="w1">Comercial</span><span class="dot" id="d1">·</span><span id="w2">Financeira</span><span class="dot" id="d2">·</span><span id="w3">Tributária</span></div>
+<!-- C · financeira -->
+<div id="tC" class="el" style="text-align:center"><div class="eyb">FRENTE FINANCEIRA</div><div class="t">Estruturamos capital<br>para a sua empresa.</div></div>
+<div id="pC" class="el pills"><div class="pill">Capital de giro</div><div class="pill">Antecipação de recebíveis</div><div class="pill">Crédito estruturado</div></div>
+<!-- D · tributária -->
+<div id="tD" class="el" style="text-align:center"><div class="eyb">FRENTE TRIBUTÁRIA</div><div class="t">Revisamos o que<br>a sua empresa paga.</div></div>
+<div id="pD" class="el pills"><div class="pill">Com equipe jurídica parceira especializada</div></div>
+<div id="legalJur" class="legal">A Ative não realiza atividade privativa de advocacia; a atuação jurídica é conduzida por escritório parceiro.</div>
+<!-- E · números -->
+<div id="n1" class="el num"><div class="big">+<span id="v14">0</span></div><div class="lab">ANOS DE<br>EXPERIÊNCIA</div></div>
+<div id="n2" class="el num"><div class="big">+<span id="v130">0</span></div><div class="lab">EMPRESAS EM<br>RELACIONAMENTO</div></div>
+<div id="n3" class="el num"><div class="big"><span id="v19">0</span></div><div class="lab">ESTADOS</div></div>
+<!-- F · à frente -->
+<div id="tF" class="el t" style="font-size:78px">À frente de cada caso.</div>
+<!-- G · Balneário -->
+<div id="tG" class="el" style="text-align:center"><div class="eyb">BALNEÁRIO CAMBORIÚ · SC</div><div class="t" style="font-size:66px">Segurança a cada cliente.</div></div>
+
+<!-- encerramento (igual ao inst.html) -->
+<img id="pfull" src="../assets/piramide_full.png" style="position:absolute;left:530px;top:-50px;width:860px;height:860px;opacity:0;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%)">
+<div id="shine" style="position:absolute;left:530px;top:-50px;width:860px;height:860px;opacity:0;mix-blend-mode:screen;-webkit-mask-image:url(../assets/piramide_mask.png);mask-image:url(../assets/piramide_mask.png);-webkit-mask-size:100% 100%;mask-size:100% 100%;background:linear-gradient(112deg,rgba(255,236,190,0) 42%,rgba(255,240,205,.85) 50%,rgba(255,236,190,0) 58%);background-size:320% 100%"></div>
+<img id="wmEnd" class="el" src="../crops/wordmark_branco_limpo.png" style="height:78px">
+<div id="endT" class="el t" style="font-size:34px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,.88);text-shadow:none">Antes de qualquer negócio, existe confiança.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const P=(t,a,b)=>clamp((t-a)/(b-a));
+const E=x=>1-Math.pow(1-x,3);
+const EB=x=>{const c1=1.4,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2);};
+const EIO=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+function show(el,t,a,b,o={}){const inD=o.in??.5,outD=o.out??.35,dy=o.dy??36,bl=o.blur??16,sc=o.scale??0,base=o.base??'translate(-50%,-50%)';
+ if(t<a||t>b){el.style.opacity=0;return 0;}
+ const pi=(o.ease||E)(P(t,a,a+inD)),po=o.noOut?0:EIO(P(t,b-outD,b));
+ el.style.opacity=clamp(pi)*(1-po);
+ el.style.filter=(bl?`blur(${(clamp(1-pi)+po)*bl}px)`:'none');
+ const s=(1+sc*(1-pi)+(o.outScale??0)*po)*(o.noDrift?1:1+.025*P(t,a,b));
+ el.style.transform=`${base} translateY(${(1-pi)*dy-po*dy*.4}px) scale(${s})${o.extra?' '+o.extra:''}`;
+ return pi;}
+// trechos reais: [id, início, fim, nº de quadros, escurecimento]
+const CLIPS=[['A',9.0,14.35,168,.55],['B',14.0,19.35,167,.6],['C',19.0,25.35,199,.62],['D',25.0,31.35,199,.62],
+ ['E',31.0,40.35,289,.85],['F',40.0,46.0,180,.45],['G',45.7,54.3,255,.5]];
+const FRAMES='../qs_frames/';
+const BGS=[[0,1.8,'bgBlue'],[1.5,3.45,'bgWhite'],[3.3,54.3,'bgNavy'],[53.9,61,'bgEnd']];
+function render(t){
+ const waits=[];
+ const op={bgNavy:0,bgBlue:0,bgWhite:0,bgEnd:0};
+ BGS.forEach(([a,b,id])=>{if(t>=a&&t<b+.3){op[id]=Math.max(op[id],Math.min(E(P(t,a,a+.3)),1-P(t,b,b+.3)));}});
+ op.bgWhite=(t>=1.45&&t<3.45)?1:op.bgWhite; if(t<1.45)op.bgWhite=0;
+ for(const k in op)$(k).style.opacity=op[k];
+ if(t<0.3){$('bgBlue').style.opacity=1;}
+
+ // ---- logo (0.1–3.35)
+ const tile=$('tile'),sym=$('sym'),wm=$('wm'),o0=0.1-6.85;const T=t-o0;
+ if(T>=6.85&&T<10.12){
+  const pin=EB(P(T,6.85,7.45)),grow=EIO(P(T,7.5,8.4)),slide=EIO(P(T,7.98,8.85)),out=EIO(P(T,9.75,10.1));
+  const push=1+.09*P(T,8.1,10.1),tdrift=1+.07*P(T,6.9,7.7),rotY=(1-E(P(T,6.85,7.8)))*-38;
+  tile.style.opacity=clamp(pin)*(T<8.45?1:0);tile.style.filter=`blur(${clamp(1-pin)*14}px)`;
+  tile.style.borderRadius=(72*(1-grow))+'px';tile.style.boxShadow=`0 ${40*(1-grow)}px ${80*(1-grow)}px rgba(0,0,60,${.35*(1-grow)})`;
+  tile.style.transform=`translate(-50%,-50%) perspective(1200px) rotateY(${rotY*(1-grow)}deg) scale(${(.55+.45*pin)*tdrift*(1+grow*6.2)})`;
+  $('sheen').style.left=(-200+620*EIO(P(T,7.2,7.9)))+'px';
+  const ss=(.55+.45*pin)*tdrift*push;
+  sym.style.opacity=clamp(pin)*(1-out);sym.style.filter=`blur(${clamp(1-pin)*14+out*14}px) drop-shadow(0 ${14*slide}px ${20*slide}px rgba(0,0,60,.16))`;
+  sym.style.transform=`translate(-50%,-50%) translateX(${-265*slide*push}px) translateY(${-6-30*out}px) perspective(1200px) rotateY(${rotY}deg) scale(${ss})`;
+  const wp=E(P(T,8.25,9.0));wm.style.opacity=wp*(1-out);wm.style.filter=`blur(${(1-wp)*16+out*14}px)`;
+  wm.style.transform=`translate(-50%,-50%) translateX(${(150+70*(1-wp))*push}px) translateY(${10-30*out}px) scale(${push})`;
+ } else {tile.style.opacity=0;sym.style.opacity=0;wm.style.opacity=0;}
+
+ // ---- time (3.35–9.35): cartão entra girando de leve, foto aproxima devagar
+ const tm=show($('team'),t,3.35,9.35,{in:.8,dy:60,blur:18,scale:.06,noDrift:true,base:'translate(-50%,-50%) perspective(2000px)'});
+ if(tm>0){const k=P(t,3.35,9.35);$('team').style.transform+=` rotateY(${(1-E(P(t,3.35,4.6)))*-10+2*k}deg) rotateX(${(1-E(P(t,3.35,4.6)))*6}deg)`;
+  $('teamIn').style.transform=`scale(${1.0+.08*k}) translateX(${-14*k}px)`;
+  const g=E(P(t,4.1,4.8));$('teamGlass').style.opacity=g;$('teamGlass').style.transform=`translateY(${(1-g)*30}px)`;$('teamGlass').style.filter=`blur(${(1-g)*10}px)`;}
+
+ // ---- vídeos reais
+ let tintOp=0,tintB=0;
+ CLIPS.forEach(([n,a,b,cnt,dk])=>{const el=$('c'+n);
+  if(t<a||t>b){el.style.opacity=0;return;}
+  const pi=E(P(t,a,a+.4)),po=(n==='G')?EIO(P(t,b-.4,b)):0;
+  el.style.opacity=pi*(1-po);el.style.filter=`brightness(${1-.42*dk}) saturate(1.08) contrast(1.06) blur(${(1-pi)*10+po*12}px)`;
+  el.style.transform=`scale(${1.02+.05*P(t,a,b)})`;
+  const f=Math.min(cnt-1,Math.max(0,Math.floor((t-a)*30+1e-6)));
+  const src=FRAMES+n+'/'+String(f).padStart(4,'0')+'.jpg';
+  if(el.dataset.f!==src){el.dataset.f=src;el.src=src;waits.push(el.decode().catch(()=>{}));}
+  tintOp=Math.max(tintOp,pi*(1-po)*dk);tintB=Math.max(tintB,pi*(1-po));});
+ $('tint').style.opacity=tintOp/.85;$('tintB').style.opacity=tintB;
+
+ // ---- textos sobre os vídeos
+ show($('tA1'),t,9.3,13.9,{base:'translate(-50%,-50%) translateY(-62px)'});
+ show($('tA2'),t,10.5,13.9,{base:'translate(-50%,-50%) translateY(62px)'});
+ show($('tB0'),t,14.25,18.95,{base:'translate(-50%,-50%) translateY(-110px)'});
+ if(show($('tB1'),t,14.45,18.95,{blur:0,dy:0})>0){$('tB1').style.filter='none';
+  [['w1',14.45],['d1',14.95],['w2',15.05],['d2',15.55],['w3',15.65]].forEach(([id,a])=>{const p=E(P(t,a,a+.5));const s=$(id);s.style.opacity=p;s.style.filter=`blur(${(1-p)*14}px)`;s.style.display='inline-block';s.style.transform=`translateY(${(1-p)*30}px)`;});}
+ show($('tC'),t,19.3,24.95,{base:'translate(-50%,-50%) translateY(-90px)'});
+ show($('pC'),t,20.3,24.95,{dy:50,base:'translate(-50%,-50%) translateY(170px)'});
+ show($('tD'),t,25.3,30.95,{base:'translate(-50%,-50%) translateY(-90px)'});
+ show($('pD'),t,26.3,30.95,{dy:50,base:'translate(-50%,-50%) translateY(170px)'});
+ $('legalJur').style.opacity=(t>=25.6&&t<30.95)?Math.min(E(P(t,25.6,26.2)),1-P(t,30.6,30.95)):0;
+ show($('n1'),t,31.3,34.3,{blur:24,out:.4});$('v14').textContent=Math.round(14*E(P(t,31.4,32.6)));
+ show($('n2'),t,34.2,37.3,{blur:24,out:.4});$('v130').textContent=Math.round(130*E(P(t,34.3,35.6)));
+ show($('n3'),t,37.2,39.95,{blur:24,out:.4});$('v19').textContent=Math.round(19*E(P(t,37.3,38.4)));
+ show($('tF'),t,40.3,45.75,{base:'translate(-50%,-50%) translateY(330px)'});
+ show($('tG'),t,46.1,53.8,{base:'translate(-50%,-50%) translateY(318px)'});
+
+ // ---- encerramento (53.9–60): três voltas, funde na pirâmide original
+ const e0=53.9;
+ if(t>=e0){const p=P(t,e0,e0+2.4),sp=E(p),fin=E(P(t,e0,e0+.45)),xf=EIO(P(t,e0+2.2,e0+2.75));
+  $('gl').style.opacity=fin*(1-xf);$('gl').style.filter=`blur(${(1-fin)*12}px)`;
+  const pf=$('pfull');pf.style.opacity=xf;const push=1+.05*P(t,e0+2.2,60);pf.style.transform=`scale(${push})`;pf.style.transformOrigin='50% 45%';
+  const sh=$('shine');const s1=P(t,e0+2.7,e0+3.65),s2=P(t,e0+4.6,e0+5.55);const sa=t<e0+4.6?s1:s2;
+  sh.style.opacity=(t>e0+2.7&&(t<e0+3.65||t>e0+4.6))?Math.sin(Math.PI*sa)*.9:0;sh.style.backgroundPosition=`${100-100*sa}% 0`;sh.style.transform=`scale(${push})`;sh.style.transformOrigin='50% 45%';
+  window.render3d&&window.render3d((1-sp)*3*Math.PI*2,(.62+.38*sp),t);
+  const w=E(P(t,e0+2.35,e0+2.95));const wm2=$('wmEnd');wm2.style.opacity=w;wm2.style.filter=`blur(${(1-w)*16}px)`;wm2.style.transform=`translate(-50%,-50%) translateY(${262+(1-w)*24-6*P(t,e0+2.35,60)}px)`;
+  const f=E(P(t,e0+2.8,e0+3.35));const et=$('endT');et.style.opacity=f;et.style.filter=`blur(${(1-f)*12}px)`;et.style.transform=`translate(-50%,-50%) translateY(${352+(1-f)*20-6*P(t,e0+2.8,60)}px)`;
+ } else {$('pfull').style.opacity=0;$('shine').style.opacity=0;$('gl').style.opacity=0;$('wmEnd').style.opacity=0;$('endT').style.opacity=0;}
+ return Promise.all(waits);
+}
+window.render=render;render(0);
+</script>
+
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {RoomEnvironment} from './node_modules/three/examples/jsm/environments/RoomEnvironment.js';
+const DATA={"shapes": [{"pts": [[-0.40939597315436244, 0.25], [-0.412751677852349, 0.25], [-0.5, 0.16610738255033558], [-0.5, 0.0], [-0.40939597315436244, 0.0]], "holes": [], "col": [170.10625993928002, 128.68599103657655, 65.09238109006795], "bbox": [162, 313, 55, 150]}, {"pts": [[-0.2600671140939597, 0.3926174496644295], [-0.2651006711409396, 0.3926174496644295], [-0.35067114093959734, 0.31208053691275167], [-0.35067114093959734, 0.0], [-0.2600671140939597, 0.0]], "holes": [], "col": [170.406006006006, 128.5048477048477, 64.57400257400258], "bbox": [251, 228, 55, 235]}, {"pts": [[0.1040268456375839, 0.46476510067114096], [0.1040268456375839, 0.37080536912751677], [0.28859060402684567, 0.0016778523489932886], [0.337248322147651, 0.0], [0.3271812080536913, 0.026845637583892617], [0.10738255033557047, 0.46476510067114096]], "holes": [], "col": [170.65954658629275, 130.68195518280697, 68.58275455379373], "bbox": [522, 185, 140, 278]}, {"pts": [[-0.1174496644295302, 0.5268456375838926], [-0.1342281879194631, 0.5151006711409396], [-0.2063758389261745, 0.4463087248322148], [-0.2063758389261745, 0.0], [-0.1174496644295302, 0.0]], "holes": [], "col": [168.1325721535046, 125.93802727561052, 61.377798921661906], "bbox": [337, 148, 54, 315]}, {"pts": [[0.10738255033557047, 0.7734899328859061], [-0.050335570469798654, 0.5889261744966443], [-0.050335570469798654, 0.0], [0.0050335570469798654, 0.0], [0.13926174496644295, 0.2684563758389262], [0.13926174496644295, 0.27181208053691275], [0.07550335570469799, 0.27348993288590606], [0.07550335570469799, 0.5], [0.10570469798657718, 0.540268456375839], [0.23657718120805368, 0.28187919463087246], [0.3724832214765101, 0.003355704697986577], [0.37583892617449666, 0.0], [0.5, 0.0], [0.5, 0.0050335570469798654], [0.2348993288590604, 0.5369127516778524], [0.11073825503355705, 0.7734899328859061]], "holes": [], "col": [252.0079108349614, 252.41093104442237, 253.05950741440606], "bbox": [430, 1, 329, 462]}], "aspect": 0.7734899328859061};
+const canvas=document.getElementById('gl');
+const R=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,preserveDrawingBuffer:true});
+R.setPixelRatio(1);R.setSize(1920,1080,false);R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.05;R.outputColorSpace=THREE.SRGBColorSpace;
+R.shadowMap.enabled=true;
+const scene=new THREE.Scene();
+const pm=new THREE.PMREMGenerator(R);
+// estúdio escuro com softboxes: dá ao ouro reflexos fortes e sombras profundas
+const env=new THREE.Scene();env.background=new THREE.Color(0x020308);
+function panel(w,h,pos,look,rgb){const m=new THREE.MeshBasicMaterial({side:THREE.DoubleSide});m.color.setRGB(...rgb);const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),m);p.position.set(...pos);p.lookAt(...look);env.add(p);}
+panel(10,4,[0,9,4],[0,0,0],[9,8.2,7]);        // softbox de cima
+panel(2.2,10,[-9,2,3],[0,0,0],[6,5.4,4.6]);   // faixa esquerda
+panel(2.2,10,[9,2,-2],[0,0,0],[5,4.6,4]);     // faixa direita
+panel(12,7,[-1.5,2.8,10.5],[0,0,0],[3.4,2.6,1.7]);  // softbox frontal quente
+panel(3,9,[-5,4,9],[0,0,0],[6,5,3.8]);  // faixa de brilho à esquerda
+panel(8,1,[0,-2.5,10],[0,0,0],[.5,.42,.32]);  // rebatedor baixo fraco
+panel(6,3,[0,4,-9],[0,0,0],[2.5,2.2,1.8]);    // contraluz
+scene.environment=pm.fromScene(env,0.02).texture;
+const cam=new THREE.PerspectiveCamera(28,1920/1080,0.1,100);
+const gold=new THREE.MeshPhysicalMaterial({color:0xEDB04A,metalness:1,roughness:.24,clearcoat:.4,clearcoatRoughness:.2,envMapIntensity:1.25});
+const goldDim=gold.clone();goldDim.roughness=.28;
+const navy=new THREE.MeshPhysicalMaterial({color:0x060d20,metalness:.6,roughness:.22,clearcoat:.3,envMapIntensity:.45});
+const key=new THREE.DirectionalLight(0xfff0d8,1.4);key.position.set(-4,6,6);key.castShadow=true;scene.add(key);
+const rim=new THREE.DirectionalLight(0xffe2a8,1.6);rim.position.set(5,4,-5);scene.add(rim);
+const fill=new THREE.DirectionalLight(0x8fb4ff,.15);fill.position.set(0,2,8);scene.add(fill);
+const obj=new THREE.Group();scene.add(obj);
+// símbolo extrudado (largura 2.6 unidades)
+const SW=2.6,DEPTH=.30;
+const sym=new THREE.Group();
+DATA.shapes.forEach(sh=>{const shape=new THREE.Shape(sh.pts.map(p=>new THREE.Vector2(p[0]*SW,p[1]*SW)));
+ sh.holes.forEach(hh=>shape.holes.push(new THREE.Path(hh.map(p=>new THREE.Vector2(p[0]*SW,p[1]*SW)))));
+ const g=new THREE.ExtrudeGeometry(shape,{depth:DEPTH,bevelEnabled:true,bevelThickness:.018,bevelSize:.012,bevelSegments:3,curveSegments:4});
+ g.translate(0,0,-DEPTH/2);const m=new THREE.Mesh(g,gold);m.castShadow=true;sym.add(m);});
+// base em degraus (proporções da imagem)
+const U=SW/690;
+function box(w,h,d,mat,y){const g=new THREE.BoxGeometry(w,h,d);const m=new THREE.Mesh(g,mat);m.position.y=y;m.receiveShadow=true;obj.add(m);return m;}
+const hBot=23*U,hMid=50*U,hTop=100*U;
+box(950*U,hBot,1.45,goldDim,hBot/2);
+box(900*U,hMid,1.28,navy,hBot+hMid/2);
+box(920*U,hTop,1.36,gold,hBot+hMid+hTop/2);
+sym.scale.y=1.097;sym.position.set(20*U,hBot+hMid+hTop,0);obj.add(sym);
+const H=hBot+hMid+hTop+DATA.aspect*SW*1.097;
+obj.position.y=-H/2;
+const FIT=window.FIT||{s:1.054,oy:131,cy:.45};cam.position.set(0,FIT.cy,13.2);cam.lookAt(0,0,0);
+cam.setViewOffset(1920,1080,0,FIT.oy,1920,1080);  // sobe o objeto ~120px na tela
+window.render3d=(ang,sc,t)=>{obj.rotation.y=ang;obj.scale.setScalar(sc*FIT.s);R.render(scene,cam);};
+window.render3dReady=true;
+</script></body></html>
