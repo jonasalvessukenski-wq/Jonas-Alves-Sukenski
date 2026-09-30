@@ -171,6 +171,22 @@ const valorNum = (cfg, k, padrao) => {
 };
 const valorTxt = (cfg, k, padrao) => (cfg[k] && cfg[k].valor ? cfg[k].valor : padrao);
 
+// ---------- textos aprovados (linhas N1-x e OBJ-xx da base Controles) ----------
+// Primeiro nome apresentável a partir do nome do CRM ("Maria (Metalúrgica Alfa)" -> "Maria"); vazio se for telefone, e-mail etc.
+function primeiroNome(nomeCrm) {
+  const p = String(nomeCrm || '').replace(/\s*\(.*\)\s*$/, '').trim().split(/\s+/)[0] || '';
+  if (!/^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'-]{1,}$/.test(p)) return '';
+  return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase();
+}
+// Preenche [Nome] e [Empresa]. Sem nome, some a vírgula junto: "Obrigado, [Nome]." -> "Obrigado."
+function preencheTexto(modelo, { nome, empresa } = {}) {
+  let t = String(modelo || '');
+  t = nome ? t.replace(/\[Nome\]/g, nome) : t.replace(/,?[ \t]*\[Nome\]/g, '');
+  t = t.replace(/\[Empresa\]/g, empresa || 'sua empresa');
+  return t.replace(/[ \t]+([.,!?])/g, '$1').trim();
+}
+const N1_POR_INTENCAO = { 'quer conversar': 'N1-A', 'pede material': 'N1-B', 'não é comigo': 'N1-C', 'sem interesse': 'N1-D', 'descadastro': 'N1-E' };
+
 // Janela de horário "seg-sex 08:00-19:00"
 function dentroDoHorario(txt, agora = new Date()) {
   const sp = partesSP(agora);

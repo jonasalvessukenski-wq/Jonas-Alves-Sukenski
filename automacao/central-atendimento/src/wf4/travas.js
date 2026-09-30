@@ -53,6 +53,7 @@ cands.forEach((c, i) => {
   if (ultEm && Date.parse(ultEm) >= Date.parse(c.criadaEm) + 60000) return barra('o contato escreveu de novo depois deste rascunho. O Jev vai reler a conversa e propor outro.');
   if (c.auto) {
     if (RE_LINHA_VERMELHA.test(c.texto)) return barra('texto automático com número, percentual, prazo ou termo proibido.');
+    if (/^N1-/.test(c.modelo) && !(cfg[c.modelo] && cfg[c.modelo].ligado)) return rebaixa(`o texto ${c.modelo} não está aprovado nos Controles.`);
     if (L.opcao(p['Nível de resposta']) !== '1 - automática' || L.opcao(p['Mapa']) === 'PES' || !c.empresaId) return rebaixa('o contato não está mais no nível 1.');
     if (autoHoje >= teto) return rebaixa(`teto diário de ${teto} respostas automáticas atingido.`);
     if ((auto24[c.contatoId] || 0) >= maxPorContato) return rebaixa('este contato já recebeu resposta automática nas últimas 24 horas.');

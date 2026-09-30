@@ -32,9 +32,11 @@ const listaTarefas = tarefas.map((t) => {
 
 let empresa = '(não é contato da campanha de prospecção)';
 let statusCampanha = '';
+let empresaNome = '';
 if (empPg) {
   const p = empPg.properties || {};
   statusCampanha = L.opcao(p['Status']);
+  empresaNome = L.titulo(p['Empresa']);
   empresa = `Empresa: ${L.titulo(p['Empresa'])} | Setor: ${L.texto(p['Setor'])} | Cidade/UF: ${L.texto(p['Cidade'])}/${L.opcao(p['UF'])} | Serviço Ative: ${L.opcao(p['Serviço Ative'])} | Status na campanha: ${statusCampanha} | Etapa: ${L.opcao(p['Etapa da sequência'])}`;
 }
 const agora = partesSP();
@@ -57,10 +59,14 @@ const user = [
   transcricao || '(sem mensagens)',
   '',
   `Última mensagem foi de: ${ultimoAutor || '-'}`,
-].join('\n');
+];
+// Cartões de objeção aprovados (linhas OBJ-xx marcadas como "Ligado" nos Controles)
+const cartoes = Object.entries(cfg).filter(([k, v]) => /^OBJ-\d+/i.test(k) && v.ligado && v.valor).map(([k, v]) => `${k.toUpperCase()}: ${v.valor}`);
+if (cartoes.length) user.push('', 'CARTÕES DE RESPOSTA APROVADOS (use como base e adapte ao contexto, sem inventar):', ...cartoes);
+const userTxt = user.join('\n');
 
 return { json: {
-  contatoId: c.contatoId, nome: c.nome, ultimoAutor, ultimoCanal, empresaId: c.empresaId, statusCampanha,
+  contatoId: c.contatoId, nome: c.nome, ultimoAutor, ultimoCanal, empresaId: c.empresaId, empresaNome, statusCampanha,
   temperaturaAnterior: c.temperaturaAnterior,
   msgIds: conversa.slice(-5).map((m) => m.id),
   tarefasAbertas: tarefas.map((t) => ({ id: t.id, titulo: L.titulo((t.properties || {})['Tarefa Interna']) })),
@@ -68,6 +74,6 @@ return { json: {
     model: valorTxt(cfg, 'modeloJev', 'gpt-4o-mini'),
     temperature: 0.2,
     response_format: { type: 'json_object' },
-    messages: [{ role: 'system', content: PROMPT_JEV }, { role: 'user', content: user }],
+    messages: [{ role: 'system', content: PROMPT_JEV }, { role: 'user', content: userTxt }],
   },
 } };

@@ -162,7 +162,7 @@ const central = fluxo('GAB-WPP 4 - Central (portaria, Jev, fila e alertas)', [
       businessInstancia: 'COLE_A_INSTANCIA_DO_BUSINESS', businessToken: 'COLE_O_TOKEN_DO_BUSINESS',
       clientToken: 'COLE_O_CLIENT_TOKEN', numeroJonas: '5548974007161',
     }),
-    notion('Busca controles', { paginar: 2, estatico: { method: 'POST', url: `https://api.notion.com/v1/databases/${DB_CONTROLES}/query`, body: { page_size: 100 } } }),
+    notion('Busca controles', { paginar: 5, estatico: { method: 'POST', url: `https://api.notion.com/v1/databases/${DB_CONTROLES}/query`, body: { page_size: 100 } } }),
     codigo('Config', 'wf4/config.js'),
   ],
   // linha 1: portaria

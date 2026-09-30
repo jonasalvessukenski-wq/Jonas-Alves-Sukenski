@@ -22,6 +22,11 @@ O `GAB-WPP 1` (captura do WhatsApp pessoal) e o `GAB-WPP 2` (despacho das 18h) *
 - A resposta é marcada como "enviada" antes do envio. Assim, uma falha no meio nunca manda duas vezes, e o que a Z-API recusa vira "falhou" com o motivo.
 - Resposta por e-mail ainda não sai pelo sistema. Fica como rascunho para copiar no webmail.
 
+### Textos de resposta (Notion → ⚙️ Controles da central)
+- **N1-A a N1-E** (quer conversar, pede material, não é comigo, sem interesse, descadastro): para essas intenções, o sistema usa o texto cadastrado, e não a redação do Jev. `[Nome]` e `[Empresa]` são preenchidos pelo código. Com **Ligado** marcado, o texto está aprovado e pode sair sozinho, desde que `autoEnvio` esteja ligado e o contato seja da campanha. Desmarcado, vira rascunho para aprovar. O N1-B nunca sai sozinho enquanto o sistema não anexar o PDF.
+- **OBJ-xx** (cartões de objeção): as linhas com Chave `OBJ-01`, `OBJ-03`… marcadas como Ligado vão junto para o Jev como base dos rascunhos de nível 2.
+- Editar um texto ali vale na rodada seguinte, sem mexer no n8n.
+
 ### Controles (Notion → ⚙️ Controles da central)
 Mudar ali vale na rodada seguinte, sem mexer no n8n. As chaves liga/desliga usam a caixa **Ligado**; as de valor usam o campo **Valor**.
 `autoEnvio` (começa desligado) · `analiseConversa` · `esperaProspectMin` · `esperaDemaisMin` · `horarioEnvio` · `tetoDiarioAuto` · `maxAutoPorContato24h` · `modeloJev` · `maxAnalisesPorRodada`
@@ -56,7 +61,8 @@ O instalador:
 Central: 90 execuções por dia (cerca de 2.700 por mês). E-mail e Business: uma execução por mensagem. Para gastar menos, troque o cron do nó `A cada 10 minutos` (por exemplo, `*/15 7-20 * * 1-6`).
 
 ## Onde mexer
-- **Textos e tom do Jev**: `src/prompt_jev.js`. É onde entram os textos do redator: modelos N1-A a N1-E e cartões OBJ.
+- **Textos do redator**: nos Controles do Notion (linhas N1-x e OBJ-xx), sem código.
+- **Tom e regras do Jev**: `src/prompt_jev.js`.
 - **Regras**: `src/wf4/*.js` (central), `src/wf3/*.js` (e-mail), `src/wf5/*.js` (Business) e `src/comum.js` (funções comuns, padrões de robô, descadastro e linhas vermelhas).
 - Depois de editar: `node build.js` e em seguida `node instalar.mjs --gravar --ligar central`. **Não edite o código dentro do n8n**, porque a próxima instalação sobrescreve.
 
@@ -72,7 +78,8 @@ Resultado em 30/09/2026 (cenário com prospect interessado, robô, descadastro, 
 - 3 contatos novos criados, e nenhum para robô ou devolução;
 - 5 leituras do Jev;
 - tarefa nova sem duplicar a existente, e a existente com "sugere baixa";
-- 1 resposta automática enviada, 1 barrada (e-mail), rascunhos numerados e 1 alerta;
+- 1 resposta automática enviada com o texto aprovado (N1-A, nome preenchido), 1 barrada (e-mail) e rascunhos numerados com os textos cadastrados, inclusive o lembrete do PDF no N1-B;
+- o cartão OBJ aprovado chegou ao Jev, e 1 alerta saiu;
 - a segunda rodada não repetiu nada.
 
 No modo travado, só o alerta saiu. O teste do e-mail classificou os 5 tipos sem duplicar. O do Business transcreveu o áudio e descartou grupo, eco, status, instância errada e repetida. O instalador foi testado contra um n8n local: criou os fluxos, atualizou sem duplicar, ligou e o webhook respondeu 200.

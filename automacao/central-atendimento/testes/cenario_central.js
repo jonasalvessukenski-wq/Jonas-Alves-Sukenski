@@ -26,6 +26,11 @@ function popular({ criar }) {
   const travado = process.env.TESTE_TRAVADO === '1';
   const ctl = [['autoEnvio', !travado, ''], ['rascunhosWhatsApp', true, ''], ['analiseConversa', true, ''], ['esperaProspectMin', false, '3'], ['esperaDemaisMin', false, '10'],
     ['horarioEnvio', false, travado ? 'todos os dias 03:00-03:01' : 'todos os dias 00:00-24:00'], ['tetoDiarioAuto', false, '50'], ['maxAutoPorContato24h', false, '1'], ['modeloJev', false, 'gpt-4o-mini'], ['maxAnalisesPorRodada', false, '6']];
+  // Textos: N1-A aprovado; os demais cadastrados e ainda não aprovados; um cartão OBJ aprovado
+  ctl.push(['N1-A', true, 'Obrigado pelo retorno, [Nome]. Aqui é o Jonas, da Ative.\nProponho uma videochamada de 15 minutos. Qual dia e horário ficam melhores para você nesta semana?'],
+    ['N1-B', false, 'Claro, [Nome]. Segue a apresentação da Ative.\nDepois de olhar, qual o melhor dia para eu ouvir o que achou?'],
+    ['N1-E', false, 'Pronto, [Nome]. Seu contato foi retirado da nossa lista. Desculpe o incômodo.'],
+    ['OBJ-03', true, 'Seu contato veio de uma pesquisa de mercado em base pública de empresas. Se preferir, retiro agora.']);
   for (const [k, l, v] of ctl) criar(DB.controles, { Controle: t(k), Chave: tx(k), Ligado: cb(l), Valor: tx(v) });
 
   // Prospecção

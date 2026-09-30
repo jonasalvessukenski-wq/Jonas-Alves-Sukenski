@@ -24,6 +24,20 @@ if (['quente e sensível', 'fora da campanha', 'robô'].includes(intencao)) nive
 if (ctx.ultimoCanal === 'E-mail' && nivel === 1) nivel = 2; // e-mail ainda não sai sozinho: vira rascunho para copiar
 
 let resposta = d.resposta && typeof d.resposta.texto === 'string' ? d.resposta.texto.trim() : '';
+let modelo = String((d.resposta && d.resposta.modelo_ou_cartao) || 'livre').trim().slice(0, 40);
+let aviso = '';
+// Intenção de primeira linha com texto cadastrado nos Controles: vale o texto aprovado, não a redação do Jev.
+// Só sai sozinho (nível 1) se a linha do texto estiver marcada como "Ligado" (= aprovado pelo Jonas).
+const cfg = $('Config').first().json.cfg;
+const codN1 = N1_POR_INTENCAO[intencao];
+const txtN1 = codN1 && cfg[codN1] && cfg[codN1].valor ? cfg[codN1] : null;
+if (nivel === 1 && !(txtN1 && txtN1.ligado)) nivel = 2;
+if (codN1 === 'N1-B' && nivel === 1) nivel = 2; // o sistema ainda não anexa o PDF
+if (resposta && txtN1) {
+  resposta = preencheTexto(txtN1.valor, { nome: primeiroNome(ctx.nome), empresa: ctx.empresaNome });
+  modelo = codN1;
+}
+if (codN1 === 'N1-B' && resposta) aviso = ' | lembrete: o sistema não anexa arquivo, mande o PDF da apresentação junto';
 let trava = '';
 if (resposta && RE_LINHA_VERMELHA.test(resposta)) { trava = 'a resposta citava número, percentual, prazo, garantia ou termo proibido'; nivel = 3; }
 if (ctx.ultimoAutor !== 'Contato' || intencao === 'robô') resposta = '';
@@ -107,8 +121,8 @@ let rascunho = null;
 if (resposta && nivel < 3) {
   rascunho = {
     contatoId: ctx.contatoId, texto: resposta.slice(0, 1500), nivel: NIVEIS[nivel], canal: ctx.ultimoCanal,
-    modelo: String((d.resposta && d.resposta.modelo_ou_cartao) || 'livre').slice(0, 40),
-    motivo: `${String(d.motivo || '').slice(0, 400)}${trava ? ` | trava: ${trava}` : ''}`,
+    modelo,
+    motivo: `${String(d.motivo || '').slice(0, 400)}${trava ? ` | trava: ${trava}` : ''}${aviso}`,
     empresaId: ctx.empresaId, msgIds: ctx.msgIds, titulo: `${ctx.nome} · ${intencao}`,
   };
 }
