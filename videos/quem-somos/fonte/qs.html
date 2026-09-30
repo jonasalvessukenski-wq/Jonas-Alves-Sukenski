@@ -33,6 +33,13 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-fam
 /* pílulas de vidro */
 .pills{display:flex;gap:22px;justify-content:center}
 .pill{padding:18px 30px;border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.5);color:#fff;font-weight:700;font-size:32px;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 30px rgba(0,0,40,.3)}
+.gcard{position:absolute;top:0;width:540px;height:380px;border-radius:30px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,30,.45),0 10px 24px rgba(0,0,40,.25),inset 0 0 0 1px rgba(255,255,255,.35)}
+.gcard .ph{position:absolute;inset:-3%;background-size:auto 100%;background-repeat:no-repeat;background-position:100% center;filter:saturate(1.15) contrast(1.06) brightness(1.1)}
+.gcard .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,40,0) 40%,rgba(0,0,40,.35) 100%)}
+.gcard .glass{position:absolute;left:18px;right:18px;bottom:18px;padding:18px 22px 20px;border-radius:22px;background:rgba(255,255,255,.16);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);border:1px solid rgba(255,255,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 10px 30px rgba(0,0,40,.25)}
+.gcard .nm{font-weight:800;font-size:40px;color:#fff;letter-spacing:-.5px;line-height:1.05;white-space:nowrap}
+.gcard .sb{margin-top:8px;font-weight:700;font-size:15px;letter-spacing:2.2px;color:rgba(255,255,255,.92)}
+#phA{position:absolute;inset:0;opacity:0;background:url(../qs_img/sala_g.jpg) center 60%/cover no-repeat;transform-origin:52% 78%}
 .num{display:flex;align-items:center;gap:34px}
 .num .big{font-weight:800;font-size:200px;color:var(--cyan);letter-spacing:-5px;line-height:1;text-shadow:0 6px 40px rgba(0,0,40,.5)}
 .num .lab{font-weight:800;font-size:50px;color:#fff;line-height:1.1;letter-spacing:.5px;text-shadow:0 4px 24px rgba(0,0,40,.5)}
@@ -42,8 +49,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-fam
 <div class="bg" id="bgNavy"></div><div class="bg" id="bgBlue"></div><div class="bg" id="bgWhite"></div>
 <div class="bg" id="bgEnd" style="background:radial-gradient(ellipse 62% 72% at 50% 40%,#0a1a33 0%,#071427 32%,#030b19 62%,#01050d 100%)"></div>
 
-<img class="clip" id="cA"><img class="clip" id="cB"><img class="clip" id="cC"><img class="clip" id="cD">
-<img class="clip" id="cE"><img class="clip" id="cF"><img class="clip" id="cG">
+<div id="phA"></div><img class="clip" id="cB"><img class="clip" id="cD"><img class="clip" id="cF"><img class="clip" id="cG">
 <div id="tint"></div><div id="tintB"></div>
 <canvas id="gl" width="1920" height="1080" style="position:absolute;inset:0;opacity:0"></canvas>
 
@@ -70,8 +76,12 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-fam
 <div id="tB0" class="el eyb">ESPECIALISTAS NAS ÁREAS</div>
 <div id="tB1" class="el t" style="font-size:86px"><span id="w1">Comercial</span><span class="dot" id="d1">·</span><span id="w2">Financeira</span><span class="dot" id="d2">·</span><span id="w3">Tributária</span></div>
 <!-- C · financeira -->
-<div id="tC" class="el" style="text-align:center"><div class="eyb">FRENTE FINANCEIRA</div><div class="t">Estruturamos capital<br>para a sua empresa.</div></div>
-<div id="pC" class="el pills"><div class="pill">Capital de giro</div><div class="pill">Antecipação de recebíveis</div><div class="pill">Crédito estruturado</div></div>
+<div id="tC" class="el" style="text-align:center"><div class="eyb">FRENTE FINANCEIRA</div><div class="t">Estruturamos capital para a sua empresa.</div></div>
+<div id="cards" class="el" style="width:1680px;height:360px">
+  <div class="gcard" id="g0" style="left:0"><div class="ph" style="background-image:url(../h/giro.jpg)"></div><div class="shade"></div><div class="glass"><div class="nm">Capital de giro</div><div class="sb">PARA A OPERAÇÃO</div></div></div>
+  <div class="gcard" id="g1" style="left:570px"><div class="ph" style="background-image:url(../h/fidc.jpg)"></div><div class="shade"></div><div class="glass"><div class="nm">Antecipação</div><div class="sb">DE RECEBÍVEIS</div></div></div>
+  <div class="gcard" id="g2" style="left:1140px"><div class="ph" style="background-image:url(../h/ccb.jpg)"></div><div class="shade"></div><div class="glass"><div class="nm">Crédito estruturado</div><div class="sb">COM AS INSTITUIÇÕES CERTAS</div></div></div>
+</div>
 <!-- D · tributária -->
 <div id="tD" class="el" style="text-align:center"><div class="eyb">FRENTE TRIBUTÁRIA</div><div class="t">Revisamos o que<br>a sua empresa paga.</div></div>
 <div id="pD" class="el pills"><div class="pill">Com equipe jurídica parceira especializada</div></div>
@@ -108,8 +118,7 @@ function show(el,t,a,b,o={}){const inD=o.in??.5,outD=o.out??.35,dy=o.dy??36,bl=o
  el.style.transform=`${base} translateY(${(1-pi)*dy-po*dy*.4}px) scale(${s})${o.extra?' '+o.extra:''}`;
  return pi;}
 // trechos reais: [id, início, fim, nº de quadros, escurecimento]
-const CLIPS=[['A',9.0,14.35,168,.55],['B',14.0,19.35,167,.6],['C',19.0,25.35,199,.62],['D',25.0,31.35,199,.62],
- ['E',31.0,40.35,289,.85],['F',40.0,46.0,180,.45],['G',45.7,54.3,255,.5]];
+const CLIPS=[['B',14.0,19.3,166,.75],['D',25.0,30.8,175,.75],['F',40.0,46.0,180,.45],['G',45.7,54.3,255,.5]];
 const FRAMES='../qs_frames/';
 const BGS=[[0,1.8,'bgBlue'],[1.5,3.45,'bgWhite'],[3.3,54.3,'bgNavy'],[53.9,61,'bgEnd']];
 function render(t){
@@ -146,13 +155,18 @@ function render(t){
  let tintOp=0,tintB=0;
  CLIPS.forEach(([n,a,b,cnt,dk])=>{const el=$('c'+n);
   if(t<a||t>b){el.style.opacity=0;return;}
-  const pi=E(P(t,a,a+.4)),po=(n==='G')?EIO(P(t,b-.4,b)):0;
-  el.style.opacity=pi*(1-po);el.style.filter=`brightness(${1-.42*dk}) saturate(1.08) contrast(1.06) blur(${(1-pi)*10+po*12}px)`;
+  const pi=E(P(t,a,a+.4)),po=EIO(P(t,b-.4,b));
+  el.style.opacity=pi*(1-po);el.style.filter=`brightness(${1-.42*dk}) saturate(1.08) contrast(1.06) blur(${(1-pi)*10+po*12+((n==='B'||n==='D')?3:0)}px)`;
   el.style.transform=`scale(${1.02+.05*P(t,a,b)})`;
   const f=Math.min(cnt-1,Math.max(0,Math.floor((t-a)*30+1e-6)));
   const src=FRAMES+n+'/'+String(f).padStart(4,'0')+'.jpg';
   if(el.dataset.f!==src){el.dataset.f=src;el.src=src;waits.push(el.decode().catch(()=>{}));}
   tintOp=Math.max(tintOp,pi*(1-po)*dk);tintB=Math.max(tintB,pi*(1-po));});
+ {const a=9.0,b=14.35,el=$('phA');
+  if(t>=a&&t<=b){const pi=E(P(t,a,a+.5)),po=(t>b-.4)?0:0,k=EIO(P(t,a,b));
+   el.style.opacity=pi;el.style.filter=`brightness(${1-.42*.55}) saturate(1.08) contrast(1.06) blur(${(1-pi)*10}px)`;
+   el.style.transform=`scale(${1.18+.34*k})`;tintOp=Math.max(tintOp,pi*.55);tintB=Math.max(tintB,pi);}
+  else el.style.opacity=0;}
  $('tint').style.opacity=tintOp/.85;$('tintB').style.opacity=tintB;
 
  // ---- textos sobre os vídeos
@@ -161,14 +175,19 @@ function render(t){
  show($('tB0'),t,14.25,18.95,{base:'translate(-50%,-50%) translateY(-110px)'});
  if(show($('tB1'),t,14.45,18.95,{blur:0,dy:0})>0){$('tB1').style.filter='none';
   [['w1',14.45],['d1',14.95],['w2',15.05],['d2',15.55],['w3',15.65]].forEach(([id,a])=>{const p=E(P(t,a,a+.5));const s=$(id);s.style.opacity=p;s.style.filter=`blur(${(1-p)*14}px)`;s.style.display='inline-block';s.style.transform=`translateY(${(1-p)*30}px)`;});}
- show($('tC'),t,19.3,24.95,{base:'translate(-50%,-50%) translateY(-90px)'});
- show($('pC'),t,20.3,24.95,{dy:50,base:'translate(-50%,-50%) translateY(170px)'});
- show($('tD'),t,25.3,30.95,{base:'translate(-50%,-50%) translateY(-90px)'});
- show($('pD'),t,26.3,30.95,{dy:50,base:'translate(-50%,-50%) translateY(170px)'});
- $('legalJur').style.opacity=(t>=25.6&&t<30.95)?Math.min(E(P(t,25.6,26.2)),1-P(t,30.6,30.95)):0;
- show($('n1'),t,31.3,34.3,{blur:24,out:.4});$('v14').textContent=Math.round(14*E(P(t,31.4,32.6)));
- show($('n2'),t,34.2,37.3,{blur:24,out:.4});$('v130').textContent=Math.round(130*E(P(t,34.3,35.6)));
- show($('n3'),t,37.2,39.95,{blur:24,out:.4});$('v19').textContent=Math.round(19*E(P(t,37.3,38.4)));
+ show($('tC'),t,19.3,24.95,{base:'translate(-50%,-50%) translateY(-300px)'});
+ const cd=$('cards');
+ if(t>=19.5&&t<24.95){const po=EIO(P(t,24.6,24.95)),k=P(t,19.5,24.95);cd.style.opacity=1-po;cd.style.filter=`blur(${po*16}px)`;
+  cd.style.transform=`translate(-50%,-50%) translateY(90px) perspective(2200px) rotateY(${-6+8*k}deg) rotateX(4deg) scale(${1+.04*k})`;
+  [0,1,2].forEach(i=>{const el=$('g'+i),a=19.6+i*.35,p=E(P(t,a,a+.8));el.style.opacity=p;el.style.filter=`blur(${(1-p)*12}px)`;
+   el.style.transform=`translateY(${(1-p)*90}px) scale(${.92+.08*p})`;el.querySelector('.ph').style.transform=`translateX(${(i-1)*-14*k}px) scale(${1.03+.05*k})`;});}
+ else cd.style.opacity=0;
+ show($('tD'),t,25.3,30.6,{base:'translate(-50%,-50%) translateY(-90px)'});
+ show($('pD'),t,26.3,30.6,{dy:50,base:'translate(-50%,-50%) translateY(170px)'});
+ $('legalJur').style.opacity=(t>=25.6&&t<30.6)?Math.min(E(P(t,25.6,26.2)),1-P(t,30.3,30.6)):0;
+ show($('n1'),t,30.9,34.2,{blur:24,out:.4});$('v14').textContent=Math.round(14*E(P(t,31.0,32.2)));
+ show($('n2'),t,34.1,37.2,{blur:24,out:.4});$('v130').textContent=Math.round(130*E(P(t,34.2,35.5)));
+ show($('n3'),t,37.1,39.95,{blur:24,out:.4});$('v19').textContent=Math.round(19*E(P(t,37.2,38.3)));
  show($('tF'),t,40.3,45.75,{base:'translate(-50%,-50%) translateY(330px)'});
  show($('tG'),t,46.1,53.8,{base:'translate(-50%,-50%) translateY(318px)'});
 

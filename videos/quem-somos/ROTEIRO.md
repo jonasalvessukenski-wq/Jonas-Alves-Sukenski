@@ -21,11 +21,11 @@ fazemos em cada detalhe. Do logo à pirâmide dourada, a imagem real prova que a
 |---|---|---|
 | 0:00–0:04 | Abertura do logo (v6) | ATIVE |
 | 0:04–0:09 | Foto do time (foto 1), movimento lento, cartão de vidro | Por trás de cada decisão, existe um time. |
-| 0:09–0:14 | IMG_5452 8–10 s: travelling até a placa, câmera lenta | Conhecimento técnico · Vivência de campo |
+| 0:09–0:14 | Foto da sala (placa só ATIVE), aproximação lenta | Conhecimento técnico · Vivência de campo |
 | 0:14–0:19 | IMG_5451 4–6 s: pasta dourada | Comercial · Financeira · Tributária |
-| 0:19–0:25 | IMG_5451 12–14 s: notebook + fotos dos instrumentos (`h/`) | Frente financeira: capital de giro · antecipação de recebíveis · estruturação de capital |
+| 0:19–0:25 | Cartões de vidro (`h/giro`, `h/fidc`, `h/ccb`) sobre marinho | Frente financeira: capital de giro · antecipação de recebíveis · estruturação de capital |
 | 0:25–0:31 | IMG_5454 5–6 s: pasta e papel timbrado | Frente tributária: revisão tributária com equipe jurídica parceira · rodapé jurídico |
-| 0:31–0:40 | IMG_5452 4–8 s: sala em plano fechado; números um a um | +14 anos · +130 empresas · 19 estados |
+| 0:31–0:40 | Fundo marinho; números um a um | +14 anos · +130 empresas · 19 estados |
 | 0:40–0:46 | IMG_5451 22–24 s: placa "Jonas Sukenski" | À frente de cada caso. |
 | 0:46–0:53 | IMG_5451 32–34 s: banner BC no cavalete, câmera lenta | Balneário Camboriú · SC |
 | 0:53–1:00 | Pirâmide dourada 3D | Antes de qualquer negócio, existe confiança. |
@@ -48,7 +48,15 @@ Coworking não aparece: só planos fechados; fora parede de hexágonos (painéis
 ar-condicionado. Texto não diz "sede" nem "escritório". Os brutos ficam fora do git (arquivos > 100 MB); entram
 só os trechos cortados em `material/`.
 
-## Pendências antes das prévias
-1. Foto do time: quem são as 4 pessoas e se a foto é real (tela ao fundo com logo antigo "Assessoria Financeira", a ser coberta).
-2. Placas com nomes de terceiros e logo da Proma: mostrar ou desfocar.
-3. "ATIVE CAPITAL" em serifa na placa, pasta e banner: aceitar como material real da sala.
+## Decisões do Jonas (30/09/2026, prévia v1 → v2)
+- **Proma não aparece em nada.** Saíram a placa ATIVE + PROMA e o papel timbrado: a cena "Conhecimento técnico"
+  usa a foto da sala com a placa só ATIVE (`sala_placa`); as pastas (áreas e tributária) têm recorte fechado.
+- **Nada de cabos:** a frente financeira troca o notebook por três cartões de vidro (`h/giro`, `h/fidc`, `h/ccb`).
+- Números (+14 · +130 · 19) sobre o fundo marinho, como nos vídeos aprovados.
+- Foto do time: tela da TV trocada pelo logo novo; notebook e pasta com logo antigo desfocados.
+- Placa "ATIVE CAPITAL" em serifa aceita como material real da sala ("no demais está certo").
+
+## Pendências
+1. Autorização de imagem das 4 pessoas da foto do time (e confirmar que a foto é real).
+2. Locução (8 frases acima) e trilha licenciada para publicar; a música atual é da Atendare (só aprovação).
+3. Versão 9:16 para Reels.
