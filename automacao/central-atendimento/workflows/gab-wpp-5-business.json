@@ -1,0 +1,398 @@
+{
+  "name": "GAB-WPP 5 - Captura WhatsApp Business",
+  "nodes": [
+    {
+      "id": "0ac053de-e0cc-4771-afc1-b8be02b131a0",
+      "position": [
+        0,
+        0
+      ],
+      "name": "Webhook Z-API Business",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ative-business-aada2d57275d",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "webhookId": "825debd3-e9d3-4efe-a2c7-080a9babe9ee"
+    },
+    {
+      "id": "43139fdf-d403-41cc-adf2-9b278b7e0647",
+      "position": [
+        240,
+        0
+      ],
+      "name": "Config Business",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4cbe3372-b9ab-430e-aec3-ace6a526caa4",
+              "name": "instanciaBusiness",
+              "value": "COLE_A_INSTANCIA_DO_BUSINESS",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "979285fa-35c6-4c3e-a559-58a10bb4b658",
+      "position": [
+        480,
+        0
+      ],
+      "name": "Normaliza (Business)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// ===== comum.js — trecho repetido no início de cada nó de código da central =====\n// Não edite dentro do n8n: edite aqui e rode `node build.js` para gerar os fluxos.\n\nconst NOTION = 'https://api.notion.com/v1';\nconst ZAPI = 'https://api.z-api.io';\n\n// Bases do Notion (API 2022-06-28 usa o id da base, não o do data source)\nconst DB = {\n  recebidas: 'a62d96495d3d486397f27b5d8b6dfc81',\n  crm: '4e84cf3d628583f3b09481990f3dd072',\n  tarefas: '73e4cf3d628582f1bbca015a4dda5a08',\n  prospeccao: 'a95d43b45b0f41d7882a749adb2d01d9',\n  fila: '6b1fc7f7c6034371b2536a116c037b0b',\n  controles: 'b74182348b7a46ddb2182028c44dbc75',\n};\n\n// Números e LIDs do próprio Jonas: conversa entre eles nunca vira contato nem resposta\nconst PROPRIOS_8 = new Set(['96202573', '74007161']); // 48 9620-2573 (pessoal) e 48 97400-7161 (Business)\nconst PROPRIOS_LID = new Set(['83194221199558', '111729413476602']);\n\nconst soDigitos = (s) => String(s || '').replace(/\\D/g, '');\nconst ultimos8 = (s) => soDigitos(s).slice(-8);\n\n// 554899230407 -> +55 48 9923-0407 ; 5548999230407 -> +55 48 99923-0407\nfunction formataTel(d) {\n  const s = soDigitos(d);\n  if (s.length === 12 || s.length === 13) {\n    const loc = s.slice(4);\n    return `+${s.slice(0, 2)} ${s.slice(2, 4)} ${loc.slice(0, loc.length - 4)}-${loc.slice(-4)}`;\n  }\n  return s ? `+${s}` : '';\n}\n\n// Um campo de telefone ou LID pode ter vários valores separados por ; , / | ou quebra de linha\nconst separaValores = (s) => String(s || '').split(/[;,/|\\n]+/).map((x) => x.trim()).filter(Boolean);\n\n// ---------- datas no fuso de São Paulo ----------\nfunction partesSP(d = new Date()) {\n  const f = new Intl.DateTimeFormat('en-CA', {\n    timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit',\n    hour: '2-digit', minute: '2-digit', hour12: false, weekday: 'short',\n  });\n  const p = Object.fromEntries(f.formatToParts(d).map((x) => [x.type, x.value]));\n  const dias = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };\n  return {\n    data: `${p.year}-${p.month}-${p.day}`,\n    hora: Number(p.hour === '24' ? '0' : p.hour),\n    minuto: Number(p.minute),\n    diaSemana: dias[p.weekday],\n    hhmm: `${p.hour === '24' ? '00' : p.hour}:${p.minute}`,\n    ddmm: `${p.day}/${p.month}`,\n  };\n}\nconst isoMenosMinutos = (min, base = new Date()) => new Date(base.getTime() - min * 60000).toISOString();\n\nfunction somaDias(dataISO, n) {\n  const d = new Date(`${dataISO}T12:00:00Z`);\n  d.setUTCDate(d.getUTCDate() + n);\n  return d.toISOString().slice(0, 10);\n}\n\n// Converte o prazo dito na conversa em data (AAAA-MM-DD). A IA devolve o texto; a data é sempre calculada aqui.\nfunction calculaPrazo(texto, base = new Date()) {\n  if (!texto) return null;\n  const t = String(texto).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();\n  const hoje = partesSP(base);\n  if (/^hoje\\b/.test(t)) return hoje.data;\n  if (/depois de amanha/.test(t)) return somaDias(hoje.data, 2);\n  if (/amanha/.test(t)) return somaDias(hoje.data, 1);\n  let m = t.match(/em (\\d{1,2}) dias?/);\n  if (m) return somaDias(hoje.data, Number(m[1]));\n  m = t.match(/(\\d{1,2})\\/(\\d{1,2})(?:\\/(\\d{2,4}))?/);\n  if (m) {\n    let ano = m[3] ? Number(m[3].length === 2 ? `20${m[3]}` : m[3]) : Number(hoje.data.slice(0, 4));\n    const mes = String(m[2]).padStart(2, '0');\n    const dia = String(m[1]).padStart(2, '0');\n    let iso = `${ano}-${mes}-${dia}`;\n    if (!m[3] && iso < hoje.data) iso = `${ano + 1}-${mes}-${dia}`;\n    return /^\\d{4}-\\d{2}-\\d{2}$/.test(iso) ? iso : null;\n  }\n  if (/semana que vem|proxima semana/.test(t) && !/(segunda|terca|quarta|quinta|sexta|sabado|domingo)/.test(t)) {\n    const ate = (8 - hoje.diaSemana) % 7 || 7; // próxima segunda\n    return somaDias(hoje.data, ate);\n  }\n  if (/fim do mes|final do mes/.test(t)) {\n    const [a, mm] = hoje.data.split('-').map(Number);\n    const ultimo = new Date(Date.UTC(a, mm, 0)).getUTCDate();\n    return `${a}-${String(mm).padStart(2, '0')}-${String(ultimo).padStart(2, '0')}`;\n  }\n  const nomes = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];\n  for (let i = 0; i < 7; i += 1) {\n    if (t.includes(nomes[i])) {\n      let ate = (i - hoje.diaSemana + 7) % 7;\n      if (ate === 0) ate = 7; // \"sexta\" dita numa sexta = a próxima sexta\n      return somaDias(hoje.data, ate);\n    }\n  }\n  return null;\n}\n\n// ---------- montagem de propriedades do Notion ----------\nfunction pedacos(texto, tam = 1900) {\n  const s = String(texto || '');\n  const out = [];\n  for (let i = 0; i < s.length && out.length < 50; i += tam) out.push({ text: { content: s.slice(i, i + tam) } });\n  return out.length ? out : [];\n}\nconst P = {\n  titulo: (t) => ({ title: [{ text: { content: String(t || '').slice(0, 1900) } }] }),\n  texto: (t) => ({ rich_text: pedacos(t) }),\n  opcao: (n) => ({ select: n ? { name: n } : null }),\n  status: (n) => ({ status: { name: n } }),\n  relacao: (ids) => ({ relation: (ids || []).filter(Boolean).map((id) => ({ id })) }),\n  data: (iso) => ({ date: iso ? { start: iso } : null }),\n  marca: (b) => ({ checkbox: !!b }),\n  telefone: (t) => ({ phone_number: t || null }),\n  email: (e) => ({ email: e || null }),\n  numero: (n) => ({ number: n }),\n};\n\n// ---------- leitura de propriedades do Notion ----------\nconst L = {\n  titulo: (p) => (p && p.title ? p.title.map((x) => x.plain_text).join('') : ''),\n  texto: (p) => (p && p.rich_text ? p.rich_text.map((x) => x.plain_text).join('') : ''),\n  opcao: (p) => (p && p.select ? p.select.name : ''),\n  status: (p) => (p && p.status ? p.status.name : ''),\n  relacao: (p) => (p && p.relation ? p.relation.map((x) => x.id) : []),\n  data: (p) => (p && p.date ? p.date.start : ''),\n  marca: (p) => !!(p && p.checkbox),\n  telefone: (p) => (p && p.phone_number) || '',\n  email: (p) => (p && p.email) || '',\n  numero: (p) => (p && typeof p.number === 'number' ? p.number : null),\n  formulaBool: (p) => !!(p && p.formula && p.formula.boolean),\n  criadoEm: (pagina) => pagina.created_time,\n};\n\n// ---------- pedidos à API do Notion (executados pelo nó HTTP genérico) ----------\nconst pedido = (method, caminho, body) => ({ method, url: `${NOTION}${caminho}`, body: body || {} });\nconst criaPagina = (db, propriedades, extra = {}) => pedido('POST', '/pages', { parent: { database_id: db }, properties: propriedades, ...extra });\nconst atualizaPagina = (id, propriedades) => pedido('PATCH', `/pages/${id}`, { properties: propriedades });\n// Pedido que não altera nada: usado para o fluxo não parar quando não há o que gravar\nconst NADA = { method: 'POST', url: `${NOTION}/search`, body: { page_size: 1 }, nada: true };\n\n// ---------- padrões de texto ----------\nconst RE_ROBO = /(digite\\s*\\d|selecione (uma|a) op[cç][aã]o|op[cç][aã]o\\s*\\d|menu (principal|de op)|n[uú]mero do (seu )?protocolo|protocolo( de atendimento)?\\s*[:n]|chamado\\s*(id|n[ºo°]|#)?\\s*\\d|atendimento autom[aá]tico|mensagem autom[aá]tica|resposta autom[aá]tica|sou (o|a) (assistente|atendente) virtual|assistente virtual|fora do (nosso )?hor[aá]rio|nosso hor[aá]rio de atendimento|aceit[ae] (os )?termos|pol[ií]tica de privacidade|lgpd|consentimento (para|de) (tratamento|uso)|em breve (um|uma) (de nossos|atendente)|obrigad[oa] por entrar em contato)/i;\nconst RE_DESCADASTRO = /(n[aã]o (tenho|temos) interesse|sem interesse|n[aã]o (me )?(mande|envie|mandem|enviem)|pare de (mandar|enviar)|parem de|(me )?(remova|remover|retire|retirar|tire|tirar)( meu (n[uú]mero|contato|e-?mail))?( da| dessa| desta)? lista|descadastr|unsubscribe|n[aã]o quero (mais )?receber|bloquear|spam)/i;\nconst RE_LINHA_VERMELHA = /(\\d+[.,]?\\d*\\s*%|r\\$\\s*\\d|garantid|sem risco|a receita aceita|precat[oó]rio|direito credit[oó]rio|em \\d+\\s*(dias|meses|semanas) (voc[eê]|o senhor|a senhora) (recebe|recupera)|at[eé] \\d+\\s*%)/i;\nconst RE_DEVOLUCAO_REMETENTE = /(mailer-daemon|postmaster|mail delivery (subsystem|system))/i;\nconst RE_DEVOLUCAO_ASSUNTO = /(undeliver|delivery status notification|mail delivery failed|returned mail|n[aã]o (foi )?entregue|falha na entrega|delivery failure)/i;\nconst RE_AUSENCIA = /(out of office|fora do escrit[oó]rio|aus[eê]ncia|ausente|f[eé]rias|resposta autom[aá]tica|automatic reply|auto(-| )?reply)/i;\n\nconst FREEMAIL = new Set(['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'yahoo.com.br', 'live.com', 'icloud.com', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'msn.com']);\n\nfunction lerControles(respostas) {\n  const cfg = {};\n  for (const r of respostas) {\n    for (const pg of r.results || []) {\n      const p = pg.properties || {};\n      const chave = L.texto(p['Chave']).trim();\n      if (!chave) continue;\n      cfg[chave] = { ligado: L.marca(p['Ligado']), valor: L.texto(p['Valor']).trim() };\n    }\n  }\n  return cfg;\n}\nconst ligado = (cfg, k, padrao = false) => (cfg[k] ? cfg[k].ligado : padrao);\n// Linhas de valor (esperas, teto, horário) valem pelo campo Valor; a caixa \"Ligado\" só conta para as chaves liga/desliga\nconst valorNum = (cfg, k, padrao) => {\n  const v = cfg[k] && cfg[k].valor !== '' ? Number(String(cfg[k].valor).replace(',', '.')) : NaN;\n  return Number.isFinite(v) ? v : padrao;\n};\nconst valorTxt = (cfg, k, padrao) => (cfg[k] && cfg[k].valor ? cfg[k].valor : padrao);\n\n// Janela de horário \"seg-sex 08:00-19:00\"\nfunction dentroDoHorario(txt, agora = new Date()) {\n  const sp = partesSP(agora);\n  const m = String(txt || 'seg-sex 08:00-19:00').match(/(\\d{1,2}):?(\\d{2})?\\s*-\\s*(\\d{1,2}):?(\\d{2})?/);\n  const ini = m ? Number(m[1]) * 60 + Number(m[2] || 0) : 8 * 60;\n  const fim = m ? Number(m[3]) * 60 + Number(m[4] || 0) : 19 * 60;\n  const agoraMin = sp.hora * 60 + sp.minuto;\n  const soUteis = /seg-sex|dias [uú]teis/i.test(String(txt || 'seg-sex'));\n  if (soUteis && (sp.diaSemana === 0 || sp.diaSemana === 6)) return false;\n  return agoraMin >= ini && agoraMin < fim;\n}\n// ===== fim do comum.js =====\n\n// ===== wf5/normaliza_business.js =====\n// Normaliza o aviso da Z-API da linha Business (48 97400-7161). Só mensagem de conversa direta entra.\nconst b = $('Webhook Z-API Business').first().json.body || {};\nconst cfg = $('Config Business').first().json;\n// Descartado: a execução termina aqui (o aviso cru continua visível no histórico do n8n, no nó do webhook)\nconst fora = (motivo) => []; // eslint-disable-line no-unused-vars\nif (b.type !== 'ReceivedCallback') return fora(`tipo ${b.type || 'desconhecido'}`);\nconst esperada = String(cfg.instanciaBusiness || '');\nif (esperada && !/COLE|PREENCHER|A_DEFINIR/i.test(esperada) && b.instanceId && b.instanceId !== esperada) return fora('instância diferente da esperada');\nif (b.isGroup || /@g\\.us$|-group$/.test(String(b.phone || ''))) return fora('grupo');\nif (b.isNewsletter || /@newsletter$/.test(String(b.phone || ''))) return fora('canal/newsletter');\nif (b.broadcast || /status@broadcast/.test(String(b.phone || ''))) return fora('lista de transmissão ou status');\nif (b.isStatusReply) return fora('resposta a status');\nif (b.fromApi) return fora('eco de envio feito pelo próprio sistema');\n\nconst phone = String(b.phone || '');\nconst ehLid = /@lid$/.test(phone);\nconst de = ehLid ? '' : soDigitos(phone);\nconst lid = soDigitos(String(b.chatLid || '')) || (ehLid ? soDigitos(phone) : '');\nif ((de && PROPRIOS_8.has(ultimos8(de))) || (lid && PROPRIOS_LID.has(lid))) return fora('conversa entre números do Jonas');\nif (!de && !lid) return fora('sem número nem LID');\n\nlet tipo = 'texto'; let texto = ''; let midia = '';\nif (b.text && b.text.message) texto = b.text.message;\nelse if (b.audio) { tipo = 'audio'; midia = b.audio.audioUrl || ''; texto = ''; }\nelse if (b.image) { tipo = 'imagem'; midia = b.image.imageUrl || ''; texto = b.image.caption || '[imagem]'; }\nelse if (b.video) { tipo = 'video'; midia = b.video.videoUrl || ''; texto = b.video.caption || '[vídeo]'; }\nelse if (b.document) { tipo = 'documento'; midia = b.document.documentUrl || ''; texto = [b.document.fileName || b.document.title, b.document.caption].filter(Boolean).join(' - ') || '[documento]'; }\nelse if (b.buttonsResponseMessage) texto = b.buttonsResponseMessage.message || b.buttonsResponseMessage.buttonId || '';\nelse if (b.listResponseMessage) texto = b.listResponseMessage.message || b.listResponseMessage.title || '';\nelse if (b.reaction) { tipo = 'outro'; texto = `[reação ${b.reaction.value || ''}]`; }\nelse if (b.sticker) { tipo = 'outro'; texto = '[figurinha]'; }\nelse if (b.location) { tipo = 'outro'; texto = '[localização]'; }\nelse if (b.contact) { tipo = 'outro'; texto = `[contato: ${b.contact.displayName || ''}]`; }\nelse { tipo = 'outro'; texto = '[mensagem sem texto]'; }\n\nconst enviada = !!b.fromMe;\nconst nome = enviada ? String(b.chatName || '') : String(b.senderName || b.chatName || '');\nconst quando = b.momment ? new Date(Number(b.momment)) : new Date();\nconst messageId = String(b.messageId || `sem-id-${quando.getTime()}-${de || lid}`);\nreturn [{ json: {\n  enviada, de, lid, nome, tipo, texto, midia, messageId,\n  duracao: b.audio ? Number(b.audio.seconds) || 0 : 0,\n  encaminhada: !!b.forwarded,\n  data: partesSP(quando).data,\n  buscaDuplicata: pedido('POST', `/databases/${DB.recebidas}/query`, { filter: { property: 'messageId', rich_text: { equals: messageId } }, page_size: 1 }),\n} }];\n"
+      }
+    },
+    {
+      "id": "26f50aa3-3a89-4ab1-a0c9-3aabace92e9f",
+      "position": [
+        720,
+        0
+      ],
+      "name": "Busca duplicata",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "={{ $json.buscaDuplicata.method }}",
+        "url": "={{ $json.buscaDuplicata.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 3,
+              "batchInterval": 1100
+            }
+          },
+          "timeout": 30000
+        },
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.buscaDuplicata.body || {}) }}"
+      },
+      "credentials": {
+        "notionApi": {
+          "id": "ativeCredNotion0",
+          "name": "Notion (n8n Ative)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "e0360f8e-89f2-4fb4-adb9-49c84a7da5a6",
+      "position": [
+        960,
+        0
+      ],
+      "name": "Segue se for nova",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// ===== comum.js — trecho repetido no início de cada nó de código da central =====\n// Não edite dentro do n8n: edite aqui e rode `node build.js` para gerar os fluxos.\n\nconst NOTION = 'https://api.notion.com/v1';\nconst ZAPI = 'https://api.z-api.io';\n\n// Bases do Notion (API 2022-06-28 usa o id da base, não o do data source)\nconst DB = {\n  recebidas: 'a62d96495d3d486397f27b5d8b6dfc81',\n  crm: '4e84cf3d628583f3b09481990f3dd072',\n  tarefas: '73e4cf3d628582f1bbca015a4dda5a08',\n  prospeccao: 'a95d43b45b0f41d7882a749adb2d01d9',\n  fila: '6b1fc7f7c6034371b2536a116c037b0b',\n  controles: 'b74182348b7a46ddb2182028c44dbc75',\n};\n\n// Números e LIDs do próprio Jonas: conversa entre eles nunca vira contato nem resposta\nconst PROPRIOS_8 = new Set(['96202573', '74007161']); // 48 9620-2573 (pessoal) e 48 97400-7161 (Business)\nconst PROPRIOS_LID = new Set(['83194221199558', '111729413476602']);\n\nconst soDigitos = (s) => String(s || '').replace(/\\D/g, '');\nconst ultimos8 = (s) => soDigitos(s).slice(-8);\n\n// 554899230407 -> +55 48 9923-0407 ; 5548999230407 -> +55 48 99923-0407\nfunction formataTel(d) {\n  const s = soDigitos(d);\n  if (s.length === 12 || s.length === 13) {\n    const loc = s.slice(4);\n    return `+${s.slice(0, 2)} ${s.slice(2, 4)} ${loc.slice(0, loc.length - 4)}-${loc.slice(-4)}`;\n  }\n  return s ? `+${s}` : '';\n}\n\n// Um campo de telefone ou LID pode ter vários valores separados por ; , / | ou quebra de linha\nconst separaValores = (s) => String(s || '').split(/[;,/|\\n]+/).map((x) => x.trim()).filter(Boolean);\n\n// ---------- datas no fuso de São Paulo ----------\nfunction partesSP(d = new Date()) {\n  const f = new Intl.DateTimeFormat('en-CA', {\n    timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit',\n    hour: '2-digit', minute: '2-digit', hour12: false, weekday: 'short',\n  });\n  const p = Object.fromEntries(f.formatToParts(d).map((x) => [x.type, x.value]));\n  const dias = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };\n  return {\n    data: `${p.year}-${p.month}-${p.day}`,\n    hora: Number(p.hour === '24' ? '0' : p.hour),\n    minuto: Number(p.minute),\n    diaSemana: dias[p.weekday],\n    hhmm: `${p.hour === '24' ? '00' : p.hour}:${p.minute}`,\n    ddmm: `${p.day}/${p.month}`,\n  };\n}\nconst isoMenosMinutos = (min, base = new Date()) => new Date(base.getTime() - min * 60000).toISOString();\n\nfunction somaDias(dataISO, n) {\n  const d = new Date(`${dataISO}T12:00:00Z`);\n  d.setUTCDate(d.getUTCDate() + n);\n  return d.toISOString().slice(0, 10);\n}\n\n// Converte o prazo dito na conversa em data (AAAA-MM-DD). A IA devolve o texto; a data é sempre calculada aqui.\nfunction calculaPrazo(texto, base = new Date()) {\n  if (!texto) return null;\n  const t = String(texto).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();\n  const hoje = partesSP(base);\n  if (/^hoje\\b/.test(t)) return hoje.data;\n  if (/depois de amanha/.test(t)) return somaDias(hoje.data, 2);\n  if (/amanha/.test(t)) return somaDias(hoje.data, 1);\n  let m = t.match(/em (\\d{1,2}) dias?/);\n  if (m) return somaDias(hoje.data, Number(m[1]));\n  m = t.match(/(\\d{1,2})\\/(\\d{1,2})(?:\\/(\\d{2,4}))?/);\n  if (m) {\n    let ano = m[3] ? Number(m[3].length === 2 ? `20${m[3]}` : m[3]) : Number(hoje.data.slice(0, 4));\n    const mes = String(m[2]).padStart(2, '0');\n    const dia = String(m[1]).padStart(2, '0');\n    let iso = `${ano}-${mes}-${dia}`;\n    if (!m[3] && iso < hoje.data) iso = `${ano + 1}-${mes}-${dia}`;\n    return /^\\d{4}-\\d{2}-\\d{2}$/.test(iso) ? iso : null;\n  }\n  if (/semana que vem|proxima semana/.test(t) && !/(segunda|terca|quarta|quinta|sexta|sabado|domingo)/.test(t)) {\n    const ate = (8 - hoje.diaSemana) % 7 || 7; // próxima segunda\n    return somaDias(hoje.data, ate);\n  }\n  if (/fim do mes|final do mes/.test(t)) {\n    const [a, mm] = hoje.data.split('-').map(Number);\n    const ultimo = new Date(Date.UTC(a, mm, 0)).getUTCDate();\n    return `${a}-${String(mm).padStart(2, '0')}-${String(ultimo).padStart(2, '0')}`;\n  }\n  const nomes = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];\n  for (let i = 0; i < 7; i += 1) {\n    if (t.includes(nomes[i])) {\n      let ate = (i - hoje.diaSemana + 7) % 7;\n      if (ate === 0) ate = 7; // \"sexta\" dita numa sexta = a próxima sexta\n      return somaDias(hoje.data, ate);\n    }\n  }\n  return null;\n}\n\n// ---------- montagem de propriedades do Notion ----------\nfunction pedacos(texto, tam = 1900) {\n  const s = String(texto || '');\n  const out = [];\n  for (let i = 0; i < s.length && out.length < 50; i += tam) out.push({ text: { content: s.slice(i, i + tam) } });\n  return out.length ? out : [];\n}\nconst P = {\n  titulo: (t) => ({ title: [{ text: { content: String(t || '').slice(0, 1900) } }] }),\n  texto: (t) => ({ rich_text: pedacos(t) }),\n  opcao: (n) => ({ select: n ? { name: n } : null }),\n  status: (n) => ({ status: { name: n } }),\n  relacao: (ids) => ({ relation: (ids || []).filter(Boolean).map((id) => ({ id })) }),\n  data: (iso) => ({ date: iso ? { start: iso } : null }),\n  marca: (b) => ({ checkbox: !!b }),\n  telefone: (t) => ({ phone_number: t || null }),\n  email: (e) => ({ email: e || null }),\n  numero: (n) => ({ number: n }),\n};\n\n// ---------- leitura de propriedades do Notion ----------\nconst L = {\n  titulo: (p) => (p && p.title ? p.title.map((x) => x.plain_text).join('') : ''),\n  texto: (p) => (p && p.rich_text ? p.rich_text.map((x) => x.plain_text).join('') : ''),\n  opcao: (p) => (p && p.select ? p.select.name : ''),\n  status: (p) => (p && p.status ? p.status.name : ''),\n  relacao: (p) => (p && p.relation ? p.relation.map((x) => x.id) : []),\n  data: (p) => (p && p.date ? p.date.start : ''),\n  marca: (p) => !!(p && p.checkbox),\n  telefone: (p) => (p && p.phone_number) || '',\n  email: (p) => (p && p.email) || '',\n  numero: (p) => (p && typeof p.number === 'number' ? p.number : null),\n  formulaBool: (p) => !!(p && p.formula && p.formula.boolean),\n  criadoEm: (pagina) => pagina.created_time,\n};\n\n// ---------- pedidos à API do Notion (executados pelo nó HTTP genérico) ----------\nconst pedido = (method, caminho, body) => ({ method, url: `${NOTION}${caminho}`, body: body || {} });\nconst criaPagina = (db, propriedades, extra = {}) => pedido('POST', '/pages', { parent: { database_id: db }, properties: propriedades, ...extra });\nconst atualizaPagina = (id, propriedades) => pedido('PATCH', `/pages/${id}`, { properties: propriedades });\n// Pedido que não altera nada: usado para o fluxo não parar quando não há o que gravar\nconst NADA = { method: 'POST', url: `${NOTION}/search`, body: { page_size: 1 }, nada: true };\n\n// ---------- padrões de texto ----------\nconst RE_ROBO = /(digite\\s*\\d|selecione (uma|a) op[cç][aã]o|op[cç][aã]o\\s*\\d|menu (principal|de op)|n[uú]mero do (seu )?protocolo|protocolo( de atendimento)?\\s*[:n]|chamado\\s*(id|n[ºo°]|#)?\\s*\\d|atendimento autom[aá]tico|mensagem autom[aá]tica|resposta autom[aá]tica|sou (o|a) (assistente|atendente) virtual|assistente virtual|fora do (nosso )?hor[aá]rio|nosso hor[aá]rio de atendimento|aceit[ae] (os )?termos|pol[ií]tica de privacidade|lgpd|consentimento (para|de) (tratamento|uso)|em breve (um|uma) (de nossos|atendente)|obrigad[oa] por entrar em contato)/i;\nconst RE_DESCADASTRO = /(n[aã]o (tenho|temos) interesse|sem interesse|n[aã]o (me )?(mande|envie|mandem|enviem)|pare de (mandar|enviar)|parem de|(me )?(remova|remover|retire|retirar|tire|tirar)( meu (n[uú]mero|contato|e-?mail))?( da| dessa| desta)? lista|descadastr|unsubscribe|n[aã]o quero (mais )?receber|bloquear|spam)/i;\nconst RE_LINHA_VERMELHA = /(\\d+[.,]?\\d*\\s*%|r\\$\\s*\\d|garantid|sem risco|a receita aceita|precat[oó]rio|direito credit[oó]rio|em \\d+\\s*(dias|meses|semanas) (voc[eê]|o senhor|a senhora) (recebe|recupera)|at[eé] \\d+\\s*%)/i;\nconst RE_DEVOLUCAO_REMETENTE = /(mailer-daemon|postmaster|mail delivery (subsystem|system))/i;\nconst RE_DEVOLUCAO_ASSUNTO = /(undeliver|delivery status notification|mail delivery failed|returned mail|n[aã]o (foi )?entregue|falha na entrega|delivery failure)/i;\nconst RE_AUSENCIA = /(out of office|fora do escrit[oó]rio|aus[eê]ncia|ausente|f[eé]rias|resposta autom[aá]tica|automatic reply|auto(-| )?reply)/i;\n\nconst FREEMAIL = new Set(['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'yahoo.com.br', 'live.com', 'icloud.com', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'msn.com']);\n\nfunction lerControles(respostas) {\n  const cfg = {};\n  for (const r of respostas) {\n    for (const pg of r.results || []) {\n      const p = pg.properties || {};\n      const chave = L.texto(p['Chave']).trim();\n      if (!chave) continue;\n      cfg[chave] = { ligado: L.marca(p['Ligado']), valor: L.texto(p['Valor']).trim() };\n    }\n  }\n  return cfg;\n}\nconst ligado = (cfg, k, padrao = false) => (cfg[k] ? cfg[k].ligado : padrao);\n// Linhas de valor (esperas, teto, horário) valem pelo campo Valor; a caixa \"Ligado\" só conta para as chaves liga/desliga\nconst valorNum = (cfg, k, padrao) => {\n  const v = cfg[k] && cfg[k].valor !== '' ? Number(String(cfg[k].valor).replace(',', '.')) : NaN;\n  return Number.isFinite(v) ? v : padrao;\n};\nconst valorTxt = (cfg, k, padrao) => (cfg[k] && cfg[k].valor ? cfg[k].valor : padrao);\n\n// Janela de horário \"seg-sex 08:00-19:00\"\nfunction dentroDoHorario(txt, agora = new Date()) {\n  const sp = partesSP(agora);\n  const m = String(txt || 'seg-sex 08:00-19:00').match(/(\\d{1,2}):?(\\d{2})?\\s*-\\s*(\\d{1,2}):?(\\d{2})?/);\n  const ini = m ? Number(m[1]) * 60 + Number(m[2] || 0) : 8 * 60;\n  const fim = m ? Number(m[3]) * 60 + Number(m[4] || 0) : 19 * 60;\n  const agoraMin = sp.hora * 60 + sp.minuto;\n  const soUteis = /seg-sex|dias [uú]teis/i.test(String(txt || 'seg-sex'));\n  if (soUteis && (sp.diaSemana === 0 || sp.diaSemana === 6)) return false;\n  return agoraMin >= ini && agoraMin < fim;\n}\n// ===== fim do comum.js =====\n\n// ===== wf5/segue_se_novo.js =====\n// Descarta o que a Z-API reenviou (mesmo messageId já gravado)\nconst m = $('Normaliza (Business)').first().json;\nconst b = $input.first().json || {};\nif ((b.results || []).length) return [];\nreturn [{ json: m }];\n"
+      }
+    },
+    {
+      "id": "9aab9bfd-09bd-4b33-a62b-6ffefd88e7ff",
+      "position": [
+        1200,
+        0
+      ],
+      "name": "É áudio?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4dd58887-2d73-4aa9-a8c9-2cd0f514667a",
+              "leftValue": "={{ $json.tipo === 'audio' && !!$json.midia }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "6fe9e2a7-a338-4963-ae1b-5fda16d76439",
+      "position": [
+        1440,
+        260
+      ],
+      "name": "Baixa o áudio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "url": "={{ $json.midia }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 60000
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "bb8aebad-f573-4871-a5ad-2e611611a2a2",
+      "position": [
+        1680,
+        260
+      ],
+      "name": "Transcreve (OpenAI)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/audio/transcriptions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "model",
+              "value": "whisper-1"
+            },
+            {
+              "name": "language",
+              "value": "pt"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "ativeCredOpenAi0",
+          "name": "OpenAI (n8n Ative)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "384011cb-3b9d-416b-a2b0-f5f3c1500f14",
+      "position": [
+        1920,
+        520
+      ],
+      "name": "Monta registro",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// ===== comum.js — trecho repetido no início de cada nó de código da central =====\n// Não edite dentro do n8n: edite aqui e rode `node build.js` para gerar os fluxos.\n\nconst NOTION = 'https://api.notion.com/v1';\nconst ZAPI = 'https://api.z-api.io';\n\n// Bases do Notion (API 2022-06-28 usa o id da base, não o do data source)\nconst DB = {\n  recebidas: 'a62d96495d3d486397f27b5d8b6dfc81',\n  crm: '4e84cf3d628583f3b09481990f3dd072',\n  tarefas: '73e4cf3d628582f1bbca015a4dda5a08',\n  prospeccao: 'a95d43b45b0f41d7882a749adb2d01d9',\n  fila: '6b1fc7f7c6034371b2536a116c037b0b',\n  controles: 'b74182348b7a46ddb2182028c44dbc75',\n};\n\n// Números e LIDs do próprio Jonas: conversa entre eles nunca vira contato nem resposta\nconst PROPRIOS_8 = new Set(['96202573', '74007161']); // 48 9620-2573 (pessoal) e 48 97400-7161 (Business)\nconst PROPRIOS_LID = new Set(['83194221199558', '111729413476602']);\n\nconst soDigitos = (s) => String(s || '').replace(/\\D/g, '');\nconst ultimos8 = (s) => soDigitos(s).slice(-8);\n\n// 554899230407 -> +55 48 9923-0407 ; 5548999230407 -> +55 48 99923-0407\nfunction formataTel(d) {\n  const s = soDigitos(d);\n  if (s.length === 12 || s.length === 13) {\n    const loc = s.slice(4);\n    return `+${s.slice(0, 2)} ${s.slice(2, 4)} ${loc.slice(0, loc.length - 4)}-${loc.slice(-4)}`;\n  }\n  return s ? `+${s}` : '';\n}\n\n// Um campo de telefone ou LID pode ter vários valores separados por ; , / | ou quebra de linha\nconst separaValores = (s) => String(s || '').split(/[;,/|\\n]+/).map((x) => x.trim()).filter(Boolean);\n\n// ---------- datas no fuso de São Paulo ----------\nfunction partesSP(d = new Date()) {\n  const f = new Intl.DateTimeFormat('en-CA', {\n    timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit',\n    hour: '2-digit', minute: '2-digit', hour12: false, weekday: 'short',\n  });\n  const p = Object.fromEntries(f.formatToParts(d).map((x) => [x.type, x.value]));\n  const dias = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };\n  return {\n    data: `${p.year}-${p.month}-${p.day}`,\n    hora: Number(p.hour === '24' ? '0' : p.hour),\n    minuto: Number(p.minute),\n    diaSemana: dias[p.weekday],\n    hhmm: `${p.hour === '24' ? '00' : p.hour}:${p.minute}`,\n    ddmm: `${p.day}/${p.month}`,\n  };\n}\nconst isoMenosMinutos = (min, base = new Date()) => new Date(base.getTime() - min * 60000).toISOString();\n\nfunction somaDias(dataISO, n) {\n  const d = new Date(`${dataISO}T12:00:00Z`);\n  d.setUTCDate(d.getUTCDate() + n);\n  return d.toISOString().slice(0, 10);\n}\n\n// Converte o prazo dito na conversa em data (AAAA-MM-DD). A IA devolve o texto; a data é sempre calculada aqui.\nfunction calculaPrazo(texto, base = new Date()) {\n  if (!texto) return null;\n  const t = String(texto).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();\n  const hoje = partesSP(base);\n  if (/^hoje\\b/.test(t)) return hoje.data;\n  if (/depois de amanha/.test(t)) return somaDias(hoje.data, 2);\n  if (/amanha/.test(t)) return somaDias(hoje.data, 1);\n  let m = t.match(/em (\\d{1,2}) dias?/);\n  if (m) return somaDias(hoje.data, Number(m[1]));\n  m = t.match(/(\\d{1,2})\\/(\\d{1,2})(?:\\/(\\d{2,4}))?/);\n  if (m) {\n    let ano = m[3] ? Number(m[3].length === 2 ? `20${m[3]}` : m[3]) : Number(hoje.data.slice(0, 4));\n    const mes = String(m[2]).padStart(2, '0');\n    const dia = String(m[1]).padStart(2, '0');\n    let iso = `${ano}-${mes}-${dia}`;\n    if (!m[3] && iso < hoje.data) iso = `${ano + 1}-${mes}-${dia}`;\n    return /^\\d{4}-\\d{2}-\\d{2}$/.test(iso) ? iso : null;\n  }\n  if (/semana que vem|proxima semana/.test(t) && !/(segunda|terca|quarta|quinta|sexta|sabado|domingo)/.test(t)) {\n    const ate = (8 - hoje.diaSemana) % 7 || 7; // próxima segunda\n    return somaDias(hoje.data, ate);\n  }\n  if (/fim do mes|final do mes/.test(t)) {\n    const [a, mm] = hoje.data.split('-').map(Number);\n    const ultimo = new Date(Date.UTC(a, mm, 0)).getUTCDate();\n    return `${a}-${String(mm).padStart(2, '0')}-${String(ultimo).padStart(2, '0')}`;\n  }\n  const nomes = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];\n  for (let i = 0; i < 7; i += 1) {\n    if (t.includes(nomes[i])) {\n      let ate = (i - hoje.diaSemana + 7) % 7;\n      if (ate === 0) ate = 7; // \"sexta\" dita numa sexta = a próxima sexta\n      return somaDias(hoje.data, ate);\n    }\n  }\n  return null;\n}\n\n// ---------- montagem de propriedades do Notion ----------\nfunction pedacos(texto, tam = 1900) {\n  const s = String(texto || '');\n  const out = [];\n  for (let i = 0; i < s.length && out.length < 50; i += tam) out.push({ text: { content: s.slice(i, i + tam) } });\n  return out.length ? out : [];\n}\nconst P = {\n  titulo: (t) => ({ title: [{ text: { content: String(t || '').slice(0, 1900) } }] }),\n  texto: (t) => ({ rich_text: pedacos(t) }),\n  opcao: (n) => ({ select: n ? { name: n } : null }),\n  status: (n) => ({ status: { name: n } }),\n  relacao: (ids) => ({ relation: (ids || []).filter(Boolean).map((id) => ({ id })) }),\n  data: (iso) => ({ date: iso ? { start: iso } : null }),\n  marca: (b) => ({ checkbox: !!b }),\n  telefone: (t) => ({ phone_number: t || null }),\n  email: (e) => ({ email: e || null }),\n  numero: (n) => ({ number: n }),\n};\n\n// ---------- leitura de propriedades do Notion ----------\nconst L = {\n  titulo: (p) => (p && p.title ? p.title.map((x) => x.plain_text).join('') : ''),\n  texto: (p) => (p && p.rich_text ? p.rich_text.map((x) => x.plain_text).join('') : ''),\n  opcao: (p) => (p && p.select ? p.select.name : ''),\n  status: (p) => (p && p.status ? p.status.name : ''),\n  relacao: (p) => (p && p.relation ? p.relation.map((x) => x.id) : []),\n  data: (p) => (p && p.date ? p.date.start : ''),\n  marca: (p) => !!(p && p.checkbox),\n  telefone: (p) => (p && p.phone_number) || '',\n  email: (p) => (p && p.email) || '',\n  numero: (p) => (p && typeof p.number === 'number' ? p.number : null),\n  formulaBool: (p) => !!(p && p.formula && p.formula.boolean),\n  criadoEm: (pagina) => pagina.created_time,\n};\n\n// ---------- pedidos à API do Notion (executados pelo nó HTTP genérico) ----------\nconst pedido = (method, caminho, body) => ({ method, url: `${NOTION}${caminho}`, body: body || {} });\nconst criaPagina = (db, propriedades, extra = {}) => pedido('POST', '/pages', { parent: { database_id: db }, properties: propriedades, ...extra });\nconst atualizaPagina = (id, propriedades) => pedido('PATCH', `/pages/${id}`, { properties: propriedades });\n// Pedido que não altera nada: usado para o fluxo não parar quando não há o que gravar\nconst NADA = { method: 'POST', url: `${NOTION}/search`, body: { page_size: 1 }, nada: true };\n\n// ---------- padrões de texto ----------\nconst RE_ROBO = /(digite\\s*\\d|selecione (uma|a) op[cç][aã]o|op[cç][aã]o\\s*\\d|menu (principal|de op)|n[uú]mero do (seu )?protocolo|protocolo( de atendimento)?\\s*[:n]|chamado\\s*(id|n[ºo°]|#)?\\s*\\d|atendimento autom[aá]tico|mensagem autom[aá]tica|resposta autom[aá]tica|sou (o|a) (assistente|atendente) virtual|assistente virtual|fora do (nosso )?hor[aá]rio|nosso hor[aá]rio de atendimento|aceit[ae] (os )?termos|pol[ií]tica de privacidade|lgpd|consentimento (para|de) (tratamento|uso)|em breve (um|uma) (de nossos|atendente)|obrigad[oa] por entrar em contato)/i;\nconst RE_DESCADASTRO = /(n[aã]o (tenho|temos) interesse|sem interesse|n[aã]o (me )?(mande|envie|mandem|enviem)|pare de (mandar|enviar)|parem de|(me )?(remova|remover|retire|retirar|tire|tirar)( meu (n[uú]mero|contato|e-?mail))?( da| dessa| desta)? lista|descadastr|unsubscribe|n[aã]o quero (mais )?receber|bloquear|spam)/i;\nconst RE_LINHA_VERMELHA = /(\\d+[.,]?\\d*\\s*%|r\\$\\s*\\d|garantid|sem risco|a receita aceita|precat[oó]rio|direito credit[oó]rio|em \\d+\\s*(dias|meses|semanas) (voc[eê]|o senhor|a senhora) (recebe|recupera)|at[eé] \\d+\\s*%)/i;\nconst RE_DEVOLUCAO_REMETENTE = /(mailer-daemon|postmaster|mail delivery (subsystem|system))/i;\nconst RE_DEVOLUCAO_ASSUNTO = /(undeliver|delivery status notification|mail delivery failed|returned mail|n[aã]o (foi )?entregue|falha na entrega|delivery failure)/i;\nconst RE_AUSENCIA = /(out of office|fora do escrit[oó]rio|aus[eê]ncia|ausente|f[eé]rias|resposta autom[aá]tica|automatic reply|auto(-| )?reply)/i;\n\nconst FREEMAIL = new Set(['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'yahoo.com.br', 'live.com', 'icloud.com', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'msn.com']);\n\nfunction lerControles(respostas) {\n  const cfg = {};\n  for (const r of respostas) {\n    for (const pg of r.results || []) {\n      const p = pg.properties || {};\n      const chave = L.texto(p['Chave']).trim();\n      if (!chave) continue;\n      cfg[chave] = { ligado: L.marca(p['Ligado']), valor: L.texto(p['Valor']).trim() };\n    }\n  }\n  return cfg;\n}\nconst ligado = (cfg, k, padrao = false) => (cfg[k] ? cfg[k].ligado : padrao);\n// Linhas de valor (esperas, teto, horário) valem pelo campo Valor; a caixa \"Ligado\" só conta para as chaves liga/desliga\nconst valorNum = (cfg, k, padrao) => {\n  const v = cfg[k] && cfg[k].valor !== '' ? Number(String(cfg[k].valor).replace(',', '.')) : NaN;\n  return Number.isFinite(v) ? v : padrao;\n};\nconst valorTxt = (cfg, k, padrao) => (cfg[k] && cfg[k].valor ? cfg[k].valor : padrao);\n\n// Janela de horário \"seg-sex 08:00-19:00\"\nfunction dentroDoHorario(txt, agora = new Date()) {\n  const sp = partesSP(agora);\n  const m = String(txt || 'seg-sex 08:00-19:00').match(/(\\d{1,2}):?(\\d{2})?\\s*-\\s*(\\d{1,2}):?(\\d{2})?/);\n  const ini = m ? Number(m[1]) * 60 + Number(m[2] || 0) : 8 * 60;\n  const fim = m ? Number(m[3]) * 60 + Number(m[4] || 0) : 19 * 60;\n  const agoraMin = sp.hora * 60 + sp.minuto;\n  const soUteis = /seg-sex|dias [uú]teis/i.test(String(txt || 'seg-sex'));\n  if (soUteis && (sp.diaSemana === 0 || sp.diaSemana === 6)) return false;\n  return agoraMin >= ini && agoraMin < fim;\n}\n// ===== fim do comum.js =====\n\n// ===== wf5/monta_registro_business.js =====\n// Grava a mensagem da linha Business na base Recebidas. A portaria da central liga ao contato e o Jev lê a conversa.\nconst m = $('Segue se for nova').first().json;\nlet texto = m.texto;\nif (m.tipo === 'audio') {\n  let transcrito = '';\n  try { if ($('Transcreve (OpenAI)').isExecuted) transcrito = String($('Transcreve (OpenAI)').first().json.text || '').trim(); } catch (e) { transcrito = ''; }\n  texto = transcrito ? `[áudio ${m.duracao}s] ${transcrito}` : `[áudio ${m.duracao}s, sem transcrição]`;\n}\nif (m.encaminhada) texto = `[encaminhada] ${texto}`;\nconst titulo = `${m.enviada ? '→ ' : ''}${texto}`.replace(/\\s+/g, ' ').slice(0, 200) || '(sem texto)';\nconst props = {\n  'Mensagem': P.titulo(titulo),\n  'Conteudo': P.texto(texto),\n  'Canal': P.opcao('WhatsApp Business'),\n  'Tipo': P.opcao(m.tipo),\n  'Situacao': P.opcao(m.enviada ? 'enviada por mim' : 'aguardando decisao'),\n  'Recebida em': P.data(m.data),\n  'messageId': P.texto(m.messageId),\n};\nif (m.de) props['De'] = P.telefone(m.de);\nif (m.lid) props['Lid'] = P.texto(m.lid);\nif (m.nome && !/@lid$/.test(m.nome)) props['Nome no WhatsApp'] = P.texto(m.nome);\nif (m.midia) props['Midia'] = { url: m.midia };\nreturn [{ json: criaPagina(DB.recebidas, props) }];\n"
+      }
+    },
+    {
+      "id": "c4cfa25e-9cb9-4fb0-a17c-dafb16a6edc2",
+      "position": [
+        2160,
+        520
+      ],
+      "name": "Grava no Notion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "={{ $json.method }}",
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 3,
+              "batchInterval": 1100
+            }
+          },
+          "timeout": 30000
+        },
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body || {}) }}"
+      },
+      "credentials": {
+        "notionApi": {
+          "id": "ativeCredNotion0",
+          "name": "Notion (n8n Ative)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Webhook Z-API Business": {
+      "main": [
+        [
+          {
+            "node": "Config Business",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config Business": {
+      "main": [
+        [
+          {
+            "node": "Normaliza (Business)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normaliza (Business)": {
+      "main": [
+        [
+          {
+            "node": "Busca duplicata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca duplicata": {
+      "main": [
+        [
+          {
+            "node": "Segue se for nova",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Segue se for nova": {
+      "main": [
+        [
+          {
+            "node": "É áudio?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É áudio?": {
+      "main": [
+        [
+          {
+            "node": "Baixa o áudio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Monta registro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixa o áudio": {
+      "main": [
+        [
+          {
+            "node": "Transcreve (OpenAI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcreve (OpenAI)": {
+      "main": [
+        [
+          {
+            "node": "Monta registro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monta registro": {
+      "main": [
+        [
+          {
+            "node": "Grava no Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo",
+    "errorWorkflow": "QtrobngLSAoMtnjX",
+    "callerPolicy": "workflowsFromSameOwner"
+  }
+}

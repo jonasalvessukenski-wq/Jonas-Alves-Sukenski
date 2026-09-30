@@ -1,0 +1,242 @@
+{
+  "name": "GAB-WPP 3 - Captura e-mail (contato@ative)",
+  "nodes": [
+    {
+      "id": "b9f2b376-45b1-415d-afbd-4baa517f12ad",
+      "position": [
+        0,
+        0
+      ],
+      "name": "E-mail na caixa de entrada",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.2,
+      "parameters": {
+        "mailbox": "INBOX",
+        "postProcessAction": "nothing",
+        "format": "resolved",
+        "dataPropertyAttachmentsPrefixName": "anexo_",
+        "options": {
+          "customEmailConfig": "[\"ALL\"]",
+          "trackLastMessageId": true
+        }
+      },
+      "credentials": {
+        "imap": {
+          "id": "ativeCredImap000",
+          "name": "IMAP contato@ative"
+        }
+      }
+    },
+    {
+      "id": "fb556e69-e899-48d2-ae42-3d5fbca2bed0",
+      "position": [
+        0,
+        260
+      ],
+      "name": "E-mail nos enviados",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.2,
+      "parameters": {
+        "mailbox": "INBOX.Sent",
+        "postProcessAction": "nothing",
+        "format": "resolved",
+        "dataPropertyAttachmentsPrefixName": "anexo_",
+        "options": {
+          "customEmailConfig": "[\"ALL\"]",
+          "trackLastMessageId": true
+        }
+      },
+      "credentials": {
+        "imap": {
+          "id": "ativeCredImap000",
+          "name": "IMAP contato@ative"
+        }
+      }
+    },
+    {
+      "id": "876e0ec3-524a-4d18-aa78-53bd4409da50",
+      "position": [
+        240,
+        260
+      ],
+      "name": "Normaliza e-mail",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// ===== comum.js — trecho repetido no início de cada nó de código da central =====\n// Não edite dentro do n8n: edite aqui e rode `node build.js` para gerar os fluxos.\n\nconst NOTION = 'https://api.notion.com/v1';\nconst ZAPI = 'https://api.z-api.io';\n\n// Bases do Notion (API 2022-06-28 usa o id da base, não o do data source)\nconst DB = {\n  recebidas: 'a62d96495d3d486397f27b5d8b6dfc81',\n  crm: '4e84cf3d628583f3b09481990f3dd072',\n  tarefas: '73e4cf3d628582f1bbca015a4dda5a08',\n  prospeccao: 'a95d43b45b0f41d7882a749adb2d01d9',\n  fila: '6b1fc7f7c6034371b2536a116c037b0b',\n  controles: 'b74182348b7a46ddb2182028c44dbc75',\n};\n\n// Números e LIDs do próprio Jonas: conversa entre eles nunca vira contato nem resposta\nconst PROPRIOS_8 = new Set(['96202573', '74007161']); // 48 9620-2573 (pessoal) e 48 97400-7161 (Business)\nconst PROPRIOS_LID = new Set(['83194221199558', '111729413476602']);\n\nconst soDigitos = (s) => String(s || '').replace(/\\D/g, '');\nconst ultimos8 = (s) => soDigitos(s).slice(-8);\n\n// 554899230407 -> +55 48 9923-0407 ; 5548999230407 -> +55 48 99923-0407\nfunction formataTel(d) {\n  const s = soDigitos(d);\n  if (s.length === 12 || s.length === 13) {\n    const loc = s.slice(4);\n    return `+${s.slice(0, 2)} ${s.slice(2, 4)} ${loc.slice(0, loc.length - 4)}-${loc.slice(-4)}`;\n  }\n  return s ? `+${s}` : '';\n}\n\n// Um campo de telefone ou LID pode ter vários valores separados por ; , / | ou quebra de linha\nconst separaValores = (s) => String(s || '').split(/[;,/|\\n]+/).map((x) => x.trim()).filter(Boolean);\n\n// ---------- datas no fuso de São Paulo ----------\nfunction partesSP(d = new Date()) {\n  const f = new Intl.DateTimeFormat('en-CA', {\n    timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit',\n    hour: '2-digit', minute: '2-digit', hour12: false, weekday: 'short',\n  });\n  const p = Object.fromEntries(f.formatToParts(d).map((x) => [x.type, x.value]));\n  const dias = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };\n  return {\n    data: `${p.year}-${p.month}-${p.day}`,\n    hora: Number(p.hour === '24' ? '0' : p.hour),\n    minuto: Number(p.minute),\n    diaSemana: dias[p.weekday],\n    hhmm: `${p.hour === '24' ? '00' : p.hour}:${p.minute}`,\n    ddmm: `${p.day}/${p.month}`,\n  };\n}\nconst isoMenosMinutos = (min, base = new Date()) => new Date(base.getTime() - min * 60000).toISOString();\n\nfunction somaDias(dataISO, n) {\n  const d = new Date(`${dataISO}T12:00:00Z`);\n  d.setUTCDate(d.getUTCDate() + n);\n  return d.toISOString().slice(0, 10);\n}\n\n// Converte o prazo dito na conversa em data (AAAA-MM-DD). A IA devolve o texto; a data é sempre calculada aqui.\nfunction calculaPrazo(texto, base = new Date()) {\n  if (!texto) return null;\n  const t = String(texto).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();\n  const hoje = partesSP(base);\n  if (/^hoje\\b/.test(t)) return hoje.data;\n  if (/depois de amanha/.test(t)) return somaDias(hoje.data, 2);\n  if (/amanha/.test(t)) return somaDias(hoje.data, 1);\n  let m = t.match(/em (\\d{1,2}) dias?/);\n  if (m) return somaDias(hoje.data, Number(m[1]));\n  m = t.match(/(\\d{1,2})\\/(\\d{1,2})(?:\\/(\\d{2,4}))?/);\n  if (m) {\n    let ano = m[3] ? Number(m[3].length === 2 ? `20${m[3]}` : m[3]) : Number(hoje.data.slice(0, 4));\n    const mes = String(m[2]).padStart(2, '0');\n    const dia = String(m[1]).padStart(2, '0');\n    let iso = `${ano}-${mes}-${dia}`;\n    if (!m[3] && iso < hoje.data) iso = `${ano + 1}-${mes}-${dia}`;\n    return /^\\d{4}-\\d{2}-\\d{2}$/.test(iso) ? iso : null;\n  }\n  if (/semana que vem|proxima semana/.test(t) && !/(segunda|terca|quarta|quinta|sexta|sabado|domingo)/.test(t)) {\n    const ate = (8 - hoje.diaSemana) % 7 || 7; // próxima segunda\n    return somaDias(hoje.data, ate);\n  }\n  if (/fim do mes|final do mes/.test(t)) {\n    const [a, mm] = hoje.data.split('-').map(Number);\n    const ultimo = new Date(Date.UTC(a, mm, 0)).getUTCDate();\n    return `${a}-${String(mm).padStart(2, '0')}-${String(ultimo).padStart(2, '0')}`;\n  }\n  const nomes = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];\n  for (let i = 0; i < 7; i += 1) {\n    if (t.includes(nomes[i])) {\n      let ate = (i - hoje.diaSemana + 7) % 7;\n      if (ate === 0) ate = 7; // \"sexta\" dita numa sexta = a próxima sexta\n      return somaDias(hoje.data, ate);\n    }\n  }\n  return null;\n}\n\n// ---------- montagem de propriedades do Notion ----------\nfunction pedacos(texto, tam = 1900) {\n  const s = String(texto || '');\n  const out = [];\n  for (let i = 0; i < s.length && out.length < 50; i += tam) out.push({ text: { content: s.slice(i, i + tam) } });\n  return out.length ? out : [];\n}\nconst P = {\n  titulo: (t) => ({ title: [{ text: { content: String(t || '').slice(0, 1900) } }] }),\n  texto: (t) => ({ rich_text: pedacos(t) }),\n  opcao: (n) => ({ select: n ? { name: n } : null }),\n  status: (n) => ({ status: { name: n } }),\n  relacao: (ids) => ({ relation: (ids || []).filter(Boolean).map((id) => ({ id })) }),\n  data: (iso) => ({ date: iso ? { start: iso } : null }),\n  marca: (b) => ({ checkbox: !!b }),\n  telefone: (t) => ({ phone_number: t || null }),\n  email: (e) => ({ email: e || null }),\n  numero: (n) => ({ number: n }),\n};\n\n// ---------- leitura de propriedades do Notion ----------\nconst L = {\n  titulo: (p) => (p && p.title ? p.title.map((x) => x.plain_text).join('') : ''),\n  texto: (p) => (p && p.rich_text ? p.rich_text.map((x) => x.plain_text).join('') : ''),\n  opcao: (p) => (p && p.select ? p.select.name : ''),\n  status: (p) => (p && p.status ? p.status.name : ''),\n  relacao: (p) => (p && p.relation ? p.relation.map((x) => x.id) : []),\n  data: (p) => (p && p.date ? p.date.start : ''),\n  marca: (p) => !!(p && p.checkbox),\n  telefone: (p) => (p && p.phone_number) || '',\n  email: (p) => (p && p.email) || '',\n  numero: (p) => (p && typeof p.number === 'number' ? p.number : null),\n  formulaBool: (p) => !!(p && p.formula && p.formula.boolean),\n  criadoEm: (pagina) => pagina.created_time,\n};\n\n// ---------- pedidos à API do Notion (executados pelo nó HTTP genérico) ----------\nconst pedido = (method, caminho, body) => ({ method, url: `${NOTION}${caminho}`, body: body || {} });\nconst criaPagina = (db, propriedades, extra = {}) => pedido('POST', '/pages', { parent: { database_id: db }, properties: propriedades, ...extra });\nconst atualizaPagina = (id, propriedades) => pedido('PATCH', `/pages/${id}`, { properties: propriedades });\n// Pedido que não altera nada: usado para o fluxo não parar quando não há o que gravar\nconst NADA = { method: 'POST', url: `${NOTION}/search`, body: { page_size: 1 }, nada: true };\n\n// ---------- padrões de texto ----------\nconst RE_ROBO = /(digite\\s*\\d|selecione (uma|a) op[cç][aã]o|op[cç][aã]o\\s*\\d|menu (principal|de op)|n[uú]mero do (seu )?protocolo|protocolo( de atendimento)?\\s*[:n]|chamado\\s*(id|n[ºo°]|#)?\\s*\\d|atendimento autom[aá]tico|mensagem autom[aá]tica|resposta autom[aá]tica|sou (o|a) (assistente|atendente) virtual|assistente virtual|fora do (nosso )?hor[aá]rio|nosso hor[aá]rio de atendimento|aceit[ae] (os )?termos|pol[ií]tica de privacidade|lgpd|consentimento (para|de) (tratamento|uso)|em breve (um|uma) (de nossos|atendente)|obrigad[oa] por entrar em contato)/i;\nconst RE_DESCADASTRO = /(n[aã]o (tenho|temos) interesse|sem interesse|n[aã]o (me )?(mande|envie|mandem|enviem)|pare de (mandar|enviar)|parem de|(me )?(remova|remover|retire|retirar|tire|tirar)( meu (n[uú]mero|contato|e-?mail))?( da| dessa| desta)? lista|descadastr|unsubscribe|n[aã]o quero (mais )?receber|bloquear|spam)/i;\nconst RE_LINHA_VERMELHA = /(\\d+[.,]?\\d*\\s*%|r\\$\\s*\\d|garantid|sem risco|a receita aceita|precat[oó]rio|direito credit[oó]rio|em \\d+\\s*(dias|meses|semanas) (voc[eê]|o senhor|a senhora) (recebe|recupera)|at[eé] \\d+\\s*%)/i;\nconst RE_DEVOLUCAO_REMETENTE = /(mailer-daemon|postmaster|mail delivery (subsystem|system))/i;\nconst RE_DEVOLUCAO_ASSUNTO = /(undeliver|delivery status notification|mail delivery failed|returned mail|n[aã]o (foi )?entregue|falha na entrega|delivery failure)/i;\nconst RE_AUSENCIA = /(out of office|fora do escrit[oó]rio|aus[eê]ncia|ausente|f[eé]rias|resposta autom[aá]tica|automatic reply|auto(-| )?reply)/i;\n\nconst FREEMAIL = new Set(['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'yahoo.com.br', 'live.com', 'icloud.com', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'msn.com']);\n\nfunction lerControles(respostas) {\n  const cfg = {};\n  for (const r of respostas) {\n    for (const pg of r.results || []) {\n      const p = pg.properties || {};\n      const chave = L.texto(p['Chave']).trim();\n      if (!chave) continue;\n      cfg[chave] = { ligado: L.marca(p['Ligado']), valor: L.texto(p['Valor']).trim() };\n    }\n  }\n  return cfg;\n}\nconst ligado = (cfg, k, padrao = false) => (cfg[k] ? cfg[k].ligado : padrao);\n// Linhas de valor (esperas, teto, horário) valem pelo campo Valor; a caixa \"Ligado\" só conta para as chaves liga/desliga\nconst valorNum = (cfg, k, padrao) => {\n  const v = cfg[k] && cfg[k].valor !== '' ? Number(String(cfg[k].valor).replace(',', '.')) : NaN;\n  return Number.isFinite(v) ? v : padrao;\n};\nconst valorTxt = (cfg, k, padrao) => (cfg[k] && cfg[k].valor ? cfg[k].valor : padrao);\n\n// Janela de horário \"seg-sex 08:00-19:00\"\nfunction dentroDoHorario(txt, agora = new Date()) {\n  const sp = partesSP(agora);\n  const m = String(txt || 'seg-sex 08:00-19:00').match(/(\\d{1,2}):?(\\d{2})?\\s*-\\s*(\\d{1,2}):?(\\d{2})?/);\n  const ini = m ? Number(m[1]) * 60 + Number(m[2] || 0) : 8 * 60;\n  const fim = m ? Number(m[3]) * 60 + Number(m[4] || 0) : 19 * 60;\n  const agoraMin = sp.hora * 60 + sp.minuto;\n  const soUteis = /seg-sex|dias [uú]teis/i.test(String(txt || 'seg-sex'));\n  if (soUteis && (sp.diaSemana === 0 || sp.diaSemana === 6)) return false;\n  return agoraMin >= ini && agoraMin < fim;\n}\n// ===== fim do comum.js =====\n\n// ===== wf3/normaliza_email.js =====\n// Normaliza cada e-mail (caixa de entrada ou enviados): quem é a outra ponta, texto sem o histórico citado e que tipo de e-mail é.\n// Não grava Filtro: a portaria da central faz isso e liga ao contato, como no WhatsApp.\nconst NOSSO = 'contato@ativeassessoriafinanceira.com.br';\nconst NOSSO_DOMINIO = 'ativeassessoriafinanceira.com.br';\n\nconst enderecos = (campo) => [].concat(campo || []).flatMap((a) => (a && a.value) || []).filter((v) => v && v.address)\n  .map((v) => ({ email: String(v.address).toLowerCase().trim(), nome: String(v.name || '').trim() }));\nconst cabecalho = (h, k) => {\n  const v = h && h[k];\n  if (!v) return '';\n  const s = String(Array.isArray(v) ? v[0] : v);\n  return s.replace(new RegExp(`^${k}\\\\s*:\\\\s*`, 'i'), '').trim();\n};\nconst semHtml = (h) => String(h || '').replace(/<style[\\s\\S]*?<\\/style>/gi, ' ').replace(/<br\\s*\\/?>/gi, '\\n').replace(/<\\/p>/gi, '\\n')\n  .replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/[ \\t]+/g, ' ');\n\n// Corta o histórico citado: tudo a partir de \"Em ... escreveu:\", \"On ... wrote:\", \"De:/From:\" de encaminhamento ou linhas com \">\"\nfunction semCitacao(t) {\n  const linhas = String(t || '').replace(/\\r/g, '').split('\\n');\n  const corte = /^(\\s*>|\\s*Em .{3,200}escreveu:\\s*$|\\s*On .{3,200}wrote:\\s*$|\\s*-{2,}\\s*(Original Message|Mensagem original|Forwarded message|Mensagem encaminhada)|\\s*_{8,}\\s*$|\\s*(De|From)\\s*:\\s.+@|\\s*Enviado do meu |\\s*Sent from my )/i;\n  const out = [];\n  for (let i = 0; i < linhas.length; i += 1) {\n    const l = linhas[i];\n    // \"Em qua., 30 de set. de 2026 às 10:00, Fulano <x@y>\" pode quebrar em duas linhas antes do \"escreveu:\"\n    if (corte.test(l) || (/^\\s*Em .{3,200}$/.test(l) && /escreveu:\\s*$/.test(linhas[i + 1] || ''))) break;\n    out.push(l);\n  }\n  return out.join('\\n').replace(/\\n{3,}/g, '\\n\\n').trim();\n}\n\nconst out = [];\nfor (const it of $input.all()) {\n  const m = it.json || {};\n  const h = m.headers || {};\n  const de = enderecos(m.from)[0] || { email: '', nome: '' };\n  const para = [...enderecos(m.to), ...enderecos(m.cc)];\n  const enviado = de.email === NOSSO || de.email.endsWith(`@${NOSSO_DOMINIO}`);\n  const outro = enviado ? para.find((x) => !x.email.endsWith(`@${NOSSO_DOMINIO}`)) : de;\n  const assunto = String(m.subject || '').trim();\n  let texto = semCitacao(m.text || semHtml(m.html));\n  const bruto = String(m.text || semHtml(m.html) || '');\n\n  let tipo = 'e-mail';\n  let contraparte = outro ? outro.email : '';\n  let nome = outro ? outro.nome : '';\n  if (!enviado) {\n    const autoSub = cabecalho(h, 'auto-submitted').toLowerCase();\n    const precedencia = cabecalho(h, 'precedence').toLowerCase();\n    if (RE_DEVOLUCAO_REMETENTE.test(de.email) || RE_DEVOLUCAO_ASSUNTO.test(assunto)) {\n      tipo = 'e-mail devolvido';\n      // A devolução vem do servidor: a outra ponta é o endereço que falhou\n      const alvo = (bruto.match(/final-recipient:\\s*rfc822;\\s*([^\\s<>;]+@[^\\s<>;]+)/i) || [])[1]\n        || (bruto.match(/[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+/g) || []).find((e) => !RE_DEVOLUCAO_REMETENTE.test(e) && !e.toLowerCase().endsWith(`@${NOSSO_DOMINIO}`));\n      contraparte = alvo ? String(alvo).toLowerCase() : '';\n      nome = '';\n      texto = `Devolvido pelo servidor: ${assunto}`.slice(0, 300);\n    } else if ((autoSub && autoSub !== 'no') || cabecalho(h, 'x-autoreply') || cabecalho(h, 'x-autorespond') || /auto_reply|auto-reply|bulk|list|junk/.test(precedencia) || cabecalho(h, 'list-unsubscribe') || RE_AUSENCIA.test(assunto)) {\n      tipo = 'e-mail automático';\n    } else if (RE_DESCADASTRO.test(`${assunto}\\n${texto.slice(0, 400)}`)) {\n      tipo = 'e-mail descadastro';\n    }\n  }\n  if (!contraparte || contraparte === NOSSO) continue; // e-mail para si mesmo ou sem destinatário externo\n\n  const quando = m.date ? new Date(m.date) : new Date();\n  const messageId = cabecalho(h, 'message-id') || String(m.messageId || '');\n  const idBusca = messageId || `sem-id-${quando.getTime()}-${contraparte}`;\n  out.push({ json: {\n    messageId: idBusca, enviado, contraparte, nome, assunto, texto: texto.slice(0, 6000), tipo,\n    data: partesSP(quando).data,\n    buscaDuplicata: pedido('POST', `/databases/${DB.recebidas}/query`, { filter: { property: 'messageId', rich_text: { equals: idBusca.slice(0, 1900) } }, page_size: 1 }),\n  } });\n}\nreturn out;\n"
+      }
+    },
+    {
+      "id": "67e7ef1e-a560-4f90-ab57-f277e17cbb00",
+      "position": [
+        480,
+        260
+      ],
+      "name": "Busca duplicata",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "={{ $json.buscaDuplicata.method }}",
+        "url": "={{ $json.buscaDuplicata.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 3,
+              "batchInterval": 1100
+            }
+          },
+          "timeout": 30000
+        },
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.buscaDuplicata.body || {}) }}"
+      },
+      "credentials": {
+        "notionApi": {
+          "id": "ativeCredNotion0",
+          "name": "Notion (n8n Ative)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "cdd78b17-7c52-4e76-a676-f5f0e80bb997",
+      "position": [
+        720,
+        260
+      ],
+      "name": "Monta registro",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// ===== comum.js — trecho repetido no início de cada nó de código da central =====\n// Não edite dentro do n8n: edite aqui e rode `node build.js` para gerar os fluxos.\n\nconst NOTION = 'https://api.notion.com/v1';\nconst ZAPI = 'https://api.z-api.io';\n\n// Bases do Notion (API 2022-06-28 usa o id da base, não o do data source)\nconst DB = {\n  recebidas: 'a62d96495d3d486397f27b5d8b6dfc81',\n  crm: '4e84cf3d628583f3b09481990f3dd072',\n  tarefas: '73e4cf3d628582f1bbca015a4dda5a08',\n  prospeccao: 'a95d43b45b0f41d7882a749adb2d01d9',\n  fila: '6b1fc7f7c6034371b2536a116c037b0b',\n  controles: 'b74182348b7a46ddb2182028c44dbc75',\n};\n\n// Números e LIDs do próprio Jonas: conversa entre eles nunca vira contato nem resposta\nconst PROPRIOS_8 = new Set(['96202573', '74007161']); // 48 9620-2573 (pessoal) e 48 97400-7161 (Business)\nconst PROPRIOS_LID = new Set(['83194221199558', '111729413476602']);\n\nconst soDigitos = (s) => String(s || '').replace(/\\D/g, '');\nconst ultimos8 = (s) => soDigitos(s).slice(-8);\n\n// 554899230407 -> +55 48 9923-0407 ; 5548999230407 -> +55 48 99923-0407\nfunction formataTel(d) {\n  const s = soDigitos(d);\n  if (s.length === 12 || s.length === 13) {\n    const loc = s.slice(4);\n    return `+${s.slice(0, 2)} ${s.slice(2, 4)} ${loc.slice(0, loc.length - 4)}-${loc.slice(-4)}`;\n  }\n  return s ? `+${s}` : '';\n}\n\n// Um campo de telefone ou LID pode ter vários valores separados por ; , / | ou quebra de linha\nconst separaValores = (s) => String(s || '').split(/[;,/|\\n]+/).map((x) => x.trim()).filter(Boolean);\n\n// ---------- datas no fuso de São Paulo ----------\nfunction partesSP(d = new Date()) {\n  const f = new Intl.DateTimeFormat('en-CA', {\n    timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit',\n    hour: '2-digit', minute: '2-digit', hour12: false, weekday: 'short',\n  });\n  const p = Object.fromEntries(f.formatToParts(d).map((x) => [x.type, x.value]));\n  const dias = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };\n  return {\n    data: `${p.year}-${p.month}-${p.day}`,\n    hora: Number(p.hour === '24' ? '0' : p.hour),\n    minuto: Number(p.minute),\n    diaSemana: dias[p.weekday],\n    hhmm: `${p.hour === '24' ? '00' : p.hour}:${p.minute}`,\n    ddmm: `${p.day}/${p.month}`,\n  };\n}\nconst isoMenosMinutos = (min, base = new Date()) => new Date(base.getTime() - min * 60000).toISOString();\n\nfunction somaDias(dataISO, n) {\n  const d = new Date(`${dataISO}T12:00:00Z`);\n  d.setUTCDate(d.getUTCDate() + n);\n  return d.toISOString().slice(0, 10);\n}\n\n// Converte o prazo dito na conversa em data (AAAA-MM-DD). A IA devolve o texto; a data é sempre calculada aqui.\nfunction calculaPrazo(texto, base = new Date()) {\n  if (!texto) return null;\n  const t = String(texto).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();\n  const hoje = partesSP(base);\n  if (/^hoje\\b/.test(t)) return hoje.data;\n  if (/depois de amanha/.test(t)) return somaDias(hoje.data, 2);\n  if (/amanha/.test(t)) return somaDias(hoje.data, 1);\n  let m = t.match(/em (\\d{1,2}) dias?/);\n  if (m) return somaDias(hoje.data, Number(m[1]));\n  m = t.match(/(\\d{1,2})\\/(\\d{1,2})(?:\\/(\\d{2,4}))?/);\n  if (m) {\n    let ano = m[3] ? Number(m[3].length === 2 ? `20${m[3]}` : m[3]) : Number(hoje.data.slice(0, 4));\n    const mes = String(m[2]).padStart(2, '0');\n    const dia = String(m[1]).padStart(2, '0');\n    let iso = `${ano}-${mes}-${dia}`;\n    if (!m[3] && iso < hoje.data) iso = `${ano + 1}-${mes}-${dia}`;\n    return /^\\d{4}-\\d{2}-\\d{2}$/.test(iso) ? iso : null;\n  }\n  if (/semana que vem|proxima semana/.test(t) && !/(segunda|terca|quarta|quinta|sexta|sabado|domingo)/.test(t)) {\n    const ate = (8 - hoje.diaSemana) % 7 || 7; // próxima segunda\n    return somaDias(hoje.data, ate);\n  }\n  if (/fim do mes|final do mes/.test(t)) {\n    const [a, mm] = hoje.data.split('-').map(Number);\n    const ultimo = new Date(Date.UTC(a, mm, 0)).getUTCDate();\n    return `${a}-${String(mm).padStart(2, '0')}-${String(ultimo).padStart(2, '0')}`;\n  }\n  const nomes = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];\n  for (let i = 0; i < 7; i += 1) {\n    if (t.includes(nomes[i])) {\n      let ate = (i - hoje.diaSemana + 7) % 7;\n      if (ate === 0) ate = 7; // \"sexta\" dita numa sexta = a próxima sexta\n      return somaDias(hoje.data, ate);\n    }\n  }\n  return null;\n}\n\n// ---------- montagem de propriedades do Notion ----------\nfunction pedacos(texto, tam = 1900) {\n  const s = String(texto || '');\n  const out = [];\n  for (let i = 0; i < s.length && out.length < 50; i += tam) out.push({ text: { content: s.slice(i, i + tam) } });\n  return out.length ? out : [];\n}\nconst P = {\n  titulo: (t) => ({ title: [{ text: { content: String(t || '').slice(0, 1900) } }] }),\n  texto: (t) => ({ rich_text: pedacos(t) }),\n  opcao: (n) => ({ select: n ? { name: n } : null }),\n  status: (n) => ({ status: { name: n } }),\n  relacao: (ids) => ({ relation: (ids || []).filter(Boolean).map((id) => ({ id })) }),\n  data: (iso) => ({ date: iso ? { start: iso } : null }),\n  marca: (b) => ({ checkbox: !!b }),\n  telefone: (t) => ({ phone_number: t || null }),\n  email: (e) => ({ email: e || null }),\n  numero: (n) => ({ number: n }),\n};\n\n// ---------- leitura de propriedades do Notion ----------\nconst L = {\n  titulo: (p) => (p && p.title ? p.title.map((x) => x.plain_text).join('') : ''),\n  texto: (p) => (p && p.rich_text ? p.rich_text.map((x) => x.plain_text).join('') : ''),\n  opcao: (p) => (p && p.select ? p.select.name : ''),\n  status: (p) => (p && p.status ? p.status.name : ''),\n  relacao: (p) => (p && p.relation ? p.relation.map((x) => x.id) : []),\n  data: (p) => (p && p.date ? p.date.start : ''),\n  marca: (p) => !!(p && p.checkbox),\n  telefone: (p) => (p && p.phone_number) || '',\n  email: (p) => (p && p.email) || '',\n  numero: (p) => (p && typeof p.number === 'number' ? p.number : null),\n  formulaBool: (p) => !!(p && p.formula && p.formula.boolean),\n  criadoEm: (pagina) => pagina.created_time,\n};\n\n// ---------- pedidos à API do Notion (executados pelo nó HTTP genérico) ----------\nconst pedido = (method, caminho, body) => ({ method, url: `${NOTION}${caminho}`, body: body || {} });\nconst criaPagina = (db, propriedades, extra = {}) => pedido('POST', '/pages', { parent: { database_id: db }, properties: propriedades, ...extra });\nconst atualizaPagina = (id, propriedades) => pedido('PATCH', `/pages/${id}`, { properties: propriedades });\n// Pedido que não altera nada: usado para o fluxo não parar quando não há o que gravar\nconst NADA = { method: 'POST', url: `${NOTION}/search`, body: { page_size: 1 }, nada: true };\n\n// ---------- padrões de texto ----------\nconst RE_ROBO = /(digite\\s*\\d|selecione (uma|a) op[cç][aã]o|op[cç][aã]o\\s*\\d|menu (principal|de op)|n[uú]mero do (seu )?protocolo|protocolo( de atendimento)?\\s*[:n]|chamado\\s*(id|n[ºo°]|#)?\\s*\\d|atendimento autom[aá]tico|mensagem autom[aá]tica|resposta autom[aá]tica|sou (o|a) (assistente|atendente) virtual|assistente virtual|fora do (nosso )?hor[aá]rio|nosso hor[aá]rio de atendimento|aceit[ae] (os )?termos|pol[ií]tica de privacidade|lgpd|consentimento (para|de) (tratamento|uso)|em breve (um|uma) (de nossos|atendente)|obrigad[oa] por entrar em contato)/i;\nconst RE_DESCADASTRO = /(n[aã]o (tenho|temos) interesse|sem interesse|n[aã]o (me )?(mande|envie|mandem|enviem)|pare de (mandar|enviar)|parem de|(me )?(remova|remover|retire|retirar|tire|tirar)( meu (n[uú]mero|contato|e-?mail))?( da| dessa| desta)? lista|descadastr|unsubscribe|n[aã]o quero (mais )?receber|bloquear|spam)/i;\nconst RE_LINHA_VERMELHA = /(\\d+[.,]?\\d*\\s*%|r\\$\\s*\\d|garantid|sem risco|a receita aceita|precat[oó]rio|direito credit[oó]rio|em \\d+\\s*(dias|meses|semanas) (voc[eê]|o senhor|a senhora) (recebe|recupera)|at[eé] \\d+\\s*%)/i;\nconst RE_DEVOLUCAO_REMETENTE = /(mailer-daemon|postmaster|mail delivery (subsystem|system))/i;\nconst RE_DEVOLUCAO_ASSUNTO = /(undeliver|delivery status notification|mail delivery failed|returned mail|n[aã]o (foi )?entregue|falha na entrega|delivery failure)/i;\nconst RE_AUSENCIA = /(out of office|fora do escrit[oó]rio|aus[eê]ncia|ausente|f[eé]rias|resposta autom[aá]tica|automatic reply|auto(-| )?reply)/i;\n\nconst FREEMAIL = new Set(['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'yahoo.com.br', 'live.com', 'icloud.com', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'msn.com']);\n\nfunction lerControles(respostas) {\n  const cfg = {};\n  for (const r of respostas) {\n    for (const pg of r.results || []) {\n      const p = pg.properties || {};\n      const chave = L.texto(p['Chave']).trim();\n      if (!chave) continue;\n      cfg[chave] = { ligado: L.marca(p['Ligado']), valor: L.texto(p['Valor']).trim() };\n    }\n  }\n  return cfg;\n}\nconst ligado = (cfg, k, padrao = false) => (cfg[k] ? cfg[k].ligado : padrao);\n// Linhas de valor (esperas, teto, horário) valem pelo campo Valor; a caixa \"Ligado\" só conta para as chaves liga/desliga\nconst valorNum = (cfg, k, padrao) => {\n  const v = cfg[k] && cfg[k].valor !== '' ? Number(String(cfg[k].valor).replace(',', '.')) : NaN;\n  return Number.isFinite(v) ? v : padrao;\n};\nconst valorTxt = (cfg, k, padrao) => (cfg[k] && cfg[k].valor ? cfg[k].valor : padrao);\n\n// Janela de horário \"seg-sex 08:00-19:00\"\nfunction dentroDoHorario(txt, agora = new Date()) {\n  const sp = partesSP(agora);\n  const m = String(txt || 'seg-sex 08:00-19:00').match(/(\\d{1,2}):?(\\d{2})?\\s*-\\s*(\\d{1,2}):?(\\d{2})?/);\n  const ini = m ? Number(m[1]) * 60 + Number(m[2] || 0) : 8 * 60;\n  const fim = m ? Number(m[3]) * 60 + Number(m[4] || 0) : 19 * 60;\n  const agoraMin = sp.hora * 60 + sp.minuto;\n  const soUteis = /seg-sex|dias [uú]teis/i.test(String(txt || 'seg-sex'));\n  if (soUteis && (sp.diaSemana === 0 || sp.diaSemana === 6)) return false;\n  return agoraMin >= ini && agoraMin < fim;\n}\n// ===== fim do comum.js =====\n\n// ===== wf3/monta_registro_email.js =====\n// Grava na base Recebidas o que ainda não estava lá (a mesma mensagem pode chegar pela caixa de entrada e pelos enviados)\nconst emails = $('Normaliza e-mail').all().map((i) => i.json);\nconst buscas = $input.all().map((i) => i.json);\nconst out = [];\nconst nesteLote = new Set();\nemails.forEach((e, i) => {\n  const b = buscas[i] || {};\n  if ((b.results || []).length || nesteLote.has(e.messageId)) return; // já registrado\n  nesteLote.add(e.messageId);\n  if (b.error) return; // sem conseguir conferir, não grava (evita duplicata); o próximo e-mail do mesmo contato traz o contexto\n  const titulo = `${e.enviado ? '→ ' : ''}${e.assunto || e.texto.slice(0, 80) || '(sem assunto)'}`;\n  const props = {\n    'Mensagem': P.titulo(titulo.slice(0, 200)),\n    'Conteudo': P.texto(e.texto),\n    'E-mail': P.email(e.contraparte),\n    'Assunto': P.texto(e.assunto.slice(0, 500)),\n    'Canal': P.opcao('E-mail'),\n    'Tipo': P.opcao(e.tipo),\n    'Situacao': P.opcao(e.enviado ? 'enviada por mim' : 'aguardando decisao'),\n    'Recebida em': P.data(e.data),\n    'messageId': P.texto(e.messageId),\n  };\n  if (e.nome) props['Nome no WhatsApp'] = P.texto(e.nome);\n  out.push({ json: criaPagina(DB.recebidas, props) });\n});\nreturn out;\n"
+      }
+    },
+    {
+      "id": "46392fbe-9148-445e-a42b-6a2517b9b3d8",
+      "position": [
+        960,
+        260
+      ],
+      "name": "Grava no Notion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "={{ $json.method }}",
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 3,
+              "batchInterval": 1100
+            }
+          },
+          "timeout": 30000
+        },
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body || {}) }}"
+      },
+      "credentials": {
+        "notionApi": {
+          "id": "ativeCredNotion0",
+          "name": "Notion (n8n Ative)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "E-mail na caixa de entrada": {
+      "main": [
+        [
+          {
+            "node": "Normaliza e-mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "E-mail nos enviados": {
+      "main": [
+        [
+          {
+            "node": "Normaliza e-mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normaliza e-mail": {
+      "main": [
+        [
+          {
+            "node": "Busca duplicata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca duplicata": {
+      "main": [
+        [
+          {
+            "node": "Monta registro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monta registro": {
+      "main": [
+        [
+          {
+            "node": "Grava no Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo",
+    "errorWorkflow": "QtrobngLSAoMtnjX",
+    "callerPolicy": "workflowsFromSameOwner"
+  }
+}
