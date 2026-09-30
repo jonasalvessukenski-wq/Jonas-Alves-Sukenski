@@ -36,7 +36,16 @@ Travas:
   `GAB-WPP 0` grava a nota "FALHA em...".
 - Nada é enviado. Respostas continuam sendo rascunho: nada sai sem "pode enviar".
 
-### Passos para ligar (Jonas, no n8n)
+### Caminho automático (preferido)
+
+Com `N8N_API_KEY` e `IMAP_CONTATO_SENHA` nas variáveis do ambiente do Claude Code:
+
+    python3 automacoes/n8n/n8n_api.py ligar-email
+
+Cria a credencial IMAP, sobe o fluxo com a credencial do Notion do GAB-WPP 1, ativa e
+descobre sozinho o nome da pasta de enviados. A senha só passa do ambiente para o n8n.
+
+### Passos para ligar à mão (Jonas, no n8n)
 
 1. **Credentials → Add credential → IMAP**. Nome: `IMAP contato@ativeassessoriafinanceira.com.br`.
    User `contato@ativeassessoriafinanceira.com.br`, Password (digitada por você), Host

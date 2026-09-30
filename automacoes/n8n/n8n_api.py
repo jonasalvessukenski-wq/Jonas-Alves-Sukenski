@@ -10,11 +10,17 @@ Cópias baixadas vão para backups/, que está no .gitignore: workflows carregam
   python3 n8n_api.py atualizar <id> <arquivo.json>
   python3 n8n_api.py reativar <id>
   python3 n8n_api.py execucoes <id> [quantas]
+  python3 n8n_api.py ligar-email
+
+ligar-email faz tudo do GAB-MAIL 1 de uma vez: cria a credencial IMAP com a senha de
+IMAP_CONTATO_SENHA (variável de ambiente), sobe o fluxo com as credenciais certas e
+ativa, descobrindo o nome da pasta de enviados por tentativa.
 """
 import datetime
 import json
 import os
 import pathlib
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -27,6 +33,13 @@ CAMPOS_PUT = ("name", "nodes", "connections", "settings", "staticData")
 
 
 def api(metodo, caminho, corpo=None):
+    codigo, resposta = api_bruto(metodo, caminho, corpo)
+    if codigo >= 400:
+        sys.exit(f"{metodo} {caminho} -> {codigo}: {json.dumps(resposta, ensure_ascii=False)[:500]}")
+    return resposta
+
+
+def api_bruto(metodo, caminho, corpo=None):
     chave = os.environ.get("N8N_API_KEY")
     if not chave:
         sys.exit("Falta N8N_API_KEY no ambiente.")
@@ -38,9 +51,13 @@ def api(metodo, caminho, corpo=None):
     try:
         with urllib.request.urlopen(req, timeout=60) as r:
             txt = r.read().decode()
-            return json.loads(txt) if txt else {}
+            return r.status, (json.loads(txt) if txt else {})
     except urllib.error.HTTPError as e:
-        sys.exit(f"{metodo} {caminho} -> {e.code}: {e.read().decode()[:500]}")
+        txt = e.read().decode()
+        try:
+            return e.code, json.loads(txt)
+        except ValueError:
+            return e.code, {"message": txt[:500]}
 
 
 def baixar(wid):
@@ -73,14 +90,64 @@ def credencial_notion():
 def subir_novo(arquivo, imap_id=None):
     w = json.loads(pathlib.Path(arquivo).read_text(encoding="utf-8"))
     notion = credencial_notion()
+    if not notion:
+        sys.exit("Não achei a credencial do Notion no GAB-WPP 1.")
     for n in w["nodes"]:
         creds = n.get("credentials") or {}
-        if "notionApi" in creds and notion:
+        if "notionApi" in creds:
             creds["notionApi"] = notion
         if "imap" in creds and imap_id:
             creds["imap"] = {"id": imap_id, "name": creds["imap"]["name"]}
     novo = api("POST", "/workflows", {k: w[k] for k in ("name", "nodes", "connections", "settings")})
-    print(f"criado: {novo['name']} id={novo['id']} (inativo; ativar depois de conferir)")
+    print(f"criado: {novo['name']} id={novo['id']} (inativo)")
+    return novo
+
+
+PASTAS_ENVIADOS = ["INBOX.Sent", "Sent", "INBOX.Enviados", "Enviados", "Sent Items", "Sent Messages"]
+
+
+def ligar_email():
+    senha = os.environ.get("IMAP_CONTATO_SENHA")
+    if not senha:
+        sys.exit("Falta IMAP_CONTATO_SENHA no ambiente.")
+    import montar_gab_mail as m
+
+    cred = api("POST", "/credentials", {
+        "name": m.IMAP_CRED["imap"]["name"],
+        "type": "imap",
+        "data": {
+            "user": "contato@ativeassessoriafinanceira.com.br",
+            "password": senha,
+            "host": "imap.hostinger.com",
+            "port": 993,
+            "secure": True,
+            "allowUnauthorizedCerts": False,
+        },
+    })
+    print(f"credencial IMAP criada: id={cred['id']}")
+
+    arquivo = AQUI / "GAB-MAIL-1-captura-email.json"
+    arquivo.write_text(json.dumps(m.workflow, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    novo = subir_novo(arquivo, cred["id"])
+    wid = novo["id"]
+
+    # O nome da pasta de enviados na Hostinger não é conhecido: tenta até o gatilho
+    # conseguir abrir a pasta. Erro de senha ou de conexão para na primeira tentativa.
+    for pasta in PASTAS_ENVIADOS:
+        w = api("GET", f"/workflows/{wid}")
+        for n in w["nodes"]:
+            if n["name"] == "IMAP - Enviados":
+                n["parameters"]["mailbox"] = pasta
+        api("PUT", f"/workflows/{wid}", {k: w[k] for k in CAMPOS_PUT if k in w})
+        codigo, r = api_bruto("POST", f"/workflows/{wid}/activate")
+        if codigo < 400:
+            print(f"ATIVO. Pasta de enviados: {pasta}. Workflow id={wid}")
+            return
+        msg = json.dumps(r, ensure_ascii=False)
+        print(f"  {pasta}: não abriu ({msg[:200]})")
+        if not re.search(r"mailbox|folder|nonexistent|not exist|does not exist|NONEXISTENT", msg, re.I):
+            sys.exit("Parou: o erro não é de pasta (senha, conexão?). Ver mensagem acima.")
+    sys.exit("Nenhum nome de pasta de enviados funcionou; ver no webmail o nome da pasta.")
 
 
 def atualizar(wid, arquivo):
@@ -116,6 +183,8 @@ if __name__ == "__main__":
         atualizar(a[1], a[2])
     elif cmd == "reativar":
         reativar(a[1])
+    elif cmd == "ligar-email":
+        ligar_email()
     elif cmd == "execucoes":
         execucoes(a[1], int(a[2]) if len(a) > 2 else 10)
     else:
