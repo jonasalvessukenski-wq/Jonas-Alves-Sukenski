@@ -1,0 +1,638 @@
+{
+  "name": "GAB-MAIL 1 - Captura e-mail contato@ (Notion)",
+  "nodes": [
+    {
+      "id": "9d9689ec-a20a-55a4-8143-49339ffbe3f6",
+      "name": "IMAP - Caixa de entrada",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "mailbox": "INBOX",
+        "postProcessAction": "nothing",
+        "format": "resolved",
+        "downloadAttachments": false,
+        "options": {
+          "customEmailConfig": "[[\"SINCE\", \"2026-09-30\"]]",
+          "forceReconnect": 60
+        }
+      },
+      "credentials": {
+        "imap": {
+          "name": "IMAP contato@ativeassessoriafinanceira.com.br"
+        }
+      }
+    },
+    {
+      "id": "f6cbfee7-6509-561b-bb45-510a096f9375",
+      "name": "IMAP - Enviados",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        220
+      ],
+      "parameters": {
+        "mailbox": "INBOX.Sent",
+        "postProcessAction": "nothing",
+        "format": "resolved",
+        "downloadAttachments": false,
+        "options": {
+          "customEmailConfig": "[[\"SINCE\", \"2026-09-30\"]]",
+          "forceReconnect": 60
+        }
+      },
+      "credentials": {
+        "imap": {
+          "name": "IMAP contato@ativeassessoriafinanceira.com.br"
+        }
+      }
+    },
+    {
+      "id": "4384f9cd-5ef7-5874-9217-1a55457aae08",
+      "name": "Pasta: entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return $input.all().map((i) => ({ json: { ...i.json, pasta: 'entrada' }, binary: i.binary }));"
+      }
+    },
+    {
+      "id": "4145cfa4-b3c6-5b00-853a-65740e892367",
+      "name": "Pasta: enviados",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        220
+      ],
+      "parameters": {
+        "jsCode": "return $input.all().map((i) => ({ json: { ...i.json, pasta: 'enviados' }, binary: i.binary }));"
+      }
+    },
+    {
+      "id": "32332edc-675c-562b-ad42-4113a1190e5f",
+      "name": "Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        110
+      ],
+      "parameters": {
+        "jsCode": "// Config — constantes do fluxo GAB-MAIL 1. Nenhuma senha aqui: a senha do e-mail\n// mora só na credencial IMAP do n8n.\nconst cfg = {\n  caixa: 'contato@ativeassessoriafinanceira.com.br',\n  fuso: 'America/Sao_Paulo',\n  // Bases do Notion (API 2022-06-28 usa o id da base, não o do data source)\n  recebidasDbId: 'a62d9649-5d3d-4863-97f2-7b5d8b6dfc81',\n  crmDbId: '4e84cf3d-6285-83f3-b094-81990f3dd072',\n  // Domínios de e-mail pessoal: o cadastro novo leva \"(e-mail)\" em vez do domínio\n  dominiosGenericos: [\n    'gmail.com', 'hotmail.com', 'outlook.com', 'live.com', 'yahoo.com',\n    'yahoo.com.br', 'icloud.com', 'uol.com.br', 'bol.com.br', 'terra.com.br',\n  ],\n  maxConteudo: 1900, // limite do Notion é 2000 por bloco de texto\n};\n\nreturn $input.all().map((item) => ({ json: { ...item.json, cfg }, binary: item.binary }));\n"
+      }
+    },
+    {
+      "id": "893fc9a7-6190-52c3-91d7-ed57476b4423",
+      "name": "Normaliza e-mail",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        110
+      ],
+      "parameters": {
+        "jsCode": "// Normaliza e-mail — lê a saída do gatilho IMAP (formato \"resolved\", do mailparser;\n// o formato \"simple\" também é aceito) e devolve campos únicos para o resto do fluxo.\n// Descarta só o que duplicaria registro. E-mail automático não é descartado: vira\n// linha \"ignorada\", sem criar contato.\n\nconst limpa = (s) => String(s ?? '').replace(/\\s+/g, ' ').trim();\n\nfunction enderecos(v) {\n  if (!v) return [];\n  if (Array.isArray(v)) return v.flatMap(enderecos);\n  if (Array.isArray(v.value)) {\n    return v.value\n      .filter((a) => a && a.address)\n      .map((a) => ({ address: a.address.trim(), name: limpa(a.name) }));\n  }\n  if (typeof v === 'string') {\n    // \"Fulano <fulano@x.com>, outro@y.com\"\n    return v.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/).map((parte) => {\n      const m = parte.match(/^\\s*\"?([^\"<]*?)\"?\\s*<([^>]+)>\\s*$/);\n      if (m) return { address: m[2].trim(), name: limpa(m[1]) };\n      return { address: parte.trim(), name: '' };\n    }).filter((a) => a.address.includes('@'));\n  }\n  return [];\n}\n\nfunction cabecalho(headers, nome) {\n  if (!headers) return '';\n  const v = headers[nome] ?? headers[nome.toLowerCase()];\n  if (v == null) return '';\n  // O n8n guarda a linha inteira (\"List-Id: <...>\"); tira o nome do cabeçalho\n  return String(v).replace(new RegExp('^' + nome + ':\\\\s*', 'i'), '');\n}\n\nfunction htmlParaTexto(html) {\n  return String(html || '')\n    .replace(/<(script|style)[\\s\\S]*?<\\/\\1>/gi, ' ')\n    .replace(/<br\\s*\\/?>/gi, '\\n')\n    .replace(/<\\/(p|div|tr|li|h\\d)>/gi, '\\n')\n    .replace(/<[^>]+>/g, ' ')\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&quot;/g, '\"')\n    .replace(/&#39;/g, \"'\");\n}\n\n// Fica só com a parte nova: corta o histórico citado da resposta\nfunction parteNova(texto) {\n  const linhas = String(texto || '').replace(/\\r/g, '').split('\\n');\n  const saida = [];\n  for (const linha of linhas) {\n    const l = linha.trim();\n    if (/^(em|on)\\s.+(escreveu|wrote)\\s*:$/i.test(l)) break;\n    if (/^-{2,}\\s*(mensagem original|original message|forwarded message|mensagem encaminhada)/i.test(l)) break;\n    if (/^(de|from)\\s*:\\s.+@/i.test(l) && saida.length > 0) break;\n    if (l.startsWith('>')) continue;\n    saida.push(linha);\n  }\n  return saida.join('\\n').replace(/\\n{3,}/g, '\\n\\n').trim();\n}\n\nfunction titulo80(s) {\n  const t = limpa(s);\n  if (t.length <= 80) return t;\n  const corte = t.slice(0, 80);\n  const espaco = corte.lastIndexOf(' ');\n  return (espaco > 40 ? corte.slice(0, espaco) : corte) + '…';\n}\n\nfunction dataSP(d, fuso) {\n  // YYYY-MM-DD no fuso de São Paulo (perto da meia-noite o UTC já virou o dia)\n  return new Intl.DateTimeFormat('en-CA', { timeZone: fuso, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);\n}\n\nconst saida = [];\nfor (const item of $input.all()) {\n  const j = item.json;\n  const cfg = j.cfg;\n  const caixa = cfg.caixa.toLowerCase();\n  const pasta = j.pasta === 'enviados' ? 'enviados' : 'entrada';\n  const headers = j.headers || {};\n\n  const de = enderecos(j.from)[0] || { address: '', name: '' };\n  const para = enderecos(j.to);\n  const cc = enderecos(j.cc);\n  const externos = [...para, ...cc].filter((a) => a.address.toLowerCase() !== caixa);\n\n  const contraparte = pasta === 'enviados' ? externos[0] : de;\n\n  // Descartes: só o que viraria registro duplicado ou sem ninguém do outro lado\n  if (pasta === 'entrada' && de.address.toLowerCase() === caixa) continue; // cópia do que já entra por Enviados\n  if (!contraparte || !contraparte.address) continue;\n\n  const email = contraparte.address.toLowerCase();\n  const local = email.split('@')[0];\n  const dominio = email.split('@')[1] || '';\n\n  const automatico =\n    pasta === 'entrada' && (\n      /^(no-?reply|nao-?responda|naoresponda|mailer-daemon|postmaster|bounces?|notifica(cao|coes)?|notifications?|newsletter)([.+_-]|$)/i.test(local) ||\n      /^(auto-generated|auto-replied|auto-notified)/i.test(cabecalho(headers, 'auto-submitted')) ||\n      /^(bulk|list|junk)/i.test(cabecalho(headers, 'precedence')) ||\n      !!cabecalho(headers, 'list-unsubscribe') ||\n      !!cabecalho(headers, 'list-id')\n    );\n\n  const assunto = limpa(j.subject) || '(sem assunto)';\n  const bruto = j.text || j.textPlain || htmlParaTexto(j.html || j.textHtml);\n  const texto = parteNova(bruto) || limpa(bruto);\n\n  const quando = j.date ? new Date(j.date) : new Date();\n  const data = isNaN(quando) ? new Date() : quando;\n\n  const anexos = Object.values(item.binary || {}).map((b) => b.fileName).filter(Boolean)\n    .concat((j.attachments || []).map((a) => a.filename).filter(Boolean));\n\n  const ehResposta = pasta === 'entrada' && (!!j.inReplyTo || /^\\s*(re|res|resp)\\s*:/i.test(assunto));\n\n  const messageId = limpa(j.messageId || cabecalho(headers, 'message-id')) ||\n    `sem-id:${pasta}:${data.toISOString()}:${email}:${assunto.slice(0, 40)}`;\n\n  const nome = contraparte.name || local;\n  const generico = cfg.dominiosGenericos.includes(dominio);\n\n  saida.push({\n    json: {\n      cfg,\n      pasta,\n      canal: 'E-mail',\n      email,\n      emailOriginal: contraparte.address,\n      nome,\n      nomeCadastro: `${nome} (${generico ? 'e-mail' : dominio})`,\n      assunto,\n      texto,\n      titulo: (pasta === 'enviados' ? '→ ' : ehResposta ? '↩ ' : '') + titulo80(assunto),\n      de: de.address,\n      para: para.map((a) => a.address).join(', '),\n      cc: cc.map((a) => a.address).join(', '),\n      outrosDestinatarios: externos.slice(1).map((a) => a.address),\n      anexos,\n      ehResposta,\n      automatico,\n      messageId,\n      recebidaEm: data.toISOString(),\n      dataSP: dataSP(data, cfg.fuso),\n    },\n  });\n}\n\nreturn saida;\n"
+      }
+    },
+    {
+      "id": "e1324929-2d52-5ca0-8d80-a01b6eacd910",
+      "name": "Ja processei esse?",
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        880,
+        110
+      ],
+      "parameters": {
+        "operation": "removeItemsSeenInPreviousExecutions",
+        "dedupeValue": "={{ $json.messageId }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "673dd05d-0070-5637-9259-000da522a73c",
+      "name": "Um por vez",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1100,
+        110
+      ],
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      }
+    },
+    {
+      "id": "b826b1bd-7ffb-5df1-a65f-5dcb8c86e4ff",
+      "name": "Busca contato (Notion)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        200
+      ],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.notion.com/v1/databases/{{ $json.cfg.crmDbId }}/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ page_size: 5, filter: { or: [{ property: 'Email', email: { equals: $json.email } }, { property: 'Email', email: { equals: $json.emailOriginal } } ] } }) }}",
+        "options": {}
+      },
+      "credentials": {
+        "notionApi": {
+          "name": "n8n Ative"
+        }
+      }
+    },
+    {
+      "id": "9baab6cc-0cce-5dd8-8a07-9c3bbbe23cba",
+      "name": "Resolve contato",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        200
+      ],
+      "parameters": {
+        "jsCode": "// Resolve contato — decide a quem o e-mail pertence, pelo campo Email do CRM.\n// Busca que falhou NUNCA cria contato: sem resposta do Notion não dá para saber se a\n// pessoa já existe, e cadastro duplicado é pior que linha sem contato.\nconst e = $('Um por vez').first(1).json; // saída 1 = loop\nconst r = $input.first().json;\n\nconst buscaOk = Array.isArray(r.results);\nconst achados = buscaOk ? r.results : [];\n\nlet contatoId = achados[0]?.id || '';\nlet comoIdentificou = '';\nif (achados.length === 1) comoIdentificou = 'e-mail';\nif (achados.length > 1) comoIdentificou = `e-mail (${achados.length} cadastros com esse e-mail - conferir)`;\nif (!buscaOk) comoIdentificou = 'busca no CRM falhou - nao identificado';\n\nconst criarContato = buscaOk && achados.length === 0 && !e.automatico;\nif (!contatoId && !criarContato) comoIdentificou = comoIdentificou || (e.automatico ? 'e-mail automatico - sem contato' : 'nao identificado');\n\nconst hoje = new Intl.DateTimeFormat('pt-BR', { timeZone: e.cfg.fuso }).format(new Date());\nconst papel = e.pasta === 'enviados' ? 'destinatário' : 'remetente';\n\nreturn [{\n  json: {\n    ...e,\n    contatoId,\n    contatoNovo: false,\n    comoIdentificou,\n    criarContato,\n    corpoContato: criarContato ? {\n      parent: { database_id: e.cfg.crmDbId },\n      properties: {\n        Nome: { title: [{ text: { content: e.nomeCadastro.slice(0, 200) } }] },\n        Email: { email: e.email },\n        'Situação': { select: { name: 'a_confirmar' } },\n        Origem: { rich_text: [{ text: { content:\n          `Criado pela captura de e-mail (n8n) em ${hoje}: ${papel} de \"${e.assunto.slice(0, 150)}\" ` +\n          `na caixa ${e.cfg.caixa}. O nome veio do cabeçalho do e-mail - não é identidade confirmada.`,\n        } }] },\n      },\n    } : null,\n  },\n}];\n"
+      }
+    },
+    {
+      "id": "4f63c336-220d-5cf1-afad-c17a62b8224a",
+      "name": "Cria contato?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1760,
+        200
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "359e9652-8ae9-572a-8e04-35417b5b2d8d",
+              "leftValue": "={{ $json.criarContato }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "2a0bdbb7-f3ca-5897-8c69-8fc7392b617c",
+      "name": "Cria contato (Notion)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1980,
+        100
+      ],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.corpoContato) }}",
+        "options": {}
+      },
+      "credentials": {
+        "notionApi": {
+          "name": "n8n Ative"
+        }
+      }
+    },
+    {
+      "id": "0d6c6e9f-ef48-5b8e-842b-dea05039952b",
+      "name": "Monta registro",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        200
+      ],
+      "parameters": {
+        "jsCode": "// Monta registro — corpo da linha em 📥 Recebidas (Canal = E-mail).\n// Chega aqui pelos dois lados do IF: com o contato recém-criado (resposta do Notion)\n// ou direto, quando não havia o que criar.\nconst e = $('Resolve contato').first().json;\nconst r = $input.first().json;\n\nlet contatoId = e.contatoId;\nlet contatoNovo = false;\nlet comoIdentificou = e.comoIdentificou;\nif (e.criarContato) {\n  if (r.object === 'page' && r.id) {\n    contatoId = r.id;\n    contatoNovo = true;\n    comoIdentificou = 'contato novo criado (a_confirmar)';\n  } else {\n    comoIdentificou = 'falhou ao criar o contato - nao identificado';\n  }\n}\n\nlet situacao;\nif (e.pasta === 'enviados') situacao = 'enviada por mim';\nelse if (e.automatico) situacao = 'ignorada';\nelse if (contatoId && !contatoNovo) situacao = 'vinculada a contato';\nelse situacao = 'aguardando decisao';\n\nconst max = e.cfg.maxConteudo;\nconst rt = (s) => [{ text: { content: String(s || '').slice(0, max) } }];\n\nlet conteudo = e.texto || '(sem texto)';\nif (e.anexos.length) conteudo = `📎 ${e.anexos.length} anexo(s): ${e.anexos.join(', ')}\\n\\n` + conteudo;\n\n// Corpo da página: ficha do e-mail + texto completo em blocos de até 1900 caracteres\nconst ficha = [\n  `De: ${e.de}`,\n  `Para: ${e.para}`,\n  e.cc ? `Cc: ${e.cc}` : '',\n  `Data: ${new Date(e.recebidaEm).toLocaleString('pt-BR', { timeZone: e.cfg.fuso })}`,\n  `Identificação: ${comoIdentificou}`,\n  `Message-ID: ${e.messageId}`,\n].filter(Boolean).join('\\n');\n\nconst children = [{\n  object: 'block', type: 'callout',\n  callout: { icon: { type: 'emoji', emoji: '✉️' }, rich_text: rt(ficha) },\n}];\nconst texto = e.texto || '';\nfor (let i = 0; i < texto.length && children.length < 20; i += max) {\n  children.push({ object: 'block', type: 'paragraph', paragraph: { rich_text: rt(texto.slice(i, i + max)) } });\n}\n\nconst properties = {\n  Mensagem: { title: rt(e.titulo) },\n  Canal: { select: { name: 'E-mail' } },\n  'E-mail': { email: e.email },\n  Assunto: { rich_text: rt(e.assunto) },\n  Conteudo: { rich_text: rt(conteudo) },\n  Tipo: { select: { name: e.anexos.length ? 'documento' : 'texto' } },\n  Situacao: { select: { name: situacao } },\n  'Recebida em': { date: { start: e.recebidaEm } },\n  messageId: { rich_text: rt(e.messageId) },\n};\nif (contatoId) properties.Contato = { relation: [{ id: contatoId }] };\n\nreturn [{\n  json: {\n    ...e,\n    contatoId,\n    contatoNovo,\n    comoIdentificou,\n    situacao,\n    corpoRegistro: { parent: { database_id: e.cfg.recebidasDbId }, properties, children },\n  },\n}];\n"
+      }
+    },
+    {
+      "id": "f7dc35d1-c8f1-51d9-9a38-d2c7c5885a12",
+      "name": "Grava em Recebidas (Notion)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2420,
+        200
+      ],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.corpoRegistro) }}",
+        "options": {}
+      },
+      "credentials": {
+        "notionApi": {
+          "name": "n8n Ative"
+        }
+      }
+    },
+    {
+      "id": "ec0cb663-0a1f-5e24-bfe2-5276eace931a",
+      "name": "Confere gravação",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        200
+      ],
+      "parameters": {
+        "jsCode": "// Confere gravação — nó tolerante a erro esconde falha (lição de 21/09), então o\n// resultado é conferido aqui, na resposta do Notion, e não pelo status da execução.\nconst e = $('Monta registro').first().json;\nconst r = $input.first().json;\nconst ok = r.object === 'page' && !!r.id;\n\nreturn [{\n  json: {\n    ok,\n    registroId: ok ? r.id : '',\n    erro: ok ? '' : String(r.error?.message || r.message || JSON.stringify(r).slice(0, 300)),\n    pasta: e.pasta,\n    email: e.email,\n    assunto: e.assunto,\n    messageId: e.messageId,\n    situacao: e.situacao,\n    contatoId: e.contatoId,\n    contatoNovo: e.contatoNovo,\n    atualizarContato: ok && !!e.contatoId && !e.automatico,\n    dataSP: e.dataSP,\n  },\n}];\n"
+      }
+    },
+    {
+      "id": "ed01d947-b6ca-596a-b9c4-d17ef1c7ed8e",
+      "name": "Atualiza contato?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2860,
+        200
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3eaccc06-92a0-54cb-bf72-212756800051",
+              "leftValue": "={{ $json.atualizarContato }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "2cc6dbab-04bb-5deb-8374-78923895ce2b",
+      "name": "Ultimo Contato (Notion)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3080,
+        100
+      ],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.contatoId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ properties: { 'Último Contato': { date: { start: $json.dataSP } } } }) }}",
+        "options": {}
+      },
+      "credentials": {
+        "notionApi": {
+          "name": "n8n Ative"
+        }
+      }
+    },
+    {
+      "id": "f180a4ca-b0d1-5c13-af26-a3f8842a4314",
+      "name": "Devolve resultado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3300,
+        100
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $('Confere gravação').first().json }];"
+      }
+    },
+    {
+      "id": "39895745-b1a1-5cbf-bbc5-dc8870caf250",
+      "name": "Falhou algum?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        -100
+      ],
+      "parameters": {
+        "jsCode": "// Falhou algum? — roda depois do lote inteiro. Se algum e-mail não foi gravado, a\n// execução termina em erro de propósito: o GAB-WPP 0 grava a nota \"FALHA em...\" com\n// esta mensagem, e o e-mail perdido fica nomeado (assunto e remetente).\nconst todos = $input.all().map((i) => i.json);\nconst falhas = todos.filter((j) => !j.ok);\n\nif (falhas.length) {\n  const lista = falhas.map((f) => `- ${f.pasta}: \"${f.assunto}\" (${f.email}) -> ${f.erro}`).join('\\n');\n  throw new Error(`${falhas.length} de ${todos.length} e-mail(s) nao gravados em Recebidas:\\n${lista}`);\n}\n\nreturn [{\n  json: {\n    gravados: todos.length,\n    contatosNovos: todos.filter((j) => j.contatoNovo).length,\n    porSituacao: todos.reduce((acc, j) => ({ ...acc, [j.situacao]: (acc[j.situacao] || 0) + 1 }), {}),\n  },\n}];\n"
+      }
+    }
+  ],
+  "connections": {
+    "IMAP - Caixa de entrada": {
+      "main": [
+        [
+          {
+            "node": "Pasta: entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IMAP - Enviados": {
+      "main": [
+        [
+          {
+            "node": "Pasta: enviados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pasta: entrada": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pasta: enviados": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Normaliza e-mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normaliza e-mail": {
+      "main": [
+        [
+          {
+            "node": "Ja processei esse?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ja processei esse?": {
+      "main": [
+        [
+          {
+            "node": "Um por vez",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Um por vez": {
+      "main": [
+        [
+          {
+            "node": "Falhou algum?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Busca contato (Notion)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca contato (Notion)": {
+      "main": [
+        [
+          {
+            "node": "Resolve contato",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resolve contato": {
+      "main": [
+        [
+          {
+            "node": "Cria contato?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cria contato?": {
+      "main": [
+        [
+          {
+            "node": "Cria contato (Notion)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Monta registro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cria contato (Notion)": {
+      "main": [
+        [
+          {
+            "node": "Monta registro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monta registro": {
+      "main": [
+        [
+          {
+            "node": "Grava em Recebidas (Notion)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Grava em Recebidas (Notion)": {
+      "main": [
+        [
+          {
+            "node": "Confere gravação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confere gravação": {
+      "main": [
+        [
+          {
+            "node": "Atualiza contato?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualiza contato?": {
+      "main": [
+        [
+          {
+            "node": "Ultimo Contato (Notion)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Um por vez",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ultimo Contato (Notion)": {
+      "main": [
+        [
+          {
+            "node": "Devolve resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Devolve resultado": {
+      "main": [
+        [
+          {
+            "node": "Um por vez",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo",
+    "errorWorkflow": "QtrobngLSAoMtnjX",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {}
+}
