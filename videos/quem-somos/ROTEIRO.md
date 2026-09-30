@@ -22,9 +22,9 @@ fazemos em cada detalhe. Do logo à pirâmide dourada, a imagem real prova que a
 | 0:00–0:04 | Abertura do logo (v6) | ATIVE |
 | 0:04–0:09 | Foto do time (foto 1), movimento lento, cartão de vidro | Por trás de cada decisão, existe um time. |
 | 0:09–0:14 | Foto da sala (placa só ATIVE), aproximação lenta | Conhecimento técnico · Vivência de campo |
-| 0:14–0:19 | IMG_5451 4–6 s: pasta dourada | Comercial · Financeira · Tributária |
+| 0:14–0:19 | IMG_5451 4,3–5,8 s: pasta dourada (recorte fechado) | Comercial · Financeira · Tributária |
 | 0:19–0:25 | Cartões de vidro (`h/giro`, `h/fidc`, `h/ccb`) sobre marinho | Frente financeira: capital de giro · antecipação de recebíveis · estruturação de capital |
-| 0:25–0:31 | IMG_5454 5–6 s: pasta e papel timbrado | Frente tributária: revisão tributária com equipe jurídica parceira · rodapé jurídico |
+| 0:25–0:31 | IMG_5452 12,5–14 s: pasta dourada (recorte fechado) | Frente tributária: revisão tributária com equipe jurídica parceira · rodapé jurídico |
 | 0:31–0:40 | Fundo marinho; números um a um | +14 anos · +130 empresas · 19 estados |
 | 0:40–0:46 | IMG_5451 22–24 s: placa "Jonas Sukenski" | À frente de cada caso. |
 | 0:46–0:53 | IMG_5451 32–34 s: banner BC no cavalete, câmera lenta | Balneário Camboriú · SC |

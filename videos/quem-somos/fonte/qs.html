@@ -50,6 +50,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-fam
 <div class="bg" id="bgEnd" style="background:radial-gradient(ellipse 62% 72% at 50% 40%,#0a1a33 0%,#071427 32%,#030b19 62%,#01050d 100%)"></div>
 
 <div id="phA"></div><img class="clip" id="cB"><img class="clip" id="cD"><img class="clip" id="cF"><img class="clip" id="cG">
+<div id="glowN" style="position:absolute;left:0;top:0;width:1400px;height:1400px;opacity:0;border-radius:50%;background:radial-gradient(circle,rgba(0,141,230,.55) 0%,rgba(0,141,230,.18) 38%,rgba(0,141,230,0) 70%)"></div>
 <div id="tint"></div><div id="tintB"></div>
 <canvas id="gl" width="1920" height="1080" style="position:absolute;inset:0;opacity:0"></canvas>
 
@@ -185,9 +186,12 @@ function render(t){
  show($('tD'),t,25.3,30.6,{base:'translate(-50%,-50%) translateY(-90px)'});
  show($('pD'),t,26.3,30.6,{dy:50,base:'translate(-50%,-50%) translateY(170px)'});
  $('legalJur').style.opacity=(t>=25.6&&t<30.6)?Math.min(E(P(t,25.6,26.2)),1-P(t,30.3,30.6)):0;
- show($('n1'),t,30.9,34.2,{blur:24,out:.4});$('v14').textContent=Math.round(14*E(P(t,31.0,32.2)));
- show($('n2'),t,34.1,37.2,{blur:24,out:.4});$('v130').textContent=Math.round(130*E(P(t,34.2,35.5)));
- show($('n3'),t,37.1,39.95,{blur:24,out:.4});$('v19').textContent=Math.round(19*E(P(t,37.2,38.3)));
+ {const g=$('glowN');if(t>=30.8&&t<40.2){const k=P(t,30.8,40.2);g.style.opacity=Math.min(E(P(t,30.8,31.6)),1-P(t,39.7,40.2))*.9;
+   g.style.transform=`translate(${-300+1100*k}px,${-420+120*Math.sin(k*Math.PI*2)}px) scale(${1+.25*Math.sin(k*Math.PI)})`;}else g.style.opacity=0;}
+ const nd=(a,b)=>`translateX(${-40+80*P(t,a,b)}px) scale(${1+.07*P(t,a,b)})`;
+ show($('n1'),t,30.9,34.2,{blur:24,out:.4,extra:nd(30.9,34.2)});$('v14').textContent=Math.round(14*E(P(t,31.0,32.2)));
+ show($('n2'),t,34.1,37.2,{blur:24,out:.4,extra:nd(34.1,37.2)});$('v130').textContent=Math.round(130*E(P(t,34.2,35.5)));
+ show($('n3'),t,37.1,39.95,{blur:24,out:.4,extra:nd(37.1,39.95)});$('v19').textContent=Math.round(19*E(P(t,37.2,38.3)));
  show($('tF'),t,40.3,45.75,{base:'translate(-50%,-50%) translateY(330px)'});
  show($('tG'),t,46.1,53.8,{base:'translate(-50%,-50%) translateY(318px)'});
 

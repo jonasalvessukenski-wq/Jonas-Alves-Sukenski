@@ -7,6 +7,7 @@ const FF=process.env.FFMPEG||(()=>{const {execSync}=require('child_process');for
  await pg.goto(process.env.URL?process.env.URL:'file://'+__dirname+'/'+(process.env.PAGE||'index.html'));if(process.env.URL)await pg.waitForFunction(()=>window.render3dReady,null,{timeout:60000});await pg.evaluate(()=>document.fonts.ready);
  if(mode==='stills'){for(const t of process.argv.slice(3)){await pg.evaluate(t=>render(+t),t);await pg.screenshot({path:`still_${t}.jpg`,quality:80,type:'jpeg'});}}
  else{const out=process.argv[3];const ff=spawn(FF,['-y','-f','image2pipe','-framerate','30','-c:v','mjpeg','-i','-','-c:v','libx264','-pix_fmt','yuv420p','-crf','18','-preset','medium','-movflags','+faststart',out],{stdio:['pipe','inherit','inherit']});
-  for(let i=0;i<1800;i++){await pg.evaluate(t=>render(t),i/30);const buf=await pg.screenshot({type:'jpeg',quality:95});if(!ff.stdin.write(buf))await new Promise(r=>ff.stdin.once('drain',r));if(i%300==0)console.log('frame',i);}
+  const I0=+(process.env.FROM||0),I1=+(process.env.TO||1800);
+  for(let i=I0;i<I1;i++){await pg.evaluate(t=>render(t),i/30);const buf=await pg.screenshot({type:'jpeg',quality:95});if(!ff.stdin.write(buf))await new Promise(r=>ff.stdin.once('drain',r));if(i%300==0)console.log('frame',i);}
   ff.stdin.end();await new Promise(r=>ff.on('close',r));}
  await b.close();})();
