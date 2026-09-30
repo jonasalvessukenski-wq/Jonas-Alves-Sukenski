@@ -1,5 +1,6 @@
 // Travas: nada sai fora do horário, para quem pediu para parar, depois que alguém já respondeu, acima do teto ou com texto proibido.
-// O que passa é marcado como "enviada" ANTES do envio: uma falha no meio nunca manda a mesma resposta duas vezes.
+// O que passa é marcado como "enviada" ANTES do envio: uma falha no meio nunca manda a mesma mensagem duas vezes.
+// Tipos: resposta (conversa com o contato), indicação (primeira mensagem à pessoa indicada), menu (número da opção para o robô).
 const cfg = $('Config').first().json.cfg;
 const chaves = $('Chaves Z-API').first().json;
 const cands = $('Candidatos').all().map((i) => i.json);
@@ -9,9 +10,12 @@ const enviadas = $('Busca enviadas 24h').all().flatMap((i) => i.json.results || 
 const hoje = partesSP().data;
 let autoHoje = 0;
 const auto24 = {};
+const destino24 = {};
 for (const pg of enviadas) {
   const p = pg.properties || {};
-  if (L.opcao(p['Nível']) !== '1 - automática') continue;
+  const dest = L.texto(p['Destino']).split('|')[0].trim();
+  if (dest) destino24[`${L.opcao(p['Tipo']) || 'resposta'}:${dest}`] = (destino24[`${L.opcao(p['Tipo']) || 'resposta'}:${dest}`] || 0) + 1;
+  if (L.opcao(p['Nível']) !== '1 - automática' || L.opcao(p['Tipo']) === 'menu') continue;
   const quando = L.data(p['Enviada em']);
   if (quando && partesSP(new Date(quando)).data === hoje) autoHoje += 1;
   for (const cid of L.relacao(p['Contato'])) auto24[cid] = (auto24[cid] || 0) + 1;
@@ -25,6 +29,8 @@ const INST = {
 const noHorario = dentroDoHorario(valorTxt(cfg, 'horarioEnvio', 'seg-sex 08:00-19:00'));
 const teto = valorNum(cfg, 'tetoDiarioAuto', 50);
 const maxPorContato = valorNum(cfg, 'maxAutoPorContato24h', 1);
+const emailLigado = ligado(cfg, 'envioEmail', false);
+const assinatura = (cfg.assinaturaEmail && cfg.assinaturaEmail.valor) || ASSINATURA_PADRAO;
 const agoraISO = new Date().toISOString();
 const sp = partesSP();
 const out = [];
@@ -35,35 +41,69 @@ cands.forEach((c, i) => {
   const barra = (m) => out.push({ json: atualizaPagina(c.filaId, { 'Situação': P.opcao('barrada pela trava'), 'Motivo': nota(m) }) });
   const rebaixa = (m) => out.push({ json: atualizaPagina(c.filaId, { 'Nível': P.opcao('2 - rascunho'), 'Motivo': nota(`não saiu sozinha: ${m} Aprove se quiser enviar.`) }) });
 
-  if (!noHorario) return; // fora da janela: espera, sem gravar nada
+  if (!noHorario && c.tipo !== 'menu') return; // fora da janela: espera, sem gravar nada (menu de robô responde a qualquer hora)
   if (!c.texto) return barra('texto vazio.');
-  if (c.canal === 'E-mail') return barra('resposta por e-mail ainda não sai pelo sistema. Copie o texto e responda pelo webmail.');
+  const email = c.canal === 'E-mail';
   const ct = contatos[i] && contatos[i].object === 'page' ? contatos[i] : null;
-  if (!ct) return barra('contato não encontrado no CRM.');
-  const p = ct.properties || {};
-  const tel = soDigitos(separaValores(L.telefone(p['Contato']))[0]);
-  if (tel.length < 12) return barra('o contato não tem telefone completo no CRM (só LID). Responda pelo celular.');
-  if (PROPRIOS_8.has(ultimos8(tel))) return barra('número do próprio Jonas.');
-  const inst = INST[c.canal];
-  if (!inst || !chaveOk(inst.instancia) || !chaveOk(inst.token) || !chaveOk(chaves.clientToken)) return barra(`falta a chave da Z-API do canal ${c.canal} no nó "Chaves Z-API". Depois de preencher, volte a Situação para "aprovada".`);
-  if (L.opcao(p['Intenção atual']) === 'descadastro' && c.modelo !== 'N1-E') return barra('o contato pediu para não receber mensagens.');
-  const ultDe = L.opcao(p['Última mensagem de']);
-  const ultEm = L.data(p['Última mensagem em']);
-  if (ultDe && ultDe !== 'Contato') return barra('a última mensagem da conversa já é da Ative: alguém respondeu depois deste rascunho.');
-  if (ultEm && Date.parse(ultEm) >= Date.parse(c.criadaEm) + 60000) return barra('o contato escreveu de novo depois deste rascunho. O Jev vai reler a conversa e propor outro.');
-  if (c.auto) {
+  const p = ct ? ct.properties || {} : {};
+
+  // Destino: resposta vai para o próprio contato; indicação e menu têm destino gravado na fila
+  let destino = '';
+  if (c.tipo === 'resposta') {
+    if (!ct) return barra('contato não encontrado no CRM.');
+    destino = email ? (separaValores(L.email(p['Email']).toLowerCase())[0] || '') : soDigitos(separaValores(L.telefone(p['Contato']))[0]);
+  } else {
+    destino = email ? c.destino.toLowerCase() : soDigitos(c.destino);
+  }
+  if (email && !RE_EMAIL.test(destino)) return barra('sem e-mail válido de destino.');
+  if (!email && destino.length < 12) return barra('sem telefone completo de destino (só LID). Responda pelo celular.');
+  if (!email && PROPRIOS_8.has(ultimos8(destino))) return barra('número do próprio Jonas.');
+
+  const inst = email ? null : INST[c.canal];
+  if (!email && (!inst || !chaveOk(inst.instancia) || !chaveOk(inst.token) || !chaveOk(chaves.clientToken))) return barra(`falta a chave da Z-API do canal ${c.canal} no nó "Chaves Z-API". Depois de preencher, volte a Situação para "aprovada".`);
+  if (email && !emailLigado) {
+    if (c.auto) return rebaixa('o envio de e-mail está desligado (chave envioEmail nos Controles).');
+    return barra('o envio de e-mail está desligado. Crie a credencial SMTP no n8n, ligue envioEmail nos Controles e volte a Situação para "aprovada".');
+  }
+
+  if (c.tipo === 'resposta') {
+    if (L.opcao(p['Intenção atual']) === 'descadastro' && c.modelo !== 'N1-E') return barra('o contato pediu para não receber mensagens.');
+    const ultDe = L.opcao(p['Última mensagem de']);
+    const ultEm = L.data(p['Última mensagem em']);
+    if (ultDe && ultDe !== 'Contato') return barra('a última mensagem da conversa já é da Ative: alguém respondeu depois deste rascunho.');
+    if (ultEm && Date.parse(ultEm) >= Date.parse(c.criadaEm) + 60000) return barra('o contato escreveu de novo depois deste rascunho. O Jev vai reler a conversa e propor outro.');
+  }
+  if (c.tipo === 'menu') {
+    if ((destino24[`menu:${destino}`] || 0) >= 2) return barra('já respondemos 2 menus deste número nas últimas 24 horas: pode ser um robô em laço. Veja a conversa.');
+  }
+  if (c.tipo === 'indicação') {
+    if (destino24[`indicação:${destino}`]) return barra('este indicado já recebeu a primeira mensagem nas últimas 24 horas.');
+  }
+  if (c.auto && c.tipo !== 'menu') {
     if (RE_LINHA_VERMELHA.test(c.texto)) return barra('texto automático com número, percentual, prazo ou termo proibido.');
     if (/^N1-/.test(c.modelo) && !(cfg[c.modelo] && cfg[c.modelo].ligado)) return rebaixa(`o texto ${c.modelo} não está aprovado nos Controles.`);
-    if (L.opcao(p['Nível de resposta']) !== '1 - automática' || L.opcao(p['Mapa']) === 'PES' || !c.empresaId) return rebaixa('o contato não está mais no nível 1.');
-    if (autoHoje >= teto) return rebaixa(`teto diário de ${teto} respostas automáticas atingido.`);
-    if ((auto24[c.contatoId] || 0) >= maxPorContato) return rebaixa('este contato já recebeu resposta automática nas últimas 24 horas.');
+    if (c.tipo === 'resposta' && (L.opcao(p['Nível de resposta']) !== '1 - automática' || L.opcao(p['Mapa']) === 'PES')) return rebaixa('o contato não está mais no nível 1.');
+    if (!c.empresaId) return rebaixa('não é contato da campanha.');
+    if (autoHoje >= teto) return rebaixa(`teto diário de ${teto} mensagens automáticas atingido.`);
+    const chaveCont = c.tipo === 'resposta' ? c.contatoId : destino;
+    if ((auto24[chaveCont] || 0) >= maxPorContato) return rebaixa('este contato já recebeu mensagem automática nas últimas 24 horas.');
   }
-  if (nestaRodada.has(c.contatoId)) return; // uma por contato por rodada
-  nestaRodada.add(c.contatoId);
-  if (c.auto) { autoHoje += 1; auto24[c.contatoId] = (auto24[c.contatoId] || 0) + 1; }
+  const chaveRodada = `${c.tipo}:${c.tipo === 'resposta' ? c.contatoId : destino}`;
+  if (nestaRodada.has(chaveRodada)) return; // uma por contato por rodada
+  nestaRodada.add(chaveRodada);
+  if (c.auto && c.tipo !== 'menu') { autoHoje += 1; const k = c.tipo === 'resposta' ? c.contatoId : destino; auto24[k] = (auto24[k] || 0) + 1; }
+
+  const envio = { ...c, destino, nome: ct ? L.titulo(p['Nome']) : c.nomeDestino };
+  if (email) {
+    envio.assunto = c.assunto || 'Ative';
+    envio.corpoEmail = `${c.texto}\n\n${assinatura}`;
+  } else {
+    envio.telefone = destino;
+    envio.zUrl = `${ZAPI}/instances/${inst.instancia}/token/${inst.token}/send-text`;
+  }
   out.push({ json: {
-    ...atualizaPagina(c.filaId, { 'Situação': P.opcao('enviada'), 'Enviada em': P.data(agoraISO), 'ID do envio': P.texto('enviando') }),
-    envio: { ...c, telefone: tel, nome: L.titulo(p['Nome']), zUrl: `${ZAPI}/instances/${inst.instancia}/token/${inst.token}/send-text` },
+    ...atualizaPagina(c.filaId, { 'Situação': P.opcao('enviada'), 'Enviada em': P.data(agoraISO), 'ID do envio': P.texto('enviando'), 'Destino': P.texto(c.nomeDestino ? `${destino} | ${c.nomeDestino}` : destino) }),
+    envio,
   } });
 });
 if (!out.length) out.push({ json: NADA });

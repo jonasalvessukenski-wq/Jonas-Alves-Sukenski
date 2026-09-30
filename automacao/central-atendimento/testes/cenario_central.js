@@ -25,12 +25,14 @@ function popular({ criar }) {
   // TESTE_TRAVADO=1: envio automático desligado e horário fechado -> nada pode sair além do alerta
   const travado = process.env.TESTE_TRAVADO === '1';
   const ctl = [['autoEnvio', !travado, ''], ['rascunhosWhatsApp', true, ''], ['analiseConversa', true, ''], ['esperaProspectMin', false, '3'], ['esperaDemaisMin', false, '10'],
-    ['horarioEnvio', false, travado ? 'todos os dias 03:00-03:01' : 'todos os dias 00:00-24:00'], ['tetoDiarioAuto', false, '50'], ['maxAutoPorContato24h', false, '1'], ['modeloJev', false, 'gpt-4o-mini'], ['maxAnalisesPorRodada', false, '6']];
-  // Textos: N1-A aprovado; os demais cadastrados e ainda não aprovados; um cartão OBJ aprovado
-  ctl.push(['N1-A', true, 'Obrigado pelo retorno, [Nome]. Aqui é o Jonas, da Ative.\nProponho uma videochamada de 15 minutos. Qual dia e horário ficam melhores para você nesta semana?'],
-    ['N1-B', false, 'Claro, [Nome]. Segue a apresentação da Ative.\nDepois de olhar, qual o melhor dia para eu ouvir o que achou?'],
-    ['N1-E', false, 'Pronto, [Nome]. Seu contato foi retirado da nossa lista. Desculpe o incômodo.'],
-    ['OBJ-03', true, 'Seu contato veio de uma pesquisa de mercado em base pública de empresas. Se preferir, retiro agora.']);
+    ['horarioEnvio', false, travado ? 'todos os dias 03:00-03:01' : 'todos os dias 00:00-24:00'], ['tetoDiarioAuto', false, '50'], ['maxAutoPorContato24h', false, '1'], ['modeloJev', false, 'gpt-4o-mini'], ['maxAnalisesPorRodada', false, '10']];
+  // Textos padrão: aprovados (Ligado) menos N1-B e N1-E; um cartão OBJ aprovado; chaves novas ligadas
+  const TX = require('../textos_padrao');
+  for (const [k, v] of Object.entries(TX)) ctl.push([k, !['N1-B', 'N1-E'].includes(k), v]);
+  ctl.push(['OBJ-03', true, 'Seu contato veio de uma pesquisa de mercado em base pública de empresas. Se preferir, retiro agora.'],
+    ['contornoMenu', true, ''], ['envioEmail', true, ''],
+    ['assinaturaEmail', true, 'Atenciosamente,\n\nJonas Sukenski\nAtive Consultoria'],
+    ['disparoEmail', true, 'Prezados, sou o Jonas, da Ative (texto de teste do disparo).']);
   for (const [k, l, v] of ctl) criar(DB.controles, { Controle: t(k), Chave: tx(k), Ligado: cb(l), Valor: tx(v) });
 
   // Prospecção
@@ -39,6 +41,9 @@ function popular({ criar }) {
   ids.E3 = criar(DB.prospeccao, { Empresa: t('Comércio Gama'), 'E-mail': em('compras@empresay.com.br'), Status: sel('E-mail enviado') });
   ids.E4 = criar(DB.prospeccao, { Empresa: t('Construtora Delta'), 'E-mail': em('x@empresaz.com.br'), Status: sel('E-mail enviado') });
   ids.E5 = criar(DB.prospeccao, { Empresa: t('Atacado Épsilon'), Telefone: tx('(47) 3333-4444'), Status: sel('WhatsApp enviado') });
+  ids.E6 = criar(DB.prospeccao, { Empresa: t('Madeireira Zeta'), WhatsApp: tel('+55 47 99999-0000'), Status: sel('WhatsApp enviado') });
+  ids.E7 = criar(DB.prospeccao, { Empresa: t('Cerâmica Eta'), WhatsApp: tel('+55 48 98888-1111'), Status: sel('WhatsApp enviado') });
+  ids.E8 = criar(DB.prospeccao, { Empresa: t('Theta Alimentos'), Telefone: tx('(48) 3030-4040'), Status: sel('WhatsApp enviado') });
 
   // CRM
   ids.C1 = criar(DB.crm, { Nome: t('Maria (Metalúrgica Alfa)'), Contato: tel('+55 48 9911-1111'), Situação: sel('a_confirmar'), 'Empresa (prospecção)': rel([ids.E1]), 'Última análise': dt(ha(120)) }, ha(3000));
@@ -59,6 +64,10 @@ function popular({ criar }) {
   ids.R7 = msg(14, { Mensagem: t('Undelivered Mail'), Conteudo: tx('Devolvido pelo servidor'), 'E-mail': em('x@empresaz.com.br'), Assunto: tx('Undelivered Mail Returned to Sender'), Canal: sel('E-mail'), Tipo: sel('e-mail devolvido'), Situacao: sel('aguardando decisao') });
   ids.R8 = msg(13, { Mensagem: t('Assinei o contrato'), Conteudo: tx('Jonas, assinei e te mandei o contrato agora.'), De: tel('554899222222'), Situacao: sel('aguardando decisao'), Tipo: sel('texto') });
   ids.R9 = msg(12, { Mensagem: t('oi mano'), Conteudo: tx('oi mano, domingo tem almoço'), De: tel('554899333333'), Situacao: sel('aguardando decisao'), Tipo: sel('texto') });
+  ids.R10 = msg(11, { Mensagem: t('Banco'), Conteudo: tx('Banco X: digite 1 para saldo, 2 para falar com atendente.'), De: tel('551140049999'), Situacao: sel('aguardando decisao'), Tipo: sel('texto'), 'Nome no WhatsApp': tx('Banco X') });
+  ids.R11 = msg(10, { Mensagem: t('Agora não posso'), Conteudo: tx('Agora não posso, estou em reunião. Me chama amanhã às 10h'), De: tel('5547999990000'), Situacao: sel('aguardando decisao'), Tipo: sel('texto'), 'Nome no WhatsApp': tx('Pedro') });
+  ids.R12 = msg(9, { Mensagem: t('Não sou eu'), Conteudo: tx('Não sou eu que cuido disso. Fala com o Marcos, do financeiro: 48 99876-5432'), De: tel('5548988881111'), Situacao: sel('aguardando decisao'), Tipo: sel('texto'), 'Nome no WhatsApp': tx('Luiza') });
+  ids.R13 = msg(8, { Mensagem: t('Com quem'), Conteudo: tx('Olá! Com quem gostaria de falar?'), De: tel('554830304040'), Situacao: sel('aguardando decisao'), Tipo: sel('texto'), 'Nome no WhatsApp': tx('Theta Alimentos') });
   // Mensagem antiga já filtrada (não deve ser reprocessada)
   ids.R0 = msg(600, { Mensagem: t('antiga'), Conteudo: tx('antiga'), De: tel('554899111111'), Filtro: sel('passou'), Contato: rel([ids.C1]), Situacao: sel('vinculada a contato') });
 
@@ -75,6 +84,9 @@ function decisaoJev(nome, texto) {
       tarefas_novas: [{ titulo: 'Marcar videochamada com a Maria', com_quem_esta: 'Ative', prazo_texto: 'amanhã', trecho: 'podemos conversar amanhã?' }] };
   }
   if (nome.startsWith('João')) return { ...base, intencao: 'pergunta', resposta: { texto: 'Bom dia, João! Aqui é o Jonas, da Ative. Falei com a Transportes Beta sobre um diagnóstico financeiro. Posso te explicar em 15 minutos?', modelo_ou_cartao: 'OBJ-03' } };
+  if (nome.startsWith('Pedro')) return { ...base, intencao: 'adiar', nivel: 1, retomar_em: 'amanhã às 10h', resposta: { texto: 'Claro, falamos amanhã.', modelo_ou_cartao: 'N1-F' } };
+  if (nome.startsWith('Luiza')) return { ...base, intencao: 'não é comigo', nivel: 1, indicacao: { nome: 'Marcos', telefone: '48 99876-5432' }, resposta: { texto: 'Obrigado!', modelo_ou_cartao: 'N1-C' } };
+  if (nome.startsWith('Theta')) return { ...base, intencao: 'atendimento', nivel: 1, resposta: { texto: 'Oi, queria falar com o financeiro.', modelo_ou_cartao: 'N1-H' } };
   if (nome.startsWith('Ana') && texto.includes('indicacao-teste')) return { ...base, intencao: 'não é comigo', nivel: 1, indicacao: { nome: 'Rita', email: 'rita@empresay.com.br' }, resposta: { texto: 'Obrigado, Ana! Vou falar com a Rita.', modelo_ou_cartao: 'N1-C' } };
   if (nome.startsWith('Ana')) return { ...base, intencao: 'pede material', nivel: 1, resposta: { texto: 'Olá, Ana! Envio a apresentação. Qual o melhor dia para conversarmos?', modelo_ou_cartao: 'N1-B' } };
   if (nome.startsWith('Carlos')) return { ...base, intencao: 'descadastro', nivel: 1, resposta: { texto: 'Certo, Carlos. Já retirei seu contato. Desculpe o incômodo.', modelo_ou_cartao: 'N1-E' } };
@@ -87,4 +99,4 @@ function decisaoJev(nome, texto) {
   return { ...base, intencao: 'fora da campanha', nivel: 3 };
 }
 
-module.exports = { DB, CLIENT_TOKEN, popular, decisaoJev, ids, TAM_PAGINA: 4 };
+module.exports = { DB, CLIENT_TOKEN, popular, decisaoJev, ids, TAM_PAGINA: 5 };

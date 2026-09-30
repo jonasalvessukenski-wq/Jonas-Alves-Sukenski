@@ -20,6 +20,7 @@ const CRED = {
   notionApi: { id: 'ativeCredNotion0', name: 'Notion (n8n Ative)' },
   openAiApi: { id: 'ativeCredOpenAi0', name: 'OpenAI (n8n Ative)' },
   imap: { id: 'ativeCredImap000', name: 'IMAP contato@ative' },
+  smtp: { id: 'ativeCredSmtp000', name: 'SMTP contato@ative' },
 };
 const ERRO_WORKFLOW = 'QtrobngLSAoMtnjX'; // GAB-WPP 0 - erros
 
@@ -87,6 +88,24 @@ function zapi(nome) {
       jsonBody: '={{ JSON.stringify({ phone: $json.telefone, message: $json.texto }) }}',
       options: { batching: { batch: { batchSize: 1, batchInterval: 2500 } }, timeout: 30000 },
     },
+    onError: 'continueRegularOutput', // nunca repete envio: falha vira "falhou" na fila
+  };
+}
+
+// Envio de e-mail pelo SMTP do contato@ (a senha fica na credencial do n8n)
+function smtp(nome) {
+  return {
+    name: nome, type: 'n8n-nodes-base.emailSend', typeVersion: 2.1,
+    parameters: {
+      resource: 'email', operation: 'send',
+      fromEmail: 'Jonas Sukenski | Ative <contato@ativeassessoriafinanceira.com.br>',
+      toEmail: '={{ $json.destino }}',
+      subject: '={{ $json.assunto }}',
+      emailFormat: 'text',
+      text: '={{ $json.corpoEmail }}',
+      options: { appendAttribution: false },
+    },
+    credentials: { smtp: CRED.smtp },
     onError: 'continueRegularOutput', // nunca repete envio: falha vira "falhou" na fila
   };
 }
@@ -162,7 +181,7 @@ const central = fluxo('GAB-WPP 4 - Central (portaria, Jev, fila e alertas)', [
       businessInstancia: 'COLE_A_INSTANCIA_DO_BUSINESS', businessToken: 'COLE_O_TOKEN_DO_BUSINESS',
       clientToken: 'COLE_O_CLIENT_TOKEN', numeroJonas: '5548974007161',
     }),
-    notion('Busca controles', { paginar: 5, estatico: { method: 'POST', url: `https://api.notion.com/v1/databases/${DB_CONTROLES}/query`, body: { page_size: 100 } } }),
+    notion('Busca controles', { paginar: 10, estatico: { method: 'POST', url: `https://api.notion.com/v1/databases/${DB_CONTROLES}/query`, body: { page_size: 100 } } }),
     codigo('Config', 'wf4/config.js'),
   ],
   // linha 1: portaria
@@ -203,12 +222,19 @@ const central = fluxo('GAB-WPP 4 - Central (portaria, Jev, fila e alertas)', [
     notion('Busca contato da resposta', { get: true }),
     codigo('Travas', 'wf4/travas.js'),
     notion('Grava travas'),
-    codigo('Lista de envios', 'wf4/lista_envios.js'),
+    codigo('Lista WhatsApp', 'wf4/lista_whatsapp.js'),
     zapi('Envia resposta (Z-API)'),
-    codigo('Registra envio', 'wf4/registra_envio.js'),
-    notion('Grava envio'),
+    codigo('Registra WhatsApp', 'wf4/registra_whatsapp.js'),
+    notion('Grava envio WhatsApp'),
   ],
-  // linha 4: alertas para o Jonas
+  // linha 4: envio por e-mail (mesma fila, depois das travas)
+  [null, null, null, null, null, null, null, null, null, null, null, null,
+    codigo('Lista e-mail', 'wf4/lista_email.js'),
+    smtp('Envia e-mail (SMTP)'),
+    codigo('Registra e-mail', 'wf4/registra_email.js'),
+    notion('Grava envio e-mail'),
+  ],
+  // linha 5: alertas para o Jonas
   [null, null, null, null,
     codigo('Alertas: consulta', 'wf4/alertas_consulta.js'),
     notion('Busca alertas'),
@@ -223,7 +249,10 @@ const central = fluxo('GAB-WPP 4 - Central (portaria, Jev, fila e alertas)', [
   ['Config', [['Plano da portaria', 'Quem analisar', 'Fila: consultas', 'Alertas: consulta']]],
   ...seq('Plano da portaria', 'Busca pendentes', 'Busca contatos', 'Portaria', 'Plano: busca empresa', 'Busca empresa', 'Plano: cria contatos', 'Cria contatos', 'Plano: atualiza', 'Grava portaria'),
   ...seq('Quem analisar', 'Busca candidatos', 'Filtra por espera', 'Busca conversa', 'Busca tarefas', 'Busca empresa da conversa', 'Monta pedido ao Jev', 'Jev (OpenAI)', 'Valida decisão do Jev', 'Conta rascunhos', 'Plano de gravação', 'Grava decisões'),
-  ...seq('Fila: consultas', 'Busca aprovadas', 'Busca nível 1', 'Busca enviadas 24h', 'Candidatos', 'Busca contato da resposta', 'Travas', 'Grava travas', 'Lista de envios', 'Envia resposta (Z-API)', 'Registra envio', 'Grava envio'),
+  ...seq('Fila: consultas', 'Busca aprovadas', 'Busca nível 1', 'Busca enviadas 24h', 'Candidatos', 'Busca contato da resposta', 'Travas', 'Grava travas'),
+  ['Grava travas', [['Lista WhatsApp', 'Lista e-mail']]],
+  ...seq('Lista WhatsApp', 'Envia resposta (Z-API)', 'Registra WhatsApp', 'Grava envio WhatsApp'),
+  ...seq('Lista e-mail', 'Envia e-mail (SMTP)', 'Registra e-mail', 'Grava envio e-mail'),
   ...seq('Alertas: consulta', 'Busca alertas', 'Monta alerta', 'Envia alerta (Z-API)', 'Desmarca alertas', 'Grava alertas'),
 ]);
 // URLs dos GET: vêm de campos específicos

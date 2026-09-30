@@ -178,14 +178,54 @@ function primeiroNome(nomeCrm) {
   if (!/^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'-]{1,}$/.test(p)) return '';
   return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase();
 }
-// Preenche [Nome] e [Empresa]. Sem nome, some a vírgula junto: "Obrigado, [Nome]." -> "Obrigado."
-function preencheTexto(modelo, { nome, empresa } = {}) {
+// Preenche [Nome], [Empresa], [Indicado], [Indicador] e [Quando].
+// Sem nome, some a vírgula junto: "Obrigado, [Nome]." -> "Obrigado."
+function preencheTexto(modelo, { nome, empresa, indicado, indicador, quando } = {}) {
   let t = String(modelo || '');
   t = nome ? t.replace(/\[Nome\]/g, nome) : t.replace(/,?[ \t]*\[Nome\]/g, '');
   t = t.replace(/\[Empresa\]/g, empresa || 'sua empresa');
+  t = t.replace(/\[Indicado\]/g, indicado || 'a pessoa que você indicou');
+  t = t.replace(/\[Indicador\]/g, indicador || 'um colega seu');
+  t = t.replace(/\[Quando\]/g, quando || 'no horário que você indicar');
   return t.replace(/[ \t]+([.,!?])/g, '$1').trim();
 }
-const N1_POR_INTENCAO = { 'quer conversar': 'N1-A', 'pede material': 'N1-B', 'não é comigo': 'N1-C', 'sem interesse': 'N1-D', 'descadastro': 'N1-E' };
+const N1_POR_INTENCAO = { 'quer conversar': 'N1-A', 'pede material': 'N1-B', 'não é comigo': 'N1-C', 'sem interesse': 'N1-D', 'descadastro': 'N1-E', 'adiar': 'N1-F', 'atendimento': 'N1-H' };
+const RE_EMAIL = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
+const ASSINATURA_PADRAO = 'Atenciosamente,\n\nJonas Sukenski\nAtive Consultoria\nSoluções Estratégicas Financeiras e Tributária.\n(48) 97400-7161\ncontato@ativeassessoriafinanceira.com.br\nwww.ativeassessoriafinanceira.com.br';
+// Telefone digitado pelo contato ("48 99876-5432") -> dígitos com 55
+function telefoneDe(s) {
+  let d = soDigitos(s);
+  if (d.length === 10 || d.length === 11) d = `55${d}`;
+  return d.length >= 12 && d.length <= 13 ? d : '';
+}
+
+// ---------- menu de robô ("1 - Financeiro, 2 - Compras") ----------
+// Devolve a opção a escolher, pela ordem: financeiro; administrativo/diretoria; falar com atendente/outros assuntos.
+const MENU_PREFERENCIA = [
+  /financ|contas a (pagar|receber)|tesouraria|cobran[cç]/i,
+  /administra|diretor|ger[eê]ncia|s[oó]cio|propriet/i,
+  /(falar|conversar) com (um |uma |o |a )?(atendente|pessoa|humano|colaborador|consultor)|atendimento humano|atendente|outros? (assuntos?|setores?|departamentos?)|outras? (op[cç][oõ]es|informa[cç][oõ]es)|demais assuntos/i,
+];
+function opcaoDoMenu(texto) {
+  const t = String(texto || '').replace(/\r/g, '');
+  const opcoes = [];
+  const add = (n, rotulo) => { const r = String(rotulo || '').replace(/[*_~]/g, '').trim(); if (n && r && !opcoes.some((o) => o.numero === n)) opcoes.push({ numero: n, rotulo: r.slice(0, 60) }); };
+  for (const linha of t.split('\n')) {
+    const l = linha.replace(/[*_~]/g, '').trim();
+    let m = l.match(/^(\d{1,2})\s*(?:\uFE0F?\u20E3|[-–—).:=]|\s)\s*(.{2,})$/);
+    if (m) add(m[1], m[2]);
+    m = l.match(/^([0-9])\uFE0F?\u20E3\s*(.{2,})$/);
+    if (m) add(m[1], m[2]);
+  }
+  // Menu em linha: "Digite 1 para Financeiro, 2 para Compras"
+  for (const m of t.matchAll(/(\d{1,2})\s*(?:para|p\/|pra|-|–)\s*([^,;\n.]{3,60})/gi)) add(m[1], m[2]);
+  if (opcoes.length < 2) return null;
+  for (const re of MENU_PREFERENCIA) {
+    const o = opcoes.find((x) => re.test(x.rotulo));
+    if (o) return o;
+  }
+  return null;
+}
 
 // Janela de horário "seg-sex 08:00-19:00"
 function dentroDoHorario(txt, agora = new Date()) {
@@ -197,5 +237,56 @@ function dentroDoHorario(txt, agora = new Date()) {
   const soUteis = /seg-sex|dias [uú]teis/i.test(String(txt || 'seg-sex'));
   if (soUteis && (sp.diaSemana === 0 || sp.diaSemana === 6)) return false;
   return agoraMin >= ini && agoraMin < fim;
+}
+// ---------- envio: lista confirmada e registro do resultado (WhatsApp e e-mail) ----------
+// Só envia o que o Notion confirmou como "enviada" no passo anterior (índice a índice com a gravação)
+function listaEnvios(planos, resps, filtro) {
+  const out = [];
+  planos.forEach((pl, i) => {
+    if (!pl.json.envio || !filtro(pl.json.envio)) return;
+    const r = resps[i] && resps[i].json;
+    if (r && r.object === 'page') out.push({ json: pl.json.envio });
+  });
+  return out;
+}
+// Registra cada envio: fila (ID ou falha), conversa em Recebidas, CRM (resposta) e prospecção
+function registraEnvios(envios, resps) {
+  const agoraISO = new Date().toISOString();
+  const sp = partesSP();
+  const out = [];
+  envios.forEach((e, i) => {
+    const r = resps[i] || {};
+    const email = e.canal === 'E-mail';
+    const id = email ? (r.messageId && !r.error ? r.messageId : '') : (r.messageId || r.zaapId || r.id || '');
+    if (!id) {
+      const erro = (r.error && (r.error.message || JSON.stringify(r.error))) || r.message || JSON.stringify(r);
+      out.push({ json: atualizaPagina(e.filaId, { 'Situação': P.opcao('falhou'), 'ID do envio': P.texto(''), 'Motivo': P.texto(`${email ? 'O servidor de e-mail' : 'A Z-API'} recusou em ${sp.ddmm} ${sp.hhmm}: ${String(erro).slice(0, 500)}`) }) });
+      return;
+    }
+    out.push({ json: atualizaPagina(e.filaId, { 'ID do envio': P.texto(String(id)) }) });
+    const msg = {
+      'Mensagem': P.titulo(`→ ${e.texto}`.replace(/\s+/g, ' ').slice(0, 200)),
+      'Conteudo': P.texto(e.texto),
+      'Situacao': P.opcao('enviada pelo sistema'),
+      'Canal': P.opcao(e.canal),
+      'Tipo': P.opcao(email ? 'e-mail' : 'texto'),
+      'Recebida em': P.data(sp.data),
+      'messageId': P.texto(String(id)),
+    };
+    if (email) { msg['E-mail'] = P.email(e.destino); msg['Assunto'] = P.texto(e.assunto || ''); } else msg['De'] = P.telefone(formataTel(e.destino));
+    if (e.empresaId) msg['Empresa (prospecção)'] = P.relacao([e.empresaId]);
+    if (e.tipo === 'indicação') {
+      // Sem Filtro: a portaria liga à pessoa indicada (ou cria o contato) quando ela responder
+      if (e.nomeDestino) msg['Nome no WhatsApp'] = P.texto(e.nomeDestino);
+    } else {
+      msg['Filtro'] = P.opcao('passou');
+      if (e.contatoId) msg['Contato'] = P.relacao([e.contatoId]);
+    }
+    out.push({ json: criaPagina(DB.recebidas, msg) });
+    if (e.tipo === 'resposta' && e.contatoId) out.push({ json: atualizaPagina(e.contatoId, { 'Última mensagem de': P.opcao('Ative'), 'Última mensagem em': P.data(agoraISO), 'Última análise': P.data(agoraISO) }) });
+    if (e.empresaId && e.tipo !== 'menu') out.push({ json: atualizaPagina(e.empresaId, { 'Último envio': P.data(sp.data), 'Canal do último envio': P.opcao(email ? 'E-mail' : 'WhatsApp') }) });
+  });
+  if (!out.length) out.push({ json: NADA });
+  return out;
 }
 // ===== fim do comum.js =====

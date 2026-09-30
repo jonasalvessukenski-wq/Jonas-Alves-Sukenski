@@ -5,7 +5,7 @@ const tarefas = ($('Busca tarefas').item.json.results) || [];
 const empPg = $json && $json.object === 'page' ? $json : null;
 const cfg = $('Config').first().json.cfg;
 
-const linhas = []; let ultimoAutor = ''; let ultimoCanal = 'WhatsApp pessoal';
+const linhas = []; let ultimoAutor = ''; let ultimoCanal = 'WhatsApp pessoal'; let ultimoAssunto = '';
 for (const m of conversa) {
   const p = m.properties || {};
   const sit = L.opcao(p['Situacao']);
@@ -20,7 +20,7 @@ for (const m of conversa) {
   const h = partesSP(new Date(m.created_time));
   linhas.push(`[${h.ddmm} ${h.hhmm}] ${nossa ? (sit === 'enviada pelo sistema' ? 'Ative (sistema)' : 'Jonas') : 'Contato'}: ${txt.replace(/\s+/g, ' ').slice(0, 700)}`);
   ultimoAutor = nossa ? 'Ative' : 'Contato';
-  if (!nossa) ultimoCanal = L.opcao(p['Canal']) || ultimoCanal;
+  if (!nossa) { ultimoCanal = L.opcao(p['Canal']) || ultimoCanal; if (assunto) ultimoAssunto = assunto; }
 }
 let transcricao = linhas.join('\n');
 if (transcricao.length > 14000) transcricao = `(início cortado)\n${transcricao.slice(-14000)}`;
@@ -63,10 +63,15 @@ const user = [
 // Cartões de objeção aprovados (linhas OBJ-xx marcadas como "Ligado" nos Controles)
 const cartoes = Object.entries(cfg).filter(([k, v]) => /^OBJ-\d+/i.test(k) && v.ligado && v.valor).map(([k, v]) => `${k.toUpperCase()}: ${v.valor}`);
 if (cartoes.length) user.push('', 'CARTÕES DE RESPOSTA APROVADOS (use como base e adapte ao contexto, sem inventar):', ...cartoes);
+// O disparo da campanha sai por outra ferramenta e nem sempre aparece na conversa: o Jev recebe o texto aprovado para ter contexto
+if (empPg) {
+  const disp = [['disparoEmail', 'E-MAIL'], ['disparoWhatsApp', 'WHATSAPP']].filter(([k]) => cfg[k] && cfg[k].ligado && cfg[k].valor);
+  if (disp.length) user.push('', 'MENSAGEM QUE A CAMPANHA ENVIOU A ESTA EMPRESA (pode não aparecer na conversa acima):', ...disp.map(([k, rot]) => `${rot}: ${cfg[k].valor.slice(0, 2500)}`));
+}
 const userTxt = user.join('\n');
 
 return { json: {
-  contatoId: c.contatoId, nome: c.nome, ultimoAutor, ultimoCanal, empresaId: c.empresaId, empresaNome, statusCampanha,
+  contatoId: c.contatoId, nome: c.nome, ultimoAutor, ultimoCanal, ultimoAssunto, empresaId: c.empresaId, empresaNome, statusCampanha,
   temperaturaAnterior: c.temperaturaAnterior,
   msgIds: conversa.slice(-5).map((m) => m.id),
   tarefasAbertas: tarefas.map((t) => ({ id: t.id, titulo: L.titulo((t.properties || {})['Tarefa Interna']) })),

@@ -11,6 +11,7 @@ cria.forEach((c, i) => {
   if (r && r.object === 'page' && r.id) idPorChave[c.json.chave] = r.id;
 });
 const sp = partesSP();
+const cfg = $('Config').first().json.cfg;
 const out = [];
 for (const m of plano.msgs) {
   const props = { 'Filtro': P.opcao(m.filtro) };
@@ -48,6 +49,27 @@ for (const u of plano.ultimas) {
       }
     }
     if (Object.keys(pp).length) out.push({ json: atualizaPagina(empresaId, pp) });
+  }
+
+  // Menu de robô de empresa da campanha: responde só o número da opção (financeiro, administrativo ou atendente).
+  // Sai sem aprovação porque o Jonas autorizou; a chave contornoMenu nos Controles desliga.
+  if (u.menu && empresaId && !u.descadastro && ligado(cfg, 'contornoMenu', false) && agora - Date.parse(u.menu.hora) < 2 * 3600 * 1000) {
+    const nomeEmp = empNovo ? empNovo.nome : '';
+    const fila = {
+      'Resposta': P.titulo(`Menu automático${nomeEmp ? ` · ${nomeEmp}` : ''} · opção ${u.menu.numero}`),
+      'Texto': P.texto(u.menu.numero),
+      'Tipo': P.opcao('menu'),
+      'Destino': P.texto(u.menu.de),
+      'Canal': P.opcao(u.menu.canal),
+      'Nível': P.opcao('1 - automática'),
+      'Situação': P.opcao('aprovada'),
+      'Modelo ou cartão': P.texto('menu'),
+      'Motivo': P.texto(`O robô da empresa mostrou um menu; o sistema escolheu a opção ${u.menu.numero} (${u.menu.rotulo}) para chegar a uma pessoa.`),
+      'Empresa (prospecção)': P.relacao([empresaId]),
+      'Mensagens de origem': P.relacao([u.menu.msgId]),
+    };
+    if (cid) fila['Contato'] = P.relacao([cid]);
+    out.push({ json: criaPagina(DB.fila, fila) });
   }
 
   if (!cid) continue;

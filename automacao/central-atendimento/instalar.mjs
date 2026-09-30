@@ -82,11 +82,13 @@ async function main() {
   const credNotion = credencial([wf1, wf2], 'notionApi');
   const credOpenAi = credencial([wf1, wf2], 'openAiApi');
   let credImap = process.env.IMAP_CRED_ID ? { id: process.env.IMAP_CRED_ID, name: 'IMAP' } : null;
-  if (!credImap) {
+  let credSmtp = process.env.SMTP_CRED_ID ? { id: process.env.SMTP_CRED_ID, name: 'SMTP' } : null;
+  if (!credImap || !credSmtp) {
     try {
       const lista = await api('GET', '/credentials?limit=250');
-      const c = (lista.data || []).find((x) => x.type === 'imap');
-      if (c) credImap = { id: c.id, name: c.name };
+      const achaTipo = (t) => (lista.data || []).find((x) => x.type === t);
+      if (!credImap && achaTipo('imap')) credImap = { id: achaTipo('imap').id, name: achaTipo('imap').name };
+      if (!credSmtp && achaTipo('smtp')) credSmtp = { id: achaTipo('smtp').id, name: achaTipo('smtp').name };
     } catch (e) { console.log(`(não deu para listar credenciais: ${e.message.slice(0, 80)})`); }
   }
 
@@ -95,6 +97,7 @@ async function main() {
   console.log(`Credencial Notion: ${credNotion ? `${credNotion.name} (${credNotion.id})` : 'NÃO ACHEI'}`);
   console.log(`Credencial OpenAI: ${credOpenAi ? `${credOpenAi.name} (${credOpenAi.id})` : 'NÃO ACHEI'}`);
   console.log(`Credencial IMAP:   ${credImap ? `${credImap.name} (${credImap.id})` : 'ainda não existe (criar no n8n: Credentials > New > IMAP)'}`);
+  console.log(`Credencial SMTP:   ${credSmtp ? `${credSmtp.name} (${credSmtp.id})` : 'ainda não existe (criar no n8n: Credentials > New > SMTP)'}`);
   if (!credNotion || !credOpenAi) throw new Error('Sem as credenciais do Notion e da OpenAI não dá para seguir.');
 
   const trocaCred = (wf) => {
@@ -103,6 +106,7 @@ async function main() {
       if (n.credentials.notionApi) n.credentials.notionApi = credNotion;
       if (n.credentials.openAiApi) n.credentials.openAiApi = credOpenAi;
       if (n.credentials.imap && credImap) n.credentials.imap = credImap;
+      if (n.credentials.smtp && credSmtp) n.credentials.smtp = credSmtp;
     }
   };
   const fluxos = {};
@@ -141,6 +145,7 @@ async function main() {
   if (vazio(chaves.pessoalToken) || vazio(chaves.clientToken)) falta.push('chaves da Z-API da linha pessoal (nó "Chaves Z-API" do fluxo central)');
   if (vazio(chaves.businessInstancia)) falta.push('instância e token do Business nos nós "Chaves Z-API" (central) e "Config Business"');
   if (!credImap) falta.push('credencial IMAP do contato@ (o Jonas digita a senha no n8n) e escolher nos 2 nós de e-mail');
+  if (!credSmtp) falta.push('credencial SMTP do contato@ para enviar e-mail (o Jonas digita a senha no n8n); depois ligar envioEmail nos Controles');
   if (falta.length) console.log(`\nFalta:\n- ${falta.join('\n- ')}`);
 }
 main().catch((e) => { console.error(`\nERRO: ${e.message}`); process.exit(1); });

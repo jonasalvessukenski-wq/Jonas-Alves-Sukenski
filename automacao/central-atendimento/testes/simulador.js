@@ -188,6 +188,38 @@ const servidor = http.createServer((req, res) => {
   });
 });
 
+// ---------- SMTP simulado (porta + 1): aceita qualquer login e guarda o e-mail no registro ----------
+const net = require('net');
+const smtp = net.createServer((sock) => {
+  let dados = false; let buf = ''; let auth = 0; let msg = { de: '', para: [], corpo: '' };
+  const w = (l) => sock.write(`${l}\r\n`);
+  w('220 simulador ESMTP');
+  sock.on('data', (ch) => {
+    buf += ch.toString('utf8');
+    let idx;
+    while ((idx = buf.indexOf('\r\n')) >= 0) {
+      const linha = buf.slice(0, idx); buf = buf.slice(idx + 2);
+      if (dados) {
+        if (linha === '.') { dados = false; log.push({ metodo: 'SMTP', url: 'smtp', headers: {}, body: {}, email: msg }); w('250 2.0.0 OK'); msg = { de: '', para: [], corpo: '' }; }
+        else msg.corpo += `${linha.startsWith('..') ? linha.slice(1) : linha}\n`;
+        continue;
+      }
+      if (auth === 1) { auth = 2; w('334 UGFzc3dvcmQ6'); continue; }
+      if (auth === 2) { auth = 0; w('235 2.7.0 Authentication successful'); continue; }
+      const cmd = linha.toUpperCase();
+      if (cmd.startsWith('EHLO')) sock.write('250-simulador\r\n250-AUTH PLAIN LOGIN\r\n250 OK\r\n');
+      else if (cmd.startsWith('AUTH PLAIN')) w('235 2.7.0 Authentication successful');
+      else if (cmd.startsWith('AUTH LOGIN')) { auth = 1; w('334 VXNlcm5hbWU6'); }
+      else if (cmd.startsWith('MAIL FROM')) { msg.de = linha.slice(10); w('250 OK'); }
+      else if (cmd.startsWith('RCPT TO')) { msg.para.push(linha.slice(8)); w('250 OK'); }
+      else if (cmd === 'DATA') { dados = true; w('354 fim com <CRLF>.<CRLF>'); }
+      else if (cmd === 'QUIT') { w('221 tchau'); sock.end(); }
+      else w('250 OK');
+    }
+  });
+});
+smtp.listen(PORTA + 1, '127.0.0.1');
+
 cenario.popular({ criar, paginas });
 servidor.listen(PORTA, '127.0.0.1', () => console.log(`simulador em ${PORTA}`));
 const salvar = () => {

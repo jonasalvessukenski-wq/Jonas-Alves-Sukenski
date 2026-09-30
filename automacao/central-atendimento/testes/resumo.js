@@ -38,5 +38,13 @@ for (const [db, lista] of Object.entries(r.porDb)) {
 const envios = r.log.filter((l) => l.envio);
 console.log(`\n##### Z-API (${envios.length} envios)`);
 for (const e of envios) console.log(`- ${e.envio.instancia} → ${e.envio.phone}: ${e.envio.message.replace(/\n/g, ' ⏎ ')}`);
+const emails = r.log.filter((l) => l.email);
+console.log(`\n##### SMTP (${emails.length} e-mails)`);
+for (const e of emails) {
+  const corpo = e.email.corpo;
+  const assunto = (corpo.match(/^Subject: (.*)$/m) || [])[1] || '';
+  const txt = corpo.split(/\n\n/).slice(1).join(' ').replace(/=\n/g, '').replace(/\s+/g, ' ').slice(0, 260);
+  console.log(`- para ${e.email.para.join(', ')} | assunto: ${assunto} | ${txt}`);
+}
 const falhas = r.log.filter((l) => l.falha);
 if (falhas.length) console.log('\nFALHAS NO SIMULADOR:', falhas.map((f) => `${f.url}: ${f.falha}`));

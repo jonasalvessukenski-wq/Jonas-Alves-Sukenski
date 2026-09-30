@@ -24,11 +24,11 @@ buscas.forEach((b, i) => {
 const sp = partesSP();
 const out = [];
 for (const n of plano.novos) {
-  const emp = empresaPorChave[n.chave];
-  const criar = n.recebidas > 0 || (n.enviadas > 0 && !emp);
+  const emp = empresaPorChave[n.chave] || (n.indicado ? { id: n.indicado, nome: '' } : null);
+  const criar = n.recebidas > 0 || (n.enviadas > 0 && (!emp || !!n.indicado));
   if (!criar) continue;
   const base = n.nomes[0] || n.nomeEnviada || (n.email ? n.email.split('@')[0] : '') || (n.de ? formataTel(n.de) : 'Contato');
-  const nome = `${base} (${emp ? emp.nome : 'a identificar'})`;
+  const nome = `${base} (${emp && emp.nome ? emp.nome : n.indicado ? 'indicado' : 'a identificar'})`;
   const props = {
     'Nome': P.titulo(nome),
     'Situação': P.opcao('a_confirmar'),
@@ -40,7 +40,8 @@ for (const n of plano.novos) {
   if (n.de) props['Contato'] = P.telefone(formataTel(n.de));
   if (n.lid) props['LID WhatsApp'] = P.texto(n.lid);
   if (n.email) props['Email'] = P.email(n.email);
-  if (emp) { props['Empresa (prospecção)'] = P.relacao([emp.id]); props['Empresa'] = P.texto(emp.nome); }
+  if (emp) { props['Empresa (prospecção)'] = P.relacao([emp.id]); if (emp.nome) props['Empresa'] = P.texto(emp.nome); }
+  if (n.indicado) props['Origem'] = P.texto(`Pessoa indicada por um contato da campanha; primeira mensagem enviada pela central em ${sp.ddmm}. Nome e tipo a confirmar.`);
   out.push({ json: { ...criaPagina(DB.crm, props), chave: n.chave } });
 }
 if (!out.length) out.push({ json: { ...NADA, chave: null } });

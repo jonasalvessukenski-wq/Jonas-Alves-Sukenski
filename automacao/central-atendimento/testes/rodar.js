@@ -83,6 +83,7 @@ async function main() {
   const creds = [
     { id: 'ativeCredNotion0', name: 'Notion (n8n Ative)', type: 'notionApi', data: { apiKey: 'secret_teste' } },
     { id: 'ativeCredOpenAi0', name: 'OpenAI (n8n Ative)', type: 'openAiApi', data: { apiKey: 'sk-teste', url: `${BASE}/openai` } },
+    { id: 'ativeCredSmtp000', name: 'SMTP contato@ative', type: 'smtp', data: { user: 'contato@ativeassessoriafinanceira.com.br', password: 'teste', host: '127.0.0.1', port: PORTA + 1, secure: false, disableStartTls: true } },
   ];
   fs.writeFileSync(path.join(TRAB, 'creds.json'), JSON.stringify(creds));
   execFileSync(N8N, ['import:credentials', `--input=${path.join(TRAB, 'creds.json')}`], { env, stdio: 'pipe' });

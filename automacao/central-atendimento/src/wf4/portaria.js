@@ -40,6 +40,8 @@ for (const pg of pendentes) {
   const semLeitura = filtro === 'robô' || filtro === 'e-mail devolvido'; // não pedem resposta: não acionam o Jev
 
   const upd = { pageId: pg.id, filtro, canal: canal || (ehEmail ? 'E-mail' : 'WhatsApp pessoal'), setCanal: !canal };
+  // Robô com menu numerado (WhatsApp): guarda a opção a escolher; só vira resposta se for empresa da campanha (plano_atualiza)
+  const menu = filtro === 'robô' && !ehEmail && !enviada && de ? opcaoDoMenu(texto) : null;
   if (!proprio) {
     const jaLigado = L.relacao(p['Contato'])[0] || null;
     const empJaLigada = L.relacao(p['Empresa (prospecção)'])[0] || '';
@@ -56,7 +58,9 @@ for (const pg of pendentes) {
       if (chave) {
         ref = `novo:${chave}`; upd.novoChave = chave;
         const nome = L.texto(p['Nome no WhatsApp']).trim();
-        const n = novos.get(chave) || { chave, de: '', lid: '', email: '', nomes: [], nomeEnviada: '', canal: upd.canal, recebidas: 0, enviadas: 0 };
+        const n = novos.get(chave) || { chave, de: '', lid: '', email: '', nomes: [], nomeEnviada: '', canal: upd.canal, recebidas: 0, enviadas: 0, indicado: '' };
+        // Primeira mensagem do sistema a uma pessoa indicada: vira contato já ligado à empresa de quem indicou
+        if (sit === 'enviada pelo sistema' && empJaLigada) n.indicado = empJaLigada;
         if (de && !n.de) n.de = de;
         if (lid && !n.lid) n.lid = lid;
         if (email && !n.email) n.email = email;
@@ -69,9 +73,11 @@ for (const pg of pendentes) {
     }
     if (ref) {
       const u = ultimas.get(ref) || { hora: '', de: '', descadastro: false, devolvido: false, envio: '', canalEnvio: '', analise: (cid && analiseDe.get(cid)) || '', empresaId: (cid ? empresaDe.get(cid) : '') || empJaLigada };
-      if (!semLeitura && pg.created_time > u.hora) { u.hora = pg.created_time; u.de = enviada ? 'Ative' : 'Contato'; }
+      // Mensagem do próprio sistema não pede nova leitura do Jev (o registro do envio já atualiza o CRM)
+      if (!semLeitura && sit !== 'enviada pelo sistema' && pg.created_time > u.hora) { u.hora = pg.created_time; u.de = enviada ? 'Ative' : 'Contato'; }
       if (enviada && pg.created_time > u.envio) { u.envio = pg.created_time; u.canalEnvio = ehEmail ? 'E-mail' : 'WhatsApp'; }
       if (filtro === 'descadastro') u.descadastro = true;
+      if (menu && (!u.menu || pg.created_time >= u.menu.hora)) u.menu = { ...menu, de, canal: upd.canal, hora: pg.created_time, msgId: pg.id };
       if (filtro === 'e-mail devolvido') u.devolvido = true;
       if (!u.empresaId && empJaLigada) u.empresaId = empJaLigada;
       ultimas.set(ref, u);
