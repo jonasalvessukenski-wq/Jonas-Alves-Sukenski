@@ -72,6 +72,7 @@ VIDEOS = {
   (19.2, 24.9, 'Na frente financeira, estruturamos capital: capital de giro, antecipação de recebíveis e crédito com as instituições certas.'),
   (25.2, 30.6, 'Na frente tributária, revisamos o que a empresa paga, com equipe jurídica parceira especializada.'),
   (31.0, 39.8, 'São mais de catorze anos de mercado e mais de cento e trinta empresas em relacionamento, em dezenove estados.'),
+  (40.3, 45.7, 'Quem está à frente do seu caso acompanha cada etapa, do diagnóstico à solução.'),
   (46.2, 53.5, 'Daqui de Balneário Camboriú, levamos essa segurança a cada cliente.'),
   (56.9, 59.9, 'Antes de qualquer negócio, existe confiança.'),
  ]),

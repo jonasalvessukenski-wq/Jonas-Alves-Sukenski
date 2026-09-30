@@ -78,5 +78,6 @@ Mande o arquivo original do gravador (não áudio de WhatsApp), um arquivo por v
 | 4 | 0:19.20 | 0:24.90 | Na frente financeira, estruturamos capital: capital de giro, antecipação de recebíveis e crédito com as instituições certas. |
 | 5 | 0:25.20 | 0:30.60 | Na frente tributária, revisamos o que a empresa paga, com equipe jurídica parceira especializada. |
 | 6 | 0:31.00 | 0:39.80 | São mais de catorze anos de mercado e mais de cento e trinta empresas em relacionamento, em dezenove estados. |
-| 7 | 0:46.20 | 0:53.50 | Daqui de Balneário Camboriú, levamos essa segurança a cada cliente. |
-| 8 | 0:56.90 | 0:59.90 | Antes de qualquer negócio, existe confiança. |
+| 7 | 0:40.30 | 0:45.70 | Quem está à frente do seu caso acompanha cada etapa, do diagnóstico à solução. |
+| 8 | 0:46.20 | 0:53.50 | Daqui de Balneário Camboriú, levamos essa segurança a cada cliente. |
+| 9 | 0:56.90 | 0:59.90 | Antes de qualquer negócio, existe confiança. |

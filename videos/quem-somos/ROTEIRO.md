@@ -6,15 +6,16 @@
 A Ative por dentro, em detalhes reais (a mesa posta, a pasta dourada, a placa), com uma frase sobre o que
 fazemos em cada detalhe. Do logo à pirâmide dourada, a imagem real prova que a confiança vem antes do negócio.
 
-## Locução v2 (aprovada)
+## Locução v2 (aprovada; frase 7 incluída em 30/09 para a cena da placa, 0:40–0:46)
 1. Por trás de cada decisão, existe um time.
 2. Na Ative, contamos com profissionais experientes, que unem conhecimento técnico e vivência de campo.
 3. Somos especializados nas áreas comercial, financeira e tributária, e cada caso é analisado de perto.
 4. Na frente financeira, estruturamos capital: capital de giro, antecipação de recebíveis e crédito com as instituições certas.
 5. Na frente tributária, revisamos o que a empresa paga, com equipe jurídica parceira especializada.
 6. São mais de catorze anos de mercado e mais de cento e trinta empresas em relacionamento, em dezenove estados.
-7. Daqui de Balneário Camboriú, levamos essa segurança a cada cliente.
-8. Antes de qualquer negócio, existe confiança.
+7. Quem está à frente do seu caso acompanha cada etapa, do diagnóstico à solução.
+8. Daqui de Balneário Camboriú, levamos essa segurança a cada cliente.
+9. Antes de qualquer negócio, existe confiança.
 
 ## Roteiro (tempo | cena | na tela)
 | Tempo | Cena | Na tela |
