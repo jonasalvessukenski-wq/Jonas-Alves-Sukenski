@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>ATIVE · Estruturação de capital</title>
+<style>
+@font-face{font-family:M;src:url(../assets/Manrope-SemiBold.ttf);font-weight:600}
+@font-face{font-family:M;src:url(../assets/Manrope-Bold.ttf);font-weight:700}
+@font-face{font-family:M;src:url(../assets/Manrope-ExtraBold.ttf);font-weight:800}
+:root{--navy:#000050;--blue:#008DE6;--cyan:#2FE1F2}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-family:M,sans-serif}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden}
+.bg{position:absolute;inset:0;opacity:0}
+#bgNavy{background:radial-gradient(ellipse at 50% 55%,#14147a 0%,#06065a 45%,#000044 100%)}
+#bgBlue{background:radial-gradient(ellipse at 50% 45%,#1e9ff0 0%,#008DE6 55%,#0079cf 100%)}
+#bgWhite{background:#fff}
+#bgFlash{background:radial-gradient(ellipse at 50% 50%,#d9f1ff 0%,#7cc7f5 60%,#2f9fe8 100%)}
+.el{position:absolute;left:50%;top:50%;opacity:0;will-change:transform,filter,opacity}
+.t{color:#fff;font-weight:700;font-size:70px;line-height:1.18;text-align:center;letter-spacing:-.5px;white-space:nowrap}
+.t.dark{color:var(--navy)}
+.t.sm{font-size:62px}
+.icon{position:absolute;width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center}
+.icon svg{width:38px;height:38px;stroke:#0b0b3c;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.circ{position:absolute;width:300px;height:300px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;letter-spacing:1px;color:#fff;top:-150px}
+.shot{border-radius:16px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,50,.35),0 8px 20px rgba(0,0,50,.2);background:#fff}
+.shot img{display:block;width:100%;height:100%}
+.row{position:absolute;left:0;display:flex;gap:28px;height:260px}
+.row .shot{height:260px;flex:none}
+.legal{position:absolute;left:0;right:0;bottom:30px;text-align:center;color:rgba(255,255,255,.85);font-weight:600;font-size:22px;opacity:0}
+.num{display:flex;align-items:center;gap:30px}
+.num .big{font-weight:800;font-size:170px;color:var(--cyan);letter-spacing:-4px;line-height:1}
+.num .lab{font-weight:800;font-size:44px;color:#fff;line-height:1.1;letter-spacing:.5px}
+</style></head>
+<body><div id="stage">
+<div class="bg" id="bgNavy"></div><div class="bg" id="bgBlue"></div><div class="bg" id="bgWhite"></div><div class="bg" id="bgFlash"></div>
+<div id="ghost" class="el" style="width:1500px;height:560px"></div>
+<div id="circleFill" class="el"></div>
+<div id="icons" style="position:absolute;inset:0"></div>
+
+<div id="t1" class="el t">O crédito que chega à sua empresa<br>é curto, caro e pequeno?</div>
+<div id="t2" class="el t">Talvez o problema não seja a empresa.<br>É como ela está sendo apresentada.</div>
+
+<!-- LOGO 3D -->
+<div id="tile" class="el" style="width:340px;height:340px;border-radius:72px;background:#fff;overflow:hidden">
+  <div id="sheen" style="position:absolute;top:-50%;width:120px;height:200%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.85),rgba(255,255,255,0));transform:rotate(20deg);left:-200px;z-index:2"></div>
+</div>
+<img id="sym" class="el" src="../assets/logo3d_simbolo.png" style="height:190px">
+<img id="wm" class="el" src="../assets/ative_wordmark_navy.png" style="height:96px">
+
+<div id="t3" class="el t dark">Sua empresa vale mais<br>do que consegue provar.</div>
+<div id="circles" class="el" style="width:900px;height:0">
+  <div class="circ" id="c1" style="background:var(--navy)">ORGANIZAR</div>
+  <div class="circ" id="c2" style="background:var(--cyan);color:var(--navy)">DESENHAR</div>
+  <div class="circ" id="c3" style="background:var(--blue)">APRESENTAR</div>
+</div>
+<div id="t4" class="el t">Existe muito mais capital<br>do que o seu banco oferece.</div>
+
+<!-- INSTRUMENTOS: carrossel 3D com os cartões do PDF -->
+<div id="wall" class="el" style="width:1920px;height:860px">
+  <div id="wallIn" style="position:absolute;inset:0;transform-style:preserve-3d">
+    <div class="row" id="r0" style="top:0"></div>
+    <div class="row" id="r1" style="top:300px"></div>
+    <div class="row" id="r2" style="top:600px"></div>
+  </div>
+</div>
+
+<div id="t5" class="el t">Nós lemos a sua empresa do jeito<br>que quem financia lê.</div>
+
+<!-- REDE: faixas de logos do PDF -->
+<div id="redeT" class="el t" style="font-size:60px"><span id="n30" style="color:var(--cyan);font-weight:800">30</span> instituições na nossa rede de parceria.</div>
+<div id="rd0" class="el shot" style="width:1640px;height:183px"><img src="../crops/rede_0.jpg"></div>
+<div id="rd1" class="el shot" style="width:1640px;height:183px"><img src="../crops/rede_1.jpg"></div>
+<div id="rd2" class="el shot" style="width:1640px;height:183px"><img src="../crops/rede_2.jpg"></div>
+<div id="legalRede" class="legal">Instituições com que operam os parceiros da Ative. A menção não indica vínculo contratual direto com a Ative.</div>
+
+<div id="t6" class="el" style="width:1500px;height:400px">
+  <div class="t" style="position:absolute;left:0;top:50%;transform:translateY(-50%);text-align:left">Do diagnóstico<br>ao recurso na empresa.</div>
+  <svg style="position:absolute;right:40px;top:40px" width="330" height="330" viewBox="0 0 330 330"><circle id="orbit" cx="165" cy="165" r="140" stroke="#fff" stroke-width="3" stroke-dasharray="10 12" fill="none" opacity=".8"/></svg>
+  <div style="position:absolute;right:170px;top:40px;width:150px;height:150px;border-radius:32px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 20px 40px rgba(0,0,60,.25)"><img src="../assets/logo3d_simbolo.png" style="height:92px"></div>
+  <div style="position:absolute;right:40px;top:230px;width:120px;height:120px;border-radius:26px;background:var(--cyan);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:60px;color:var(--navy);box-shadow:0 20px 40px rgba(0,0,60,.25)">R$</div>
+</div>
+
+<!-- OPERAÇÕES: cartões do PDF -->
+<div id="op0" class="el shot" style="width:560px;height:694px"><img src="../crops/op_0.jpg"></div>
+<div id="op1" class="el shot" style="width:560px;height:694px"><img src="../crops/op_1.jpg"></div>
+<div id="op2" class="el shot" style="width:560px;height:694px"><img src="../crops/op_2.jpg"></div>
+
+<div id="t7" class="el" style="text-align:center">
+  <div class="t" style="font-size:118px;font-weight:800">R$ <span id="v118">0</span> milhões em 2026.</div>
+  <div class="t" style="font-size:44px;font-weight:600;margin-top:22px;opacity:.92">Três operações da nossa rede de parceria.</div>
+</div>
+
+<!-- COMO COMEÇAMOS: passos do PDF -->
+<div id="t9" class="el t sm">E ficamos do seu lado até o dinheiro chegar.</div>
+<div id="p4" class="el shot" style="width:1760px;height:442px;background:#F3F0EB;padding:28px 30px">
+  <img id="passos" src="../crops/passos.jpg" style="width:1700px;height:387px">
+</div>
+
+<div id="t8" class="el t" style="color:#3FC3F7">Capital é consequência de uma<br>empresa bem preparada.</div>
+<div id="nA" class="el num"><div class="big">+<span id="v70">0</span></div><div class="lab">EMPRESAS EM<br>RELACIONAMENTO</div></div>
+<div id="nB" class="el num"><div class="big">18</div><div class="lab">ESTADOS</div></div>
+
+<div id="end" class="el" style="text-align:center">
+  <img src="../assets/logo3d_simbolo.png" style="height:230px;display:block;margin:0 auto;filter:drop-shadow(0 18px 30px rgba(0,0,60,.35))"><img src="../crops/wordmark_branco.png" style="height:118px;display:block;margin:26px auto 0">
+  <div id="endT" class="t" style="font-size:44px;font-weight:600;margin-top:46px">Antes de qualquer negócio, existe confiança.</div>
+</div>
+<div id="legal" class="legal">Operações conduzidas pela rede de parceria da Ative e divulgadas com autorização. Não constitui oferta de crédito nem promessa de resultado.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const P=(t,a,b)=>clamp((t-a)/(b-a));
+const E=x=>1-Math.pow(1-x,3);
+const EB=x=>{const c1=1.4,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2);};
+const EIO=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+
+// ---------- ícones ----------
+const IC={
+ fab:'<path d="M3 21V10l6 4v-4l6 4V4h5v17z"/><path d="M3 21h18"/>',
+ cam:'<rect x="2" y="7" width="12" height="9" rx="1"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',
+ ban:'<path d="M3 10l9-6 9 6"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 21h18"/>',
+ doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',
+ sol:'<rect x="3" y="11" width="18" height="7" rx="1" transform="skewX(-12)"/><circle cx="12" cy="5" r="2"/><path d="M12 1v1M16 5h1M7 5h1"/>',
+ obr:'<path d="M4 21V9h6v12M10 21V5h9v16M2 21h20M13 9h3M13 13h3M13 17h3"/>',
+ gra:'<path d="M4 20V11M10 20V6M16 20v-9M21 20H3"/>',
+ tra:'<circle cx="7" cy="16" r="4"/><circle cx="18" cy="17" r="3"/><path d="M4 12V6h6l2 6h7v5"/>',
+ cif:'<path d="M12 2v20M17 6c-1-2-3-2.5-5-2.5-2.5 0-4.5 1.3-4.5 3.5 0 5 10 2.5 10 8 0 2.2-2.2 3.5-5 3.5-2.5 0-4.5-1-5.5-3"/>',
+ cal:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M16 12v5M8 16h2M12 16h2"/>',
+ cha:'<path d="M8 11V7a4 4 0 0 1 8 0v4"/><rect x="5" y="11" width="14" height="10" rx="2"/>',
+ glo:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'
+};
+const COLS=['#FFD60A','#8B5CF6','#22D3EE','#EC4899','#A855F7','#FB923C','#FFD60A','#22D3EE','#EC4899','#8B5CF6','#FB923C','#A855F7'];
+const POS=[[250,90,'fab'],[560,150,'cam'],[1080,120,'ban'],[1360,190,'doc'],[1690,95,'sol'],
+           [120,500,'obr'],[1780,470,'gra'],[300,860,'tra'],[640,920,'cif'],[1000,860,'cal'],[1350,930,'cha'],[1640,850,'glo']];
+const icons=POS.map((p,i)=>{const d=document.createElement('div');d.className='icon';d.style.background=COLS[i];d.innerHTML='<svg viewBox="0 0 24 24">'+IC[p[2]]+'</svg>';$('icons').appendChild(d);return {d,x:p[0],y:p[1],ph:i*0.9};});
+
+// ---------- parede de instrumentos ----------
+const ROWS=[['i5_00','i5_01','i5_02','i5_10','i5_11','i5_12','i6_00'],
+            ['i6_01','i6_02','i6_10','i6_11','i7_0','i7_1','i5_00'],
+            ['i7_2','i7_3','i5_12','i5_10','i6_00','i6_10','i5_02']];
+const RAT={i5:800/471,i6:800/495,i7:700/732};
+const wallCards=[];
+ROWS.forEach((r,ri)=>r.forEach((n,ci)=>{const d=document.createElement('div');d.className='shot';d.style.width=Math.round(260*RAT[n.slice(0,2)])+'px';d.innerHTML=`<img src="../crops/${n}.jpg">`;$('r'+ri).appendChild(d);wallCards.push({d,ri,ci});}));
+
+// ---------- gráfico fantasma ----------
+const gh=$('ghost');const gb=[];for(let i=0;i<14;i++){const b=document.createElement('div');b.style.cssText=`position:absolute;bottom:0;left:${i*108}px;width:70px;border-radius:8px 8px 0 0;background:rgba(255,255,255,.10);height:0`;gh.appendChild(b);gb.push(b);}
+
+function show(el,t,a,b,o={}){const inD=o.in??.5,outD=o.out??.35,dy=o.dy??36,bl=o.blur??16,sc=o.scale??0,base=o.base??'translate(-50%,-50%)';
+ if(t<a||t>b){el.style.opacity=0;return 0;}
+ const pi=(o.ease||E)(P(t,a,a+inD)),po=o.noOut?0:EIO(P(t,b-outD,b));
+ el.style.opacity=clamp(pi)*(1-po);
+ el.style.filter=(bl?`blur(${(clamp(1-pi)+po)*bl}px)`:'none');
+ const s=1+sc*(1-pi)+(o.outScale??0)*po;
+ el.style.transform=`${base} translateY(${(1-pi)*dy-po*dy*.4}px) scale(${s})${o.extra?' '+o.extra:''}`;
+ return pi;}
+const bg=(id,o)=>$(id).style.opacity=o;
+const fmt=(v,d)=>v.toFixed(d).replace('.',',');
+
+function render(t){
+ bg('bgNavy', t<7.1?1:(t>=45.8&&t<57)?E(P(t,45.8,46.3)):0);
+ bg('bgBlue', (t>=6.5&&t<8.9)?E(P(t,6.5,7.1)):(t>=15.55&&t<46.3)?1:t>=56.8?E(P(t,56.8,57.3)):0);
+ bg('bgWhite',(t>=8.35&&t<15.6)?E(P(t,8.35,8.85)):0);
+ bg('bgFlash',(t>=56.2&&t<57.4)?Math.sin(Math.PI*P(t,56.2,57.4)):0);
+
+ icons.forEach((ic,i)=>{let x=ic.x,y=ic.y,o=0,f='',s=1;
+  if(t<7.2){o=E(P(t,0,.6));y+=Math.sin(t*1.3+ic.ph)*8;
+   const lit=E(P(t,2.75+i*.03,3.25+i*.03));
+   f=`saturate(${.05+.95*lit}) brightness(${.45+.55*lit})`;s=1+.18*Math.sin(Math.PI*lit);o*=.55+.45*lit;
+   const cv=EIO(P(t,5.6,6.9));const ang=cv*2.2*Math.PI,cx=960,cy=540,dx=x-cx,dy=y-cy;
+   x=cx+(dx*Math.cos(ang)-dy*Math.sin(ang))*(1-cv);y=cy+(dx*Math.sin(ang)+dy*Math.cos(ang))*(1-cv);
+   if(cv>0){f+=` blur(${Math.sin(Math.PI*cv)*10}px)`;s*=1-.5*cv;o*=1-P(t,6.6,7.0);}}
+  ic.d.style.opacity=o;ic.d.style.filter=f;ic.d.style.transform=`translate(${x-32}px,${y-32}px) scale(${s})`;});
+
+ show($('t1'),t,0.25,2.75);
+ show($('t2'),t,2.95,5.55);
+
+ // ---- logo 3D: bloco branco no azul → assinatura horizontal no branco
+ const tile=$('tile'),sym=$('sym'),wm=$('wm');
+ if(t>=6.85&&t<10.3){
+  const pin=EB(P(t,6.85,7.55));                 // entrada com leve overshoot
+  const toWhite=EIO(P(t,8.25,8.85));            // fundo vira branco
+  const slide=EIO(P(t,8.6,9.3));                // símbolo vai para a esquerda
+  const out=EIO(P(t,9.95,10.3));
+  const rotY=(1-E(P(t,6.85,7.9)))*-38;
+  tile.style.opacity=clamp(pin)*(1-toWhite)*(1-out);
+  tile.style.filter=`blur(${clamp(1-pin)*14}px)`;
+  tile.style.boxShadow=`0 ${40*(1-toWhite)}px ${80*(1-toWhite)}px rgba(0,0,60,${.35*(1-toWhite)})`;
+  tile.style.transform=`translate(-50%,-50%) perspective(1200px) rotateY(${rotY}deg) scale(${.55+.45*pin})`;
+  $('sheen').style.left=(-200+620*EIO(P(t,7.55,8.25)))+'px';
+  const sx=-265*slide, ss=(.55+.45*pin)*(1+.02*Math.sin(P(t,7.55,8.3)*Math.PI));
+  sym.style.opacity=clamp(pin)*(1-out);sym.style.filter=`blur(${clamp(1-pin)*14+out*14}px) drop-shadow(0 ${12*toWhite}px ${18*toWhite}px rgba(0,0,60,.18))`;
+  sym.style.transform=`translate(-50%,-50%) translateX(${sx}px) translateY(${-6-30*out}px) perspective(1200px) rotateY(${rotY}deg) scale(${ss})`;
+  const wp=E(P(t,8.85,9.5));
+  wm.style.opacity=wp*(1-out);wm.style.filter=`blur(${(1-wp)*16+out*14}px)`;
+  wm.style.transform=`translate(-50%,-50%) translateX(${150+60*(1-wp)}px) translateY(${10-30*out}px)`;
+  wm.style.letterSpacing='0';
+ } else {tile.style.opacity=0;sym.style.opacity=0;wm.style.opacity=0;}
+
+ show($('t3'),t,10.35,12.75);
+ const cw=$('circles');
+ if(t>=12.7&&t<15.7){cw.style.opacity=1;cw.style.filter='none';cw.style.transform='translate(-50%,-50%)';
+  const cs=[$('c1'),$('c2'),$('c3')],tx=[150,450,750];
+  cs.forEach((c,i)=>{const p=E(P(t,12.8+i*.18,13.5+i*.18));const spread=(1-E(P(t,13.7,14.3)))*110*(i-1);
+   let op=p;if(i!==2&&t>14.9)op*=1-P(t,14.9,15.2);
+   c.style.opacity=op;c.style.filter=`blur(${(1-p)*18}px)`;c.style.left=(tx[i]-150+spread+(1-p)*(i-1)*220)+'px';
+   c.style.transform=`scale(${.7+.3*p})`;c.style.zIndex=i===1?3:(i===2?2:1);});
+  const ex=EIO(P(t,15.0,15.6)),c3=$('c3');
+  if(t>14.9){c3.style.color=`rgba(255,255,255,${1-P(t,14.9,15.1)})`;c3.style.left=(600-300*ex)+'px';c3.style.transform=`scale(${1+ex*8})`;}else c3.style.color='#fff';
+ } else cw.style.opacity=0;
+
+ show($('t4'),t,15.75,18.25);
+
+ // ---- parede de instrumentos (cartões do PDF)
+ const wall=$('wall');
+ if(t>=18.2&&t<23.1){const pin=E(P(t,18.2,18.9)),po=EIO(P(t,22.7,23.1));
+  wall.style.opacity=1-po;wall.style.filter=`blur(${po*16}px)`;
+  const zoom=1+.06*P(t,18.2,23.1);
+  wall.style.transform=`translate(-50%,-50%) perspective(2200px) rotateX(${16-6*pin}deg) rotateY(${-18+4*P(t,18.2,23.1)}deg) rotateZ(-3deg) scale(${zoom})`;
+  [0,1,2].forEach(ri=>{const dir=ri%2?1:-1,speed=[210,170,230][ri],base=ri%2?-900:-80;
+   $('r'+ri).style.transform=`translateX(${base+dir*speed*(t-18.2)}px)`;});
+  wallCards.forEach(c=>{const p=E(P(t,18.3+c.ci*.12+c.ri*.1,18.9+c.ci*.12+c.ri*.1));c.d.style.opacity=p;c.d.style.transform=`translateY(${(1-p)*60}px) scale(${.92+.08*p})`;c.d.style.filter=`blur(${(1-p)*10}px)`;});
+ } else wall.style.opacity=0;
+
+ show($('t5'),t,23.25,26.05);
+
+ // ---- rede financeira (faixas de logos do PDF)
+ show($('redeT'),t,26.1,30.45,{base:'translate(-50%,-50%) translateY(-385px)'});
+ $('n30').textContent=Math.round(30*E(P(t,26.3,27.6)));
+ [0,1,2].forEach(i=>{const el=$('rd'+i);const a=26.35+i*.32;
+  if(t<a||t>30.45){el.style.opacity=0;return;}
+  const p=E(P(t,a,a+.7)),po=EIO(P(t,30.1,30.45));const push=1+.035*P(t,27.5,30.45);
+  el.style.opacity=p*(1-po);el.style.filter=`blur(${(1-p)*14+po*14}px)`;
+  el.style.transform=`translate(-50%,-50%) translateY(${-150+i*215}px) translateX(${(1-p)*420*(i%2?-1:1)}px) perspective(1600px) rotateY(${(1-p)*(i%2?10:-10)}deg) scale(${push})`;});
+ $('legalRede').style.opacity=(t>=26.6&&t<30.45)?Math.min(E(P(t,26.6,27.2)),1-P(t,30.1,30.45)):0;
+
+ show($('t6'),t,30.6,33.1);
+ $('orbit').setAttribute('transform',`rotate(${t*40} 165 165)`);
+
+ // ---- operações (cartões do PDF)
+ [0,1,2].forEach(i=>{const el=$('op'+i),a=33.15+i*.28;
+  if(t<a||t>37.4){el.style.opacity=0;return;}
+  const p=E(P(t,a,a+.8)),po=EIO(P(t,37.0,37.4));const drift=P(t,33.2,37.4);
+  el.style.opacity=clamp(p)*(1-po);el.style.filter=`blur(${(1-p)*14+po*16}px)`;
+  el.style.transform=`translate(-50%,-50%) translateX(${(i-1)*600}px) translateY(${-10+(1-p)*140 - 12*drift}px) perspective(1600px) rotateY(${(1-p)*(i-1)*-28 + (i-1)*-4*drift}deg) rotateX(${(1-p)*14}deg) scale(${(1+.03*drift)*(1-.08*po)})`;});
+
+ show($('t7'),t,37.5,41.2);
+ if(t>=37.5&&t<41.3)$('v118').textContent=fmt(118.6*E(P(t,37.6,39.3)),1);
+ gh.style.opacity=(t>=37.4&&t<41.3)?(1-P(t,40.9,41.3)):0;gh.style.transform='translate(-50%,-30%)';
+ gb.forEach((b,i)=>{const h=[.25,.35,.3,.45,.4,.55,.5,.62,.58,.7,.66,.8,.85,.95][i]*520;b.style.height=(h*E(P(t,37.4+i*.06,38.6+i*.06)))+'px';});
+ $('legal').style.opacity=(t>=33.4&&t<41.2)?Math.min(E(P(t,33.4,34.0)),1-P(t,40.9,41.2)):0;
+
+ // ---- como começamos (passos do PDF, revelados em sequência)
+ show($('t9'),t,41.35,46.0,{base:'translate(-50%,-50%) translateY(-330px)'});
+ const q4=show($('p4'),t,41.6,46.0,{dy:120,blur:10,in:.7,base:'translate(-50%,-50%) translateY(60px) perspective(1800px)'});
+ if(q4>0){$('p4').style.transform+=` rotateX(${(1-E(P(t,41.6,42.7)))*14}deg) scale(${1+.03*P(t,42.3,46)})`;
+  const w=EIO(P(t,41.7,44.6));$('p4').style.clipPath=`inset(0 ${100-100*w}% 0 0 round 16px)`;}
+
+ show($('t8'),t,46.3,50.3);
+ const nA=$('nA'),nB=$('nB');
+ if(t>=50.4&&t<57.2){const up=EIO(P(t,53.2,53.8));
+  show(nA,t,50.4,57.2,{base:`translate(-50%,-50%) translateY(${-120*up}px)`,out:.6,blur:24});
+  show(nB,t,53.5,57.2,{base:'translate(-50%,-50%) translateY(115px) translateX(-68px)',out:.6,blur:24});
+  $('v70').textContent=Math.round(70*E(P(t,50.5,52.0)));}
+ else{nA.style.opacity=0;nB.style.opacity=0;}
+ show($('end'),t,57.25,60.5,{scale:.15,blur:20,dy:0,noOut:true});
+ $('endT').style.opacity=E(P(t,58.1,58.7));$('endT').style.filter=`blur(${(1-E(P(t,58.1,58.7)))*12}px)`;
+}
+window.render=render;render(0);
+</script></body></html>
