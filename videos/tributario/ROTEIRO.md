@@ -5,11 +5,11 @@ Mesmo formato, cores e cenas dos outros dois vídeos. Base: apresentação "Revi
 | Tempo | Cena | Na tela |
 |---|---|---|
 | 0–3s | Marinho, ícones apagados | Sua empresa paga mais tributo do que deveria? |
-| 3–6s | Ícones acendem | Quase nenhuma empresa revisa o que paga. E paga todos os meses. |
+| 3–6s | Ícones acendem | Quase nenhuma empresa audita o que paga. E paga todos os meses. |
 | 7–10s | Logo 3D | ATIVE |
-| 10–13s | Branco | Sua empresa tem um passado e um futuro tributário. |
-| 13–15s | Três círculos | RECUPERAR · PLANEJAR · ADAPTAR |
-| 16–18s | Azul | Analisamos toda a matriz tributária da sua empresa. |
+| 10–13s | Branco | Auditoria tributária especializada. |
+| 13–15s | Três círculos | AUDITAR · RECUPERAR · PLANEJAR |
+| 16–18s | Azul | Um corpo técnico e jurídico tributário analisa toda a matriz da sua empresa. (rodapé: A Ative não realiza atividade privativa de advocacia; a atuação jurídica é conduzida por escritório parceiro.) |
 | 18–23s | Cartões de vidro | Contribuições sobre a folha · Enquadramento de risco · Fator individual · Créditos dos últimos 5 anos · Planejamento tributário · Reforma tributária · Estratégia jurídica |
 | 23–26s | Azul | Encontramos o que foi pago a mais nos últimos cinco anos. |
 | 26–30s | Três painéis de vidro | Enquadramento incorreto · Estruturas tratadas como uma só · Fator calculado sobre dados errados |

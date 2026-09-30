@@ -23,11 +23,11 @@ Como gravar: lugar silencioso, celular a um palmo da boca, uma frase por vez, 2 
 ## Vídeo 2 — Tributário
 
 1. Sua empresa paga mais tributo do que deveria?
-2. Quase nenhuma empresa revisa o que paga. E paga todos os meses.
+2. Quase nenhuma empresa audita o que paga. E paga todos os meses.
 3. Esta é a Ative.
-4. Sua empresa tem um passado e um futuro tributário.
-5. Recuperar, planejar e adaptar.
-6. Analisamos toda a matriz tributária da sua empresa.
+4. A Ative tem uma auditoria especializada na área tributária.
+5. Auditar, recuperar e planejar.
+6. Um corpo técnico e jurídico tributário analisa toda a matriz da sua empresa.
 7. Contribuições, enquadramentos, créditos e planejamento. Cada detalhe importa.
 8. Encontramos o que foi pago a mais nos últimos cinco anos.
 9. Enquadramentos incorretos, estruturas tratadas como uma só, cálculos feitos sobre dados errados.
