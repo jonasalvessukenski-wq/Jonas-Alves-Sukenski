@@ -30,7 +30,10 @@ let aviso = '';
 // Só sai sozinho (nível 1) se a linha do texto estiver marcada como "Ligado" (= aprovado pelo Jonas).
 const cfg = $('Config').first().json.cfg;
 const codN1 = N1_POR_INTENCAO[intencao];
-const txtN1 = codN1 && cfg[codN1] && cfg[codN1].valor ? cfg[codN1] : null;
+// Indicação com contato já informado: o texto N1-C (que pede o contato) não serve; vale a redação do Jev, sempre como rascunho
+const ind = d.indicacao && typeof d.indicacao === 'object' && (d.indicacao.email || d.indicacao.telefone) ? d.indicacao : null;
+if (ind && nivel === 1) nivel = 2;
+const txtN1 = codN1 && !(codN1 === 'N1-C' && ind) && cfg[codN1] && cfg[codN1].valor ? cfg[codN1] : null;
 if (nivel === 1 && !(txtN1 && txtN1.ligado)) nivel = 2;
 if (codN1 === 'N1-B' && nivel === 1) nivel = 2; // o sistema ainda não anexa o PDF
 if (resposta && txtN1) {
@@ -88,6 +91,27 @@ for (const t of (Array.isArray(d.tarefas_novas) ? d.tarefas_novas : []).slice(0,
   };
   if (prazo) props['Prazo / Horário'] = P.data(prazo);
   escritas.push(criaPagina(DB.tarefas, props));
+}
+
+// Indicação: tarefa para a Ative falar com a pessoa indicada
+if (ind) {
+  const quem = [ind.nome, ind.email, ind.telefone].filter(Boolean).map((x) => String(x).trim()).join(' · ').slice(0, 200);
+  const titulo = `Falar com ${quem} (indicação de ${nomeCurto || 'contato'})`;
+  if (!ctx.tarefasAbertas.some((x) => repete(titulo, x.titulo)) && !aceitas.some((x) => repete(titulo, x))) {
+    aceitas.push(titulo);
+    escritas.push(criaPagina(DB.tarefas, {
+      'Tarefa Interna': P.titulo(`${nomeCurto} — ${titulo}`.slice(0, 150)),
+      'Pessoas': P.relacao([ctx.contatoId]),
+      'Fonte': P.opcao('sugerida pelo Claude'),
+      'Tipo de tarefa': P.opcao('a confirmar'),
+      'Situação': P.opcao('a fazer'),
+      'Status': P.status('Processar'),
+      'Com quem está': P.opcao('Ative'),
+      'Registrado em': P.data(sp.data),
+      'Mensagens': P.relacao(ctx.msgIds),
+      'Nota do assistente': P.texto(`Indicação lida pelo Jev em ${sp.ddmm} ${sp.hhmm}. Mandar a apresentação citando quem indicou.`),
+    }));
+  }
 }
 
 // Tarefas existentes: só ids da lista enviada; nunca conclui

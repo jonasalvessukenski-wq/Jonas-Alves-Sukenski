@@ -55,7 +55,7 @@ function popular({ criar }) {
   ids.R3 = msg(18, { Mensagem: t('Menu'), Conteudo: tx('Olá! Digite 1 para Financeiro, 2 para Compras.'), De: tel('554733334444'), Situacao: sel('aguardando decisao'), Tipo: sel('texto'), 'Nome no WhatsApp': tx('Atacado Épsilon') });
   ids.R4 = msg(17, { Mensagem: t('não tenho interesse'), Conteudo: tx('Não tenho interesse, me tire da lista por favor'), De: tel('554855556666'), Situacao: sel('aguardando decisao'), Tipo: sel('texto'), 'Nome no WhatsApp': tx('Carlos') });
   ids.R5 = msg(16, { Mensagem: t('teste'), Conteudo: tx('teste do Jonas'), De: tel('554896202573'), Situacao: sel('enviada por mim'), Tipo: sel('texto') });
-  ids.R6 = msg(15, { Mensagem: t('Re: Diagnóstico financeiro'), Conteudo: tx('Olá Jonas, pode me mandar a apresentação?'), 'E-mail': em('ana@empresay.com.br'), Assunto: tx('Re: Diagnóstico financeiro'), Canal: sel('E-mail'), Tipo: sel('e-mail'), Situacao: sel('aguardando decisao'), 'Nome no WhatsApp': tx('Ana Lima') });
+  ids.R6 = msg(15, { Mensagem: t('Re: Diagnóstico financeiro'), Conteudo: tx(process.env.TESTE_INDICACAO === '1' ? 'Não sou eu que cuido disso, fale com a Rita: rita@empresay.com.br (indicacao-teste)' : 'Olá Jonas, pode me mandar a apresentação?'), 'E-mail': em('ana@empresay.com.br'), Assunto: tx('Re: Diagnóstico financeiro'), Canal: sel('E-mail'), Tipo: sel('e-mail'), Situacao: sel('aguardando decisao'), 'Nome no WhatsApp': tx('Ana Lima') });
   ids.R7 = msg(14, { Mensagem: t('Undelivered Mail'), Conteudo: tx('Devolvido pelo servidor'), 'E-mail': em('x@empresaz.com.br'), Assunto: tx('Undelivered Mail Returned to Sender'), Canal: sel('E-mail'), Tipo: sel('e-mail devolvido'), Situacao: sel('aguardando decisao') });
   ids.R8 = msg(13, { Mensagem: t('Assinei o contrato'), Conteudo: tx('Jonas, assinei e te mandei o contrato agora.'), De: tel('554899222222'), Situacao: sel('aguardando decisao'), Tipo: sel('texto') });
   ids.R9 = msg(12, { Mensagem: t('oi mano'), Conteudo: tx('oi mano, domingo tem almoço'), De: tel('554899333333'), Situacao: sel('aguardando decisao'), Tipo: sel('texto') });
@@ -75,6 +75,7 @@ function decisaoJev(nome, texto) {
       tarefas_novas: [{ titulo: 'Marcar videochamada com a Maria', com_quem_esta: 'Ative', prazo_texto: 'amanhã', trecho: 'podemos conversar amanhã?' }] };
   }
   if (nome.startsWith('João')) return { ...base, intencao: 'pergunta', resposta: { texto: 'Bom dia, João! Aqui é o Jonas, da Ative. Falei com a Transportes Beta sobre um diagnóstico financeiro. Posso te explicar em 15 minutos?', modelo_ou_cartao: 'OBJ-03' } };
+  if (nome.startsWith('Ana') && texto.includes('indicacao-teste')) return { ...base, intencao: 'não é comigo', nivel: 1, indicacao: { nome: 'Rita', email: 'rita@empresay.com.br' }, resposta: { texto: 'Obrigado, Ana! Vou falar com a Rita.', modelo_ou_cartao: 'N1-C' } };
   if (nome.startsWith('Ana')) return { ...base, intencao: 'pede material', nivel: 1, resposta: { texto: 'Olá, Ana! Envio a apresentação. Qual o melhor dia para conversarmos?', modelo_ou_cartao: 'N1-B' } };
   if (nome.startsWith('Carlos')) return { ...base, intencao: 'descadastro', nivel: 1, resposta: { texto: 'Certo, Carlos. Já retirei seu contato. Desculpe o incômodo.', modelo_ou_cartao: 'N1-E' } };
   if (nome.startsWith('Paulo')) {

@@ -19,6 +19,7 @@ Devolva SOMENTE um objeto JSON, sem texto fora dele, com estes campos:
   "resposta": { "texto": "...", "modelo_ou_cartao": "N1-A" | "N1-B" | "N1-C" | "N1-D" | "N1-E" | "OBJ-xx" | "livre" } ou null,
   "tarefas_novas": [ { "titulo": "verbo no infinitivo + o quê + para quem", "com_quem_esta": "Ative" | "Contato", "prazo_texto": "como foi dito (ex.: amanhã, sexta, 05/10) ou null", "trecho": "citação curta da conversa que justifica" } ],
   "tarefas_atualizar": [ { "id": "id exato da lista de tarefas abertas", "com_quem_esta": "Ative" | "Contato", "sugere_baixa": true | false, "nota": "o que mudou" } ],
+  "indicacao": { "nome": "...", "email": "...", "telefone": "..." } ou null (preencha só quando o contato indicar outra pessoa E passar o e-mail ou o telefone dela; copie exatamente como veio),
   "reuniao_marcada": true | false,
   "alertar_jonas": true | false,
   "motivo": "uma frase explicando a decisão"
@@ -27,7 +28,7 @@ Devolva SOMENTE um objeto JSON, sem texto fora dele, com estes campos:
 Como escolher a intenção:
 - "quer conversar": pede ligação, reunião, horário, diz que tem interesse.
 - "pede material": pede apresentação, proposta por escrito, "manda por e-mail".
-- "não é comigo": indica outra pessoa ou setor.
+- "não é comigo": indica outra pessoa ou setor. Se já passou o contato da pessoa, preencha "indicacao" e escreva uma resposta que agradeça e diga que vai falar com ela (não peça o contato de novo).
 - "sem interesse": recusa educada ou direta.
 - "descadastro": pede para não receber mais mensagens.
 - "pergunta": dúvida sobre custo, prazo, como funciona, de onde veio o contato.
