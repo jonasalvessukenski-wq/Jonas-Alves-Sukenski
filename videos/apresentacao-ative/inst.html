@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>ATIVE · Estruturação de capital</title>
+<style>
+@font-face{font-family:M;src:url(../assets/Manrope-SemiBold.ttf);font-weight:600}
+@font-face{font-family:M;src:url(../assets/Manrope-Bold.ttf);font-weight:700}
+@font-face{font-family:M;src:url(../assets/Manrope-ExtraBold.ttf);font-weight:800}
+:root{--navy:#000050;--blue:#008DE6;--cyan:#2FE1F2}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-family:M,sans-serif}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden}
+.bg{position:absolute;inset:0;opacity:0}
+#bgNavy{background:radial-gradient(ellipse at 50% 55%,#14147a 0%,#06065a 45%,#000044 100%)}
+#bgBlue{background:radial-gradient(ellipse at 50% 45%,#1e9ff0 0%,#008DE6 55%,#0079cf 100%)}
+#bgWhite{background:#fff}
+#bgFlash{background:radial-gradient(ellipse at 50% 50%,#d9f1ff 0%,#7cc7f5 60%,#2f9fe8 100%)}
+.el{position:absolute;left:50%;top:50%;opacity:0;will-change:transform,filter,opacity}
+.t{color:#fff;font-weight:700;font-size:70px;line-height:1.18;text-align:center;letter-spacing:-.5px;white-space:nowrap}
+.t.dark{color:var(--navy)}
+.t.sm{font-size:62px}
+.icon{position:absolute;width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center}
+.icon svg{width:38px;height:38px;stroke:#0b0b3c;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.circ{position:absolute;width:300px;height:300px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;letter-spacing:1px;color:#fff;top:-150px}
+.shot{border-radius:16px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,50,.35),0 8px 20px rgba(0,0,50,.2);background:#fff}
+.shot img{display:block;width:100%;height:100%}
+.row{position:absolute;left:0;display:flex;gap:28px;height:260px}
+.row .shot{height:260px;flex:none}
+.gcard{position:relative;width:760px;height:310px;flex:none;border-radius:30px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,50,.35),0 10px 24px rgba(0,0,50,.2),inset 0 0 0 1px rgba(255,255,255,.35)}
+.gcard .ph{position:absolute;inset:-3%;background-size:auto 100%;background-repeat:no-repeat;background-position:100% center;filter:saturate(1.2) contrast(1.08) brightness(1.18)}
+.gcard .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,40,0) 45%,rgba(0,0,40,.28) 100%)}
+.gcard .glass{position:absolute;left:20px;bottom:20px;min-width:420px;max-width:600px;padding:20px 26px 22px;border-radius:22px;background:rgba(255,255,255,.16);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);border:1px solid rgba(255,255,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 10px 30px rgba(0,0,40,.25)}
+.gcard .nm{font-weight:800;font-size:46px;color:#fff;letter-spacing:-.5px;line-height:1.05;text-shadow:0 2px 12px rgba(0,0,40,.3)}
+.gcard .nm.long{font-size:36px}
+.gcard .sb{margin-top:8px;font-weight:700;font-size:15px;letter-spacing:2.2px;color:rgba(255,255,255,.92)}
+.grow{position:absolute;left:0;display:flex;gap:36px}
+.legal{position:absolute;left:0;right:0;bottom:30px;text-align:center;color:rgba(255,255,255,.85);font-weight:600;font-size:22px;opacity:0}
+.num{display:flex;align-items:center;gap:30px}
+.num .big{font-weight:800;font-size:170px;color:var(--cyan);letter-spacing:-4px;line-height:1}
+.num .lab{font-weight:800;font-size:44px;color:#fff;line-height:1.1;letter-spacing:.5px}
+.eyb{font-weight:800;font-size:30px;letter-spacing:9px;color:rgba(255,255,255,.9);margin-bottom:28px}
+.tp{position:absolute;top:0;width:560px;height:680px;border-radius:32px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,40,.45),inset 0 0 0 1px rgba(255,255,255,.3)}
+#tp0{left:0}#tp1{left:590px}#tp2{left:1180px}
+.tp .ph{position:absolute;inset:0;background-size:auto 100%;background-position:100% center;filter:saturate(1.15) brightness(1.12)}
+.tp .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,40,0) 30%,rgba(0,0,40,.45) 100%)}
+.tp .glass{position:absolute;left:22px;right:22px;bottom:22px;padding:26px 28px 28px;border-radius:24px;background:rgba(255,255,255,.14);backdrop-filter:blur(24px) saturate(1.5);-webkit-backdrop-filter:blur(24px) saturate(1.5);border:1px solid rgba(255,255,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
+.tp .k{font-weight:800;font-size:22px;letter-spacing:6px;color:#2FE1F2}
+.tp .d{margin-top:12px;font-weight:700;font-size:40px;line-height:1.18;color:#fff}
+</style></head>
+<body><div id="stage">
+<div class="bg" id="bgNavy"></div><div class="bg" id="bgBlue"></div><div class="bg" id="bgWhite"></div>
+<div class="bg" id="bgEnd" style="background:radial-gradient(ellipse 62% 72% at 50% 40%,#0a1a33 0%,#071427 32%,#030b19 62%,#01050d 100%)"></div>
+<canvas id="gl" width="1920" height="1080" style="position:absolute;inset:0;opacity:0"></canvas>
+
+<!-- 0–3.4 LOGO -->
+<div id="tile" class="el" style="width:340px;height:340px;border-radius:72px;background:#fff;overflow:hidden">
+  <div id="sheen" style="position:absolute;top:-50%;width:120px;height:200%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.85),rgba(255,255,255,0));transform:rotate(20deg);left:-200px;z-index:2"></div>
+</div>
+<img id="sym" class="el" src="../assets/logo3d_simbolo.png" style="height:190px">
+<img id="wm" class="el" src="../assets/ative_wordmark_navy.png" style="height:96px">
+
+<div id="s2" class="el t dark">Soluções financeiras e tributárias<br>para a sua empresa.</div>
+<div id="circles" class="el" style="width:900px;height:0">
+  <div class="circ" id="c1" style="background:var(--navy);font-size:26px">DIAGNÓSTICO</div>
+  <div class="circ" id="c2" style="background:var(--cyan);color:var(--navy);font-size:26px">FINANCEIRO</div>
+  <div class="circ" id="c3" style="background:var(--blue);font-size:26px">TRIBUTÁRIO</div>
+</div>
+
+<div id="s4" class="el" style="text-align:center">
+  <div style="font-weight:800;font-size:230px;color:#fff;letter-spacing:-6px;line-height:1">+<span id="v14">0</span></div>
+  <div style="font-weight:800;font-size:46px;color:#fff;letter-spacing:6px;margin-top:6px">ANOS</div>
+  <div class="t" style="font-size:40px;font-weight:600;margin-top:24px;opacity:.92">construindo autoridade na trajetória dos sócios</div>
+</div>
+
+<div id="s5" class="el" style="text-align:center"><div class="eyb">FINANCEIRO</div><div class="t">Estruturamos crédito de alto valor<br>para grandes empresas.</div></div>
+
+<div id="wall" class="el" style="width:1920px;height:670px">
+  <div style="position:absolute;inset:0"><div class="grow" id="r0" style="top:0"></div><div class="grow" id="r1" style="top:360px"></div></div>
+</div>
+
+<div id="redeT" class="el t" style="font-size:60px"><span id="n30" style="color:var(--cyan);font-weight:800">30</span> instituições na nossa rede de parceria.</div>
+<div id="rd0" class="el shot" style="width:1640px;height:183px"><img src="../crops/rede_0.jpg"></div>
+<div id="rd1" class="el shot" style="width:1640px;height:183px"><img src="../crops/rede_1.jpg"></div>
+<div id="rd2" class="el shot" style="width:1640px;height:183px"><img src="../crops/rede_2.jpg"></div>
+<div id="legalRede" class="legal">Instituições com que operam os parceiros da Ative. A menção não indica vínculo contratual direto com a Ative.</div>
+
+<div id="s8" class="el t">Com uma consultoria de custos especializada,<br>encontramos os gargalos dentro da indústria.</div>
+<div id="s9" class="el" style="text-align:center"><div class="eyb">TRIBUTÁRIO</div><div class="t">Analisamos toda a matriz tributária<br>da sua empresa.</div></div>
+
+<div id="tax" class="el" style="width:1740px;height:680px">
+  <div class="tp" id="tp0"><div class="ph" style="background-image:url(../h/nota.jpg)"></div><div class="shade"></div><div class="glass"><div class="k">O PASSADO</div><div class="d">Recuperamos o que foi pago a mais nos últimos 5 anos.</div></div></div>
+  <div class="tp" id="tp1"><div class="ph" style="background-image:url(../h/fidc.jpg)"></div><div class="shade"></div><div class="glass"><div class="k">O FUTURO</div><div class="d">Planejamento tributário para a economia de tributos.</div></div></div>
+  <div class="tp" id="tp2"><div class="ph" style="background-image:url(../h/garantia.jpg)"></div><div class="shade"></div><div class="glass"><div class="k">A REFORMA</div><div class="d">Soluções para a transição da reforma tributária.</div></div></div>
+</div>
+
+<div id="s11" class="el t">Economia de tributos com planejamento<br>e estratégia jurídica, dentro da lei.</div>
+
+<div id="nA" class="el num"><div class="big">+<span id="v130">0</span></div><div class="lab">EMPRESAS EM<br>RELACIONAMENTO</div></div>
+<div id="nB" class="el num"><div class="big">19</div><div class="lab">ESTADOS</div></div>
+
+<div id="s13" class="el t sm">Tudo começa pelo diagnóstico.</div>
+<div id="p4" class="el shot" style="width:1760px;height:442px;background:#F3F0EB;padding:28px 30px"><img src="../crops/passos.jpg" style="width:1700px;height:387px"></div>
+
+<div id="s14" class="el t" style="color:#3FC3F7">O que a sua empresa ainda não enxergou<br>pode ser o seu maior resultado.</div>
+
+<img id="pfull" src="../assets/piramide_full.png" style="position:absolute;left:530px;top:-50px;width:860px;height:860px;opacity:0;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%)">
+<div id="shine" style="position:absolute;left:530px;top:-50px;width:860px;height:860px;opacity:0;mix-blend-mode:screen;-webkit-mask-image:url(../assets/piramide_mask.png);mask-image:url(../assets/piramide_mask.png);-webkit-mask-size:100% 100%;mask-size:100% 100%;background:linear-gradient(112deg,rgba(255,236,190,0) 42%,rgba(255,240,205,.85) 50%,rgba(255,236,190,0) 58%);background-size:320% 100%"></div>
+<img id="wmEnd" class="el" src="../crops/wordmark_branco_limpo.png" style="height:78px">
+<div id="endT" class="el t" style="font-size:34px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,.88)">Antes de qualquer negócio, existe confiança.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const P=(t,a,b)=>clamp((t-a)/(b-a));
+const E=x=>1-Math.pow(1-x,3);
+const EB=x=>{const c1=1.4,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2);};
+const EIO=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const INS={cri:['CRI','CERTIFICADO DE RECEBÍVEIS IMOBILIÁRIOS'],cra:['CRA','CERTIFICADO DE RECEBÍVEIS DO AGRONEGÓCIO'],fidc:['FIDC','FUNDO DE DIREITOS CREDITÓRIOS'],
+ fiagro:['Fiagro','FUNDO DAS CADEIAS DO AGRONEGÓCIO'],debenture:['Debênture','TÍTULO DE DÍVIDA DA S.A.'],nota:['Nota comercial','TÍTULO DE DÍVIDA DA EMPRESA'],
+ ccb:['CCB','CÉDULA DE CRÉDITO BANCÁRIO'],giro:['Capital de giro','E ANTECIPAÇÃO DE RECEBÍVEIS'],garantia:['Garantia real','IMÓVEIS, MÁQUINAS E RECEBÍVEIS'],
+ safra:['Plano Safra','CRÉDITO RURAL'],finep:['Finep','FINANCIAMENTO À INOVAÇÃO'],bndes:['BNDES e Finame','LINHAS DE FOMENTO'],fco:['Fundos constitucionais','FCO, FNE E FNO']};
+const GROWS=[['cra','cri','fidc','debenture','nota','fiagro','cra'],['ccb','giro','safra','bndes','garantia','finep','fco']];
+const wallCards=[];
+GROWS.forEach((r,ri)=>r.forEach((n,ci)=>{const d=document.createElement('div');d.className='gcard';const [nm,sb]=INS[n];
+ d.innerHTML=`<div class="ph" style="background-image:url(../h/${n}.jpg)"></div><div class="shade"></div><div class="glass"><div class="nm${nm.length>14?' long':''}">${nm}</div><div class="sb">${sb}</div></div>`;
+ $('r'+ri).appendChild(d);wallCards.push({d,ri,ci});}));
+function show(el,t,a,b,o={}){const inD=o.in??.5,outD=o.out??.35,dy=o.dy??36,bl=o.blur??16,sc=o.scale??0,base=o.base??'translate(-50%,-50%)';
+ if(t<a||t>b){el.style.opacity=0;return 0;}
+ const pi=(o.ease||E)(P(t,a,a+inD)),po=o.noOut?0:EIO(P(t,b-outD,b));
+ el.style.opacity=clamp(pi)*(1-po);
+ el.style.filter=(bl?`blur(${(clamp(1-pi)+po)*bl}px)`:'none');
+ const s=(1+sc*(1-pi)+(o.outScale??0)*po)*(o.noDrift?1:1+.025*P(t,a,b));
+ el.style.transform=`${base} translateY(${(1-pi)*dy-po*dy*.4}px) scale(${s})${o.extra?' '+o.extra:''}`;
+ return pi;}
+// fundos: [início, fim, id] com transição de .3s
+const BGS=[[0,1.8,'bgBlue'],[1.5,9.35,'bgWhite'],[9.05,27.3,'bgBlue'],[27.0,37.3,'bgNavy'],[37.0,41.2,'bgBlue'],[40.9,45.1,'bgNavy'],[44.8,51.1,'bgBlue'],[50.8,57.0,'bgNavy'],[56.9,61,'bgEnd']];
+function render(t){
+ const op={bgNavy:0,bgBlue:0,bgWhite:0,bgEnd:0};
+ BGS.forEach(([a,b,id])=>{if(t>=a&&t<b+.3){op[id]=Math.max(op[id],Math.min(E(P(t,a,a+.3)),1-P(t,b,b+.3)));}});
+ op.bgWhite=(t>=1.45&&t<9.35)?1:op.bgWhite; if(t<1.45)op.bgWhite=0;
+ for(const k in op)$(k).style.opacity=op[k];
+ if(t<0.3){$('bgBlue').style.opacity=1;}
+
+ // ---- logo (0.1–3.35)
+ const tile=$('tile'),sym=$('sym'),wm=$('wm'),o0=0.1-6.85;const T=t-o0;
+ if(T>=6.85&&T<10.12){
+  const pin=EB(P(T,6.85,7.45)),grow=EIO(P(T,7.5,8.4)),slide=EIO(P(T,7.98,8.85)),out=EIO(P(T,9.75,10.1));
+  const push=1+.09*P(T,8.1,10.1),tdrift=1+.07*P(T,6.9,7.7),rotY=(1-E(P(T,6.85,7.8)))*-38;
+  tile.style.opacity=clamp(pin)*(T<8.45?1:0);tile.style.filter=`blur(${clamp(1-pin)*14}px)`;
+  tile.style.borderRadius=(72*(1-grow))+'px';tile.style.boxShadow=`0 ${40*(1-grow)}px ${80*(1-grow)}px rgba(0,0,60,${.35*(1-grow)})`;
+  tile.style.transform=`translate(-50%,-50%) perspective(1200px) rotateY(${rotY*(1-grow)}deg) scale(${(.55+.45*pin)*tdrift*(1+grow*6.2)})`;
+  $('sheen').style.left=(-200+620*EIO(P(T,7.2,7.9)))+'px';
+  const ss=(.55+.45*pin)*tdrift*push;
+  sym.style.opacity=clamp(pin)*(1-out);sym.style.filter=`blur(${clamp(1-pin)*14+out*14}px) drop-shadow(0 ${14*slide}px ${20*slide}px rgba(0,0,60,.16))`;
+  sym.style.transform=`translate(-50%,-50%) translateX(${-265*slide*push}px) translateY(${-6-30*out}px) perspective(1200px) rotateY(${rotY}deg) scale(${ss})`;
+  const wp=E(P(T,8.25,9.0));wm.style.opacity=wp*(1-out);wm.style.filter=`blur(${(1-wp)*16+out*14}px)`;
+  wm.style.transform=`translate(-50%,-50%) translateX(${(150+70*(1-wp))*push}px) translateY(${10-30*out}px) scale(${push})`;
+ } else {tile.style.opacity=0;sym.style.opacity=0;wm.style.opacity=0;}
+
+ show($('s2'),t,3.3,6.25);
+ // ---- círculos (6.25–9.35)
+ const cw=$('circles'),c0=6.25-12.7;const C=t-c0;
+ if(C>=12.7&&C<15.7){cw.style.opacity=1;cw.style.filter='none';cw.style.transform='translate(-50%,-50%)';
+  const cs=[$('c1'),$('c2'),$('c3')],tx=[150,450,750];
+  cs.forEach((c,i)=>{const p=E(P(C,12.8+i*.18,13.5+i*.18));const spread=(1-E(P(C,13.7,14.3)))*110*(i-1);
+   let o=p;if(i!==2&&C>14.9)o*=1-P(C,14.9,15.2);
+   c.style.opacity=o;c.style.filter=`blur(${(1-p)*18}px)`;c.style.left=(tx[i]-150+spread+(1-p)*(i-1)*220)+'px';
+   c.style.transform=`scale(${.7+.3*p})`;c.style.zIndex=i===1?3:(i===2?2:1);});
+  const ex=EIO(P(C,15.0,15.6)),c3=$('c3');
+  if(C>14.9){c3.style.color=`rgba(255,255,255,${1-P(C,14.9,15.1)})`;c3.style.left=(600-300*ex)+'px';c3.style.transform=`scale(${1+ex*8})`;}else c3.style.color='#fff';
+ } else cw.style.opacity=0;
+
+ // ---- +14 anos (9.35–12.95)
+ show($('s4'),t,9.4,12.95);$('v14').textContent=Math.round(14*E(P(t,9.5,10.9)));
+ show($('s5'),t,13.05,15.45);
+
+ // ---- parede de instrumentos (15.45–20.3)
+ const wall=$('wall'),w0=15.45;
+ if(t>=w0&&t<w0+4.9){const pin=E(P(t,w0,w0+.8)),po=EIO(P(t,w0+4.5,w0+4.9)),k=P(t,w0,w0+4.9);
+  wall.style.opacity=1-po;wall.style.filter=`blur(${po*16}px)`;
+  wall.style.transform=`translate(-50%,-50%) perspective(2400px) rotateX(${9-4*pin}deg) rotateY(${-12+5*k}deg) rotateZ(-2deg) scale(${1+.05*k})`;
+  $('r0').style.transform=`translateX(${-120-165*(t-w0)}px)`;$('r1').style.transform=`translateX(${-1350+165*(t-w0)}px)`;
+  wallCards.forEach(c=>{const a=w0+.05+c.ci*.1+c.ri*.12,p=E(P(t,a,a+.6));c.d.style.opacity=p;c.d.style.transform=`translateY(${(1-p)*70}px) scale(${.9+.1*p})`;c.d.style.filter=`blur(${(1-p)*12}px)`;
+   c.d.firstChild.style.transform=`translateX(${(c.ri?-1:1)*18*k}px) scale(${1.02+.04*k})`;});
+ } else wall.style.opacity=0;
+
+ // ---- rede de parceiros (20.35–24.25)
+ const r0=20.35,r1=24.25;
+ show($('redeT'),t,r0,r1,{base:'translate(-50%,-50%) translateY(-385px)'});
+ $('n30').textContent=Math.round(30*E(P(t,r0+.2,r0+1.4)));
+ [0,1,2].forEach(i=>{const el=$('rd'+i),a=r0+.25+i*.3;
+  if(t<a||t>r1){el.style.opacity=0;return;}
+  const p=E(P(t,a,a+.7)),po=EIO(P(t,r1-.35,r1)),push=1+.035*P(t,r0+1.2,r1);
+  el.style.opacity=p*(1-po);el.style.filter=`blur(${(1-p)*14+po*14}px)`;
+  el.style.transform=`translate(-50%,-50%) translateY(${-150+i*215}px) translateX(${(1-p)*420*(i%2?-1:1)}px) perspective(1600px) rotateY(${(1-p)*(i%2?10:-10)}deg) scale(${push})`;});
+ $('legalRede').style.opacity=(t>=r0+.4&&t<r1)?Math.min(E(P(t,r0+.4,r0+1)),1-P(t,r1-.35,r1)):0;
+
+ show($('s8'),t,24.35,27.3);
+ show($('s9'),t,27.4,30.3);
+
+ // ---- três painéis tributários (30.35–37.3)
+ const tx=$('tax');
+ if(t>=30.35&&t<37.3){const po=EIO(P(t,36.9,37.3));tx.style.opacity=1-po;tx.style.filter=`blur(${po*16}px)`;tx.style.transform=`translate(-50%,-50%) scale(${1+.03*P(t,30.35,37.3)})`;
+  [0,1,2].forEach(i=>{const el=$('tp'+i),a=30.45+i*1.55,p=E(P(t,a,a+.8));
+   el.style.opacity=p;el.style.filter=`blur(${(1-p)*14}px)`;el.style.transform=`translateY(${(1-p)*90}px) perspective(1600px) rotateY(${(1-p)*(i-1)*-22}deg)`;
+   el.querySelector('.ph').style.transform=`scale(${1.04+.05*P(t,a,37.3)})`;});
+ } else tx.style.opacity=0;
+
+ show($('s11'),t,37.35,41.2);
+ // ---- números (41.25–45.1)
+ const nA=$('nA'),nB=$('nB');
+ if(t>=41.25&&t<45.15){const up=EIO(P(t,42.7,43.2));
+  show(nA,t,41.25,45.15,{base:`translate(-50%,-50%) translateY(${-120*up}px)`,out:.45,blur:24});
+  show(nB,t,42.95,45.15,{base:'translate(-50%,-50%) translateY(115px) translateX(-92px)',out:.45,blur:24});
+  $('v130').textContent=Math.round(130*E(P(t,41.35,42.6)));}
+ else{nA.style.opacity=0;nB.style.opacity=0;}
+
+ // ---- diagnóstico (45.15–51.1)
+ show($('s13'),t,45.2,51.1,{base:'translate(-50%,-50%) translateY(-330px)'});
+ const q4=show($('p4'),t,45.45,51.1,{dy:120,blur:10,in:.7,base:'translate(-50%,-50%) translateY(60px) perspective(1800px)'});
+ if(q4>0){$('p4').style.transform+=` rotateX(${(1-E(P(t,45.45,46.5)))*14}deg) scale(${1+.03*P(t,46,51.1)})`;
+  $('p4').style.clipPath=`inset(0 ${100-100*EIO(P(t,45.55,48.4))}% 0 0 round 16px)`;}
+
+ show($('s14'),t,51.2,56.75);
+
+ // ---- encerramento (56.9–60)
+ if(t>=56.9){const p=P(t,56.9,58.7),sp=E(p),fin=E(P(t,56.9,57.35)),xf=EIO(P(t,58.5,59.05));
+  $('gl').style.opacity=fin*(1-xf);$('gl').style.filter=`blur(${(1-fin)*12}px)`;
+  const pf=$('pfull');pf.style.opacity=xf;const push=1+.035*P(t,58.5,60);pf.style.transform=`scale(${push})`;pf.style.transformOrigin='50% 45%';
+  const sh=$('shine');sh.style.opacity=t>59.0?Math.sin(Math.PI*P(t,59.0,59.95))*.9:0;sh.style.backgroundPosition=`${100-100*P(t,59.0,59.95)}% 0`;sh.style.transform=`scale(${push})`;sh.style.transformOrigin='50% 45%';
+  window.render3d&&window.render3d((1-sp)*3*Math.PI*2,(.62+.38*sp),t);
+  const w=E(P(t,58.65,59.25));const wm2=$('wmEnd');wm2.style.opacity=w;wm2.style.filter=`blur(${(1-w)*16}px)`;wm2.style.transform=`translate(-50%,-50%) translateY(${262+(1-w)*24}px)`;
+  const f=E(P(t,59.1,59.65));const et=$('endT');et.style.opacity=f;et.style.filter=`blur(${(1-f)*12}px)`;et.style.transform=`translate(-50%,-50%) translateY(${352+(1-f)*20}px)`;
+ } else {$('pfull').style.opacity=0;$('shine').style.opacity=0;$('gl').style.opacity=0;$('wmEnd').style.opacity=0;$('endT').style.opacity=0;}
+}
+window.render=render;render(0);
+</script>
+
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {RoomEnvironment} from './node_modules/three/examples/jsm/environments/RoomEnvironment.js';
+const DATA={"shapes": [{"pts": [[-0.40939597315436244, 0.25], [-0.412751677852349, 0.25], [-0.5, 0.16610738255033558], [-0.5, 0.0], [-0.40939597315436244, 0.0]], "holes": [], "col": [170.10625993928002, 128.68599103657655, 65.09238109006795], "bbox": [162, 313, 55, 150]}, {"pts": [[-0.2600671140939597, 0.3926174496644295], [-0.2651006711409396, 0.3926174496644295], [-0.35067114093959734, 0.31208053691275167], [-0.35067114093959734, 0.0], [-0.2600671140939597, 0.0]], "holes": [], "col": [170.406006006006, 128.5048477048477, 64.57400257400258], "bbox": [251, 228, 55, 235]}, {"pts": [[0.1040268456375839, 0.46476510067114096], [0.1040268456375839, 0.37080536912751677], [0.28859060402684567, 0.0016778523489932886], [0.337248322147651, 0.0], [0.3271812080536913, 0.026845637583892617], [0.10738255033557047, 0.46476510067114096]], "holes": [], "col": [170.65954658629275, 130.68195518280697, 68.58275455379373], "bbox": [522, 185, 140, 278]}, {"pts": [[-0.1174496644295302, 0.5268456375838926], [-0.1342281879194631, 0.5151006711409396], [-0.2063758389261745, 0.4463087248322148], [-0.2063758389261745, 0.0], [-0.1174496644295302, 0.0]], "holes": [], "col": [168.1325721535046, 125.93802727561052, 61.377798921661906], "bbox": [337, 148, 54, 315]}, {"pts": [[0.10738255033557047, 0.7734899328859061], [-0.050335570469798654, 0.5889261744966443], [-0.050335570469798654, 0.0], [0.0050335570469798654, 0.0], [0.13926174496644295, 0.2684563758389262], [0.13926174496644295, 0.27181208053691275], [0.07550335570469799, 0.27348993288590606], [0.07550335570469799, 0.5], [0.10570469798657718, 0.540268456375839], [0.23657718120805368, 0.28187919463087246], [0.3724832214765101, 0.003355704697986577], [0.37583892617449666, 0.0], [0.5, 0.0], [0.5, 0.0050335570469798654], [0.2348993288590604, 0.5369127516778524], [0.11073825503355705, 0.7734899328859061]], "holes": [], "col": [252.0079108349614, 252.41093104442237, 253.05950741440606], "bbox": [430, 1, 329, 462]}], "aspect": 0.7734899328859061};
+const canvas=document.getElementById('gl');
+const R=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,preserveDrawingBuffer:true});
+R.setPixelRatio(1);R.setSize(1920,1080,false);R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.05;R.outputColorSpace=THREE.SRGBColorSpace;
+R.shadowMap.enabled=true;
+const scene=new THREE.Scene();
+const pm=new THREE.PMREMGenerator(R);
+// estúdio escuro com softboxes: dá ao ouro reflexos fortes e sombras profundas
+const env=new THREE.Scene();env.background=new THREE.Color(0x020308);
+function panel(w,h,pos,look,rgb){const m=new THREE.MeshBasicMaterial({side:THREE.DoubleSide});m.color.setRGB(...rgb);const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),m);p.position.set(...pos);p.lookAt(...look);env.add(p);}
+panel(10,4,[0,9,4],[0,0,0],[9,8.2,7]);        // softbox de cima
+panel(2.2,10,[-9,2,3],[0,0,0],[6,5.4,4.6]);   // faixa esquerda
+panel(2.2,10,[9,2,-2],[0,0,0],[5,4.6,4]);     // faixa direita
+panel(12,7,[-1.5,2.8,10.5],[0,0,0],[3.4,2.6,1.7]);  // softbox frontal quente
+panel(3,9,[-5,4,9],[0,0,0],[6,5,3.8]);  // faixa de brilho à esquerda
+panel(8,1,[0,-2.5,10],[0,0,0],[.5,.42,.32]);  // rebatedor baixo fraco
+panel(6,3,[0,4,-9],[0,0,0],[2.5,2.2,1.8]);    // contraluz
+scene.environment=pm.fromScene(env,0.02).texture;
+const cam=new THREE.PerspectiveCamera(28,1920/1080,0.1,100);
+const gold=new THREE.MeshPhysicalMaterial({color:0xEDB04A,metalness:1,roughness:.24,clearcoat:.4,clearcoatRoughness:.2,envMapIntensity:1.25});
+const goldDim=gold.clone();goldDim.roughness=.28;
+const navy=new THREE.MeshPhysicalMaterial({color:0x060d20,metalness:.6,roughness:.22,clearcoat:.3,envMapIntensity:.45});
+const key=new THREE.DirectionalLight(0xfff0d8,1.4);key.position.set(-4,6,6);key.castShadow=true;scene.add(key);
+const rim=new THREE.DirectionalLight(0xffe2a8,1.6);rim.position.set(5,4,-5);scene.add(rim);
+const fill=new THREE.DirectionalLight(0x8fb4ff,.15);fill.position.set(0,2,8);scene.add(fill);
+const obj=new THREE.Group();scene.add(obj);
+// símbolo extrudado (largura 2.6 unidades)
+const SW=2.6,DEPTH=.30;
+const sym=new THREE.Group();
+DATA.shapes.forEach(sh=>{const shape=new THREE.Shape(sh.pts.map(p=>new THREE.Vector2(p[0]*SW,p[1]*SW)));
+ sh.holes.forEach(hh=>shape.holes.push(new THREE.Path(hh.map(p=>new THREE.Vector2(p[0]*SW,p[1]*SW)))));
+ const g=new THREE.ExtrudeGeometry(shape,{depth:DEPTH,bevelEnabled:true,bevelThickness:.018,bevelSize:.012,bevelSegments:3,curveSegments:4});
+ g.translate(0,0,-DEPTH/2);const m=new THREE.Mesh(g,gold);m.castShadow=true;sym.add(m);});
+// base em degraus (proporções da imagem)
+const U=SW/690;
+function box(w,h,d,mat,y){const g=new THREE.BoxGeometry(w,h,d);const m=new THREE.Mesh(g,mat);m.position.y=y;m.receiveShadow=true;obj.add(m);return m;}
+const hBot=23*U,hMid=50*U,hTop=100*U;
+box(950*U,hBot,1.45,goldDim,hBot/2);
+box(900*U,hMid,1.28,navy,hBot+hMid/2);
+box(920*U,hTop,1.36,gold,hBot+hMid+hTop/2);
+sym.scale.y=1.097;sym.position.set(20*U,hBot+hMid+hTop,0);obj.add(sym);
+const H=hBot+hMid+hTop+DATA.aspect*SW*1.097;
+obj.position.y=-H/2;
+const FIT=window.FIT||{s:1.054,oy:131,cy:.45};cam.position.set(0,FIT.cy,13.2);cam.lookAt(0,0,0);
+cam.setViewOffset(1920,1080,0,FIT.oy,1920,1080);  // sobe o objeto ~120px na tela
+window.render3d=(ang,sc,t)=>{obj.rotation.y=ang;obj.scale.setScalar(sc*FIT.s);R.render(scene,cam);};
+window.render3dReady=true;
+</script></body></html>
