@@ -1,7 +1,8 @@
 const {chromium}=require('playwright');const {spawn}=require('child_process');
-const FF='/usr/local/lib/python3.11/dist-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2';
+// ffmpeg: $FFMPEG > imageio-ffmpeg (python/python3/py) > ffmpeg do PATH. Chromium: $CHROME > o do Playwright.
+const FF=process.env.FFMPEG||(()=>{const {execSync}=require('child_process');for(const py of[process.env.PYTHON,'python','python3','py'].filter(Boolean)){try{return execSync(`"${py}" -c "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())"`,{stdio:['ignore','pipe','ignore']}).toString().trim();}catch(e){}}return 'ffmpeg';})();
 (async()=>{const mode=process.argv[2];
- const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome',args:['--allow-file-access-from-files','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
+ const b=await chromium.launch({...(process.env.CHROME?{executablePath:process.env.CHROME}:{}),args:['--allow-file-access-from-files','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
  const pg=await b.newPage({viewport:{width:1920,height:1080}});
  await pg.goto(process.env.URL?process.env.URL:'file://'+__dirname+'/'+(process.env.PAGE||'index.html'));if(process.env.URL)await pg.waitForFunction(()=>window.render3dReady,null,{timeout:60000});await pg.evaluate(()=>document.fonts.ready);
  if(mode==='stills'){for(const t of process.argv.slice(3)){await pg.evaluate(t=>render(+t),t);await pg.screenshot({path:`still_${t}.jpg`,quality:80,type:'jpeg'});}}
