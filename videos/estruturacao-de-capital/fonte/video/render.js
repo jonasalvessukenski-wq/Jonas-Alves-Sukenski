@@ -4,7 +4,7 @@ const FF=process.env.FFMPEG||(()=>{const {execSync}=require('child_process');for
 (async()=>{const mode=process.argv[2];
  const b=await chromium.launch({...(process.env.CHROME?{executablePath:process.env.CHROME}:{}),args:['--allow-file-access-from-files','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
  const pg=await b.newPage({viewport:{width:1920,height:1080}});
- await pg.goto(process.env.URL?process.env.URL:'file://'+__dirname+'/'+(process.env.PAGE||'index.html'));if(process.env.URL)await pg.waitForFunction(()=>window.render3dReady,null,{timeout:60000});await pg.evaluate(()=>document.fonts.ready);
+ await pg.goto(process.env.URL?process.env.URL:'file://'+__dirname+'/'+(process.env.PAGE||'index.html'),{timeout:180000});if(process.env.URL)await pg.waitForFunction(()=>window.render3dReady,null,{timeout:60000});await pg.evaluate(()=>document.fonts.ready);
  if(mode==='stills'){for(const t of process.argv.slice(3)){await pg.evaluate(t=>render(+t),t);await pg.screenshot({path:`still_${t}.jpg`,quality:80,type:'jpeg'});}}
  else{const out=process.argv[3];const ff=spawn(FF,['-y','-f','image2pipe','-framerate','30','-c:v','mjpeg','-i','-','-c:v','libx264','-pix_fmt','yuv420p','-crf','18','-preset','medium','-movflags','+faststart',out],{stdio:['pipe','inherit','inherit']});
   const I0=+(process.env.FROM||0),I1=+(process.env.TO||1800);
