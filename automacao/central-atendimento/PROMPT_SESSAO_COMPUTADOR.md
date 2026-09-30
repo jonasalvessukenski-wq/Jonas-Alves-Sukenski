@@ -3,7 +3,7 @@
 Copie tudo abaixo e cole no Claude Code do computador.
 
 ```
-Contexto: sou o Jonas. Outra sessão do Claude (na nuvem) deixou pronta a central de atendimento do n8n + Notion. Sua tarefa é instalar, conectar o e-mail contato@ (leitura e envio) e conectar o WhatsApp Business (48 97400-7161). Tudo está no repositório Jonas-Alves-Sukenski, branch claude/elegant-tesla-87ziz3, pasta automacao/central-atendimento. Leia o README.md dessa pasta antes de começar.
+Contexto: sou o Jonas. Outra sessão do Claude (na nuvem) deixou pronta a central de atendimento do n8n + Notion. Sua tarefa é instalar, conectar o e-mail contato@ (leitura e envio) e conectar o WhatsApp Business (48 97400-7161). Os arquivos estão no artefato privado https://claude.ai/artifact/9oLsU9q5kCtVmgpuxN6rdb (não precisa de GitHub).
 
 Regras:
 - Nunca me peça senha, token ou chave no chat. Senha e token eu digito direto no n8n ou na Z-API.
@@ -12,8 +12,9 @@ Regras:
 - Não mexa no VPS nem no projeto "painel".
 
 Passo 1 — Instalar a central
-1. git fetch origin claude/elegant-tesla-87ziz3 && git checkout claude/elegant-tesla-87ziz3
-2. cd automacao/central-atendimento
+1. Baixe os arquivos do artefato https://claude.ai/artifact/9oLsU9q5kCtVmgpuxN6rdb com a ferramenta Artifact (action "read" com "paths"): instalar.mjs, workflows/gab-wpp-4-central.json, workflows/gab-wpp-3-email.json, workflows/gab-wpp-5-business.json, README.md e textos_padrao.js. Eles ficam numa pasta local com a mesma estrutura (instalar.mjs e a subpasta workflows). Leia o README.md.
+   Se a ferramenta Artifact não estiver disponível, me avise. A outra opção é baixar a pasta automacao/central-atendimento do repositório privado github.com/jonasalvessukenski-wq/Jonas-Alves-Sukenski (branch claude/elegant-tesla-87ziz3) pelo meu Chrome logado no GitHub.
+2. Entre na pasta onde os arquivos foram salvos (precisa de Node 18 ou mais novo).
 3. Rode `node instalar.mjs` com a chave da API do n8n que você já usa (N8N_API_KEY). Me mostre a conferência: chaves da Z-API encontradas (mascaradas), credenciais do Notion e da OpenAI.
 4. Se estiver tudo certo, rode `node instalar.mjs --gravar --ligar central`.
 5. Me guie para dar acesso da conexão "n8n Ative" no Notion a três bases: Empresas — Prospecção set/2026, 📤 Fila de respostas e ⚙️ Controles da central (página → ••• → Conexões).
