@@ -45,7 +45,32 @@ def plano(nome):
     return anc, linhas
 
 
+# Voz corrida (aprovada como gravada): a gravação entra inteira, sem cortes nem pausas; só o vídeo se ajusta.
+# Âncoras = (fala k, deslocamento em s em relação ao início da fala, tempo da página). D = silêncio antes da voz.
+CORRIDA = {
+    '4_Quem_Somos': dict(voz='audio4_aprovado_0110.m4a', D=2.4, fim=2.3, anc=[
+        (0, -0.4, 4.0), (1, 0.4, 9.2), (2, 0.3, 14.2), (3, -0.12, 19.2), (4, -0.12, 25.2),
+        (5, -0.12, 31.0), (6, 0.3, 40.3), (7, -0.12, 46.2),
+        (8, -1.49, 53.9),   # Balneário termina e a pirâmide começa a girar
+        (8, 0.2, 56.7)]),   # a frase final aparece junto com a voz
+}
+
+
+def plano_corrido(nome):
+    c, voz = CORRIDA[nome], alinhar(nome)
+    anc = [(0.0, 0.0)] + [(c['D'] + voz[k][0] + off, t) for k, off, t in c['anc']]
+    anc.append((c['D'] + voz[-1][1] + c['fim'], 60.0))
+    assert all(b[0] > a[0] and b[1] > a[1] for a, b in zip(anc, anc[1:])), anc
+    return anc
+
+
 def mostrar(nome):
+    if nome in CORRIDA:
+        anc = plano_corrido(nome)
+        print(f'{nome}: voz corrida, duração nova {anc[-1][0]:.2f}s')
+        for (T0, t0), (T1, t1) in zip(anc, anc[1:]):
+            print(f'  novo {T0:6.2f}-{T1:6.2f}  ← página {t0:6.2f}-{t1:6.2f}   velocidade da página {(t1-t0)/(T1-T0):4.2f}x')
+        return
     anc, linhas = plano(nome)
     pausa = sum(max(0, l2[2] - l1[2] - (l2[0] - l1[0])) for l1, l2 in zip(linhas, linhas[1:]))
     print(f'{nome}: duração nova {anc[-1][0]:.2f}s; pausas acrescentadas à voz: {pausa:.2f}s no total')
@@ -55,7 +80,7 @@ def mostrar(nome):
 
 def pagina(nome):
     src = PAGINAS[nome][0]
-    anc, _ = plano(nome)
+    anc = plano_corrido(nome) if nome in CORRIDA else plano(nome)[0]
     html = open(src, encoding='utf-8').read()
     inj = ("<script>(function(){const A=%s;const o=window.render;"
            "window.render=function(T){let k=0;while(k<A.length-2&&T>A[k+1][0])k++;"
@@ -69,7 +94,32 @@ def pagina(nome):
     print(out, 'quadros:', math.ceil(anc[-1][0] * 30))
 
 
+def audio_corrido(nome, mudo, saida):
+    """Voz inteira, sem filtro nem compressão (só ganho fixo); a música abaixa por baixo dela."""
+    c, dur = CORRIDA[nome], plano_corrido(nome)[-1][0]
+    wav, musica = os.path.join(BRUTA, c['voz']), PAGINAS[nome][1]
+    d = int(c['D'] * 1000)
+    base = (f"[1:a]aresample=48000,adelay={d}:all=1,apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},asplit[vz1][vz2];"
+            f"[2:a]atrim=start=0.09,asetpts=PTS-STARTPTS,atempo={60.07/dur:.4f},apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},volume=-6dB[mus];"
+            "[mus][vz1]sidechaincompress=threshold=0.03:ratio=5:attack=60:release=600[musd];"
+            f"[musd][vz2]amix=inputs=2:normalize=0,volume={{m}}dB,afade=t=out:st={dur-1.5:.3f}:d=1.5[aout]")
+    ent = ['-i', mudo, '-i', wav, '-i', musica]
+    # 1ª passada mede o volume; a 2ª aplica ganho fixo (sem loudnorm dinâmico, que mexe na voz)
+    r = subprocess.run([FF, '-nostdin', '-hide_banner', *ent, '-filter_complex', base.format(m=0) + ';[aout]ebur128=peak=true[o]',
+                        '-map', '[o]', '-f', 'null', '-'], capture_output=True, text=True, encoding='utf-8', errors='ignore').stderr
+    tail = r[r.rfind('Summary:'):]
+    I = float(tail.split('I:')[1].split('LUFS')[0]); pk = float(tail.split('Peak:')[1].split('dBFS')[0])
+    m = min(-16 - I, -1.0 - pk)
+    print(f'volume medido {I:.1f} LUFS, pico {pk:.1f} dBFS -> ganho {m:+.1f} dB')
+    subprocess.run([FF, '-nostdin', '-v', 'error', '-y', *ent, '-filter_complex', base.format(m=f'{m:.2f}'),
+                    '-map', '0:v', '-map', '[aout]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000',
+                    '-movflags', '+faststart', '-t', f'{dur:.3f}', saida], check=True)
+    print(saida)
+
+
 def audio(nome, mudo, saida):
+    if nome in CORRIDA:
+        return audio_corrido(nome, mudo, saida)
     anc, linhas = plano(nome)
     dur = anc[-1][0]
     wav = os.path.join(BRUTA, f'audio{AUDIO[nome]}.wav')
