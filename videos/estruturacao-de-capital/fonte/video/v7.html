@@ -213,7 +213,7 @@ function render(t){
 
  show($('t3'),t,10.0,11.4,{out:.3});show($('t3b'),t,11.35,12.75);
  const cw=$('circles');
- if(t>=12.7&&t<15.7){cw.style.opacity=1;cw.style.filter='none';cw.style.transform='translate(-50%,-50%)';
+ if(t>=12.7&&t<15.7){cw.style.opacity=1;cw.style.filter='none';cw.style.transform=`translate(-50%,-50%) translateY(${-14*P(t,12.7,15.0)}px) scale(${1+.06*P(t,12.7,15.0)})`;
   const cs=[$('c1'),$('c2'),$('c3')],tx=[150,450,750];
   cs.forEach((c,i)=>{const p=E(P(t,12.8+i*.18,13.5+i*.18));const spread=(1-E(P(t,13.7,14.3)))*110*(i-1);
    let op=p;if(i!==2&&t>14.9)op*=1-P(t,14.9,15.2);

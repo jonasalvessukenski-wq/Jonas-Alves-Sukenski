@@ -70,6 +70,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-fam
 <div id="wall" class="el" style="width:1920px;height:670px">
   <div style="position:absolute;inset:0"><div class="grow" id="r0" style="top:0"></div><div class="grow" id="r1" style="top:360px"></div></div>
 </div>
+<div id="tCD" class="el t">Cada detalhe importa.</div>
 <div id="t5" class="el t">Identificamos possíveis valores pagos a mais<br>nos últimos cinco anos.</div>
 <div id="tax" class="el" style="width:1740px;height:680px">
   <div class="tp" id="tp0"><div class="ph" style="background-image:url(../h/garantia.jpg)"></div><div class="shade"></div><div class="glass"><div class="k">ENQUADRAMENTO</div><div class="d">Atividade classificada em risco maior do que o real.</div></div></div>
@@ -178,7 +179,7 @@ function render(t){
  $('legalJur2').style.opacity=(t>=10.2&&t<12.75)?Math.min(E(P(t,10.2,10.7)),1-P(t,12.4,12.75)):0;
  // ---- círculos (6.25–9.35)
  const cw=$('circles'),c0=0;const C=t-c0;
- if(C>=12.7&&C<15.7){cw.style.opacity=1;cw.style.filter='none';cw.style.transform='translate(-50%,-50%)';
+ if(C>=12.7&&C<15.7){cw.style.opacity=1;cw.style.filter='none';cw.style.transform=`translate(-50%,-50%) translateY(${-14*P(C,12.7,15.0)}px) scale(${1+.06*P(C,12.7,15.0)})`;
   const cs=[$('c1'),$('c2'),$('c3')],tx=[150,450,750];
   cs.forEach((c,i)=>{const p=E(P(C,12.8+i*.18,13.5+i*.18));const spread=(1-E(P(C,13.7,14.3)))*110*(i-1);
    let o=p;if(i!==2&&C>14.9)o*=1-P(C,14.9,15.2);
@@ -200,6 +201,8 @@ function render(t){
   wallCards.forEach(c=>{const a=w0+.05+c.ci*.1+c.ri*.12,p=E(P(t,a,a+.6));c.d.style.opacity=p;c.d.style.transform=`translateY(${(1-p)*70}px) scale(${.9+.1*p})`;c.d.style.filter=`blur(${(1-p)*12}px)`;
    c.d.firstChild.style.transform=`translateX(${(c.ri?-1:1)*18*k}px) scale(${1.02+.04*k})`;});
  } else wall.style.opacity=0;
+ if(t>=21.9&&t<23.15)wall.style.opacity=(+wall.style.opacity)*(1-.75*E(P(t,21.9,22.35)));
+ show($('tCD'),t,21.95,23.15);
 
 
  show($('t5'),t,23.25,26.05);
