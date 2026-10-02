@@ -24,6 +24,8 @@ PAGINAS = {  # página de origem, música de fundo
     '4_Quem_Somos': (os.path.join(V, 'quem-somos', 'fonte', 'qs.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '1_Estruturacao_v2': (os.path.join(FONTE, 'video', 'v7.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '3_Tributario_v2': (os.path.join(V, 'tributario', 'trib_v2.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '1_Estruturacao_v4': (os.path.join(FONTE, 'video', 'v7.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '3_Tributario_v4': (os.path.join(V, 'tributario', 'trib_v4.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
 }
 ENTRA = 0.12   # a voz entra este tanto depois de a frase começar a aparecer na tela
 
@@ -91,6 +93,12 @@ CORRIDA = {
         (18, -0.4, 56.9, 58.6),   # pirâmide gira rápido e a assinatura ATIVE vem com a voz
         (18, 0.6, 58.6, 60.0)]),
 }
+# v4 (02/10 noite): vozes novas do ElevenLabs v4 — Larissa (Estruturação) e Ana Alice (Tributário)
+CORRIDA['1_Estruturacao_v4'] = dict(CORRIDA['1_Estruturacao_v2'], voz='vozA_larissa.mp3')
+CORRIDA['3_Tributario_v4'] = dict(CORRIDA['3_Tributario_v2'], voz='vozB_anaalice.mp3',
+    seg=CORRIDA['3_Tributario_v2']['seg'][:-2] + [
+        (18, -0.3, 56.9, 58.6),   # pirâmide gira; "Antes de qualquer negócio, existe confiança." entra com a voz
+        (19, -0.25, 58.6, 60.0)]) # assinatura ATIVE com o "Ative!"
 
 
 def plano_corrido(nome):

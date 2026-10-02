@@ -119,6 +119,8 @@ VIDEOS = {
   (0, 0, 'Ative.'),
  ]),
 }
+VIDEOS['1_Estruturacao_v4'] = (None, VIDEOS['1_Estruturacao_v2'][1])
+VIDEOS['3_Tributario_v4'] = (None, VIDEOS['3_Tributario_v2'][1][:-1] + [(0, 0, 'Antes de qualquer negócio, existe confiança.'), (0, 0, 'Ative.')])
 
 
 def esc(p):  # caminho para dentro do filtro do ffmpeg
