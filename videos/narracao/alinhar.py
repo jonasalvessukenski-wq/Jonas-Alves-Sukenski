@@ -4,7 +4,8 @@ from difflib import SequenceMatcher
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gerar_guias import VIDEOS
 
-AUDIO = {'1_Estruturacao_de_Capital': 1, '2_Apresentacao_da_Ative': 2, '3_Tributario': 3, '4_Quem_Somos': 4}
+AUDIO = {'1_Estruturacao_de_Capital': 1, '2_Apresentacao_da_Ative': 2, '3_Tributario': 3, '4_Quem_Somos': 4,
+         '1_Estruturacao_v2': '1v2', '3_Tributario_v2': '3v2'}
 BRUTA = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'voz_bruta')
 
 

@@ -22,6 +22,8 @@ PAGINAS = {  # página de origem, música de fundo
     '2_Apresentacao_da_Ative': (os.path.join(V, 'apresentacao-ative', 'inst.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '3_Tributario': (os.path.join(V, 'tributario', 'trib.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '4_Quem_Somos': (os.path.join(V, 'quem-somos', 'fonte', 'qs.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '1_Estruturacao_v2': (os.path.join(FONTE, 'video', 'v7.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '3_Tributario_v2': (os.path.join(V, 'tributario', 'trib_v2.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
 }
 ENTRA = 0.12   # a voz entra este tanto depois de a frase começar a aparecer na tela
 
@@ -53,22 +55,76 @@ CORRIDA = {
         (5, -0.12, 31.0), (6, 0.3, 40.3), (7, -0.12, 46.2),
         (8, -1.49, 53.9),   # Balneário termina e a pirâmide começa a girar
         (8, 0.2, 56.7)]),   # a frase final aparece junto com a voz
+    # seg = (fala k, deslocamento, página de, página até): cada trecho vai do início da sua fala até o início do
+    # próximo trecho; a página pode saltar (corte seco entre cenas) e até voltar, para trocar a ordem das cenas.
+    '1_Estruturacao_v2': dict(voz='audio1_estruturacao_eleven_0210.mp3', D=0.3, fim=1.8, pagina_fim=60.0, seg=[
+        (0, -9, 0.0, 2.9),       # começa em T=0 (deslocamento grande = limitado a 0)
+        (1, -0.3, 2.9, 4.3),     # t2 aparece
+        (2, -0.3, 4.3, 5.55),    # a segunda frase acende na mesma cena
+        (2, 1.6, 5.55, 6.85),    # fim da frase: ícones giram e viram o bloco do logo
+        (3, -0.35, 6.85, 10.0),  # "Prazer, somos a Ative!"
+        (4, -0.3, 10.0, 11.35), (5, -0.3, 11.35, 12.75),
+        (6, -0.3, 12.75, 15.7), (7, -0.3, 15.7, 18.2), (8, -0.3, 18.2, 23.15),
+        (9, -0.3, 23.15, 26.05), (10, -0.3, 26.05, 30.47), (11, -0.3, 30.47, 33.12),
+        (12, -0.3, 33.12, 37.45), (13, -0.3, 37.45, 41.25),
+        (14, -0.3, 50.35, 56.85),  # números antes de "capital começa com preparo" (ordem do texto novo)
+        (15, -0.3, 46.3, 50.35),
+        (16, -0.3, 56.9, 58.6),    # pirâmide gira; "Toda parceria começa com confiança." entra com a voz
+        (17, -0.25, 58.6, 60.0)]),
+    '3_Tributario_v2': dict(voz='audio3_tributario_eleven_0210.mp3', D=0.3, fim=2.5, seg=[
+        (0, -9, 0.0, 2.9),
+        (1, -0.3, 2.9, 4.25),     # t2
+        (2, -0.3, 4.25, 5.6),     # t2b na mesma cena dos ícones
+        (3, -0.4, 5.6, 10.0),     # ícones giram, logo: "É aí que a Ative entra"
+        (4, -0.3, 10.0, 12.75),   # equipe técnica e jurídica + rodapé jurídico
+        (5, -0.3, 12.75, 15.7),   # auditar, recuperar, planejar
+        (6, -0.3, 15.7, 18.2),
+        (7, -0.3, 18.2, 23.15),   # contribuições... e "cada detalhe importa" sobre a parede
+        (9, -0.3, 23.15, 26.05),
+        (10, -0.3, 26.05, 30.47), # três painéis acompanham a enumeração
+        (11, -0.3, 30.47, 33.15),
+        (12, -0.3, 33.15, 37.38), # planejamento + rodapé jurídico
+        (13, -0.3, 37.38, 41.25), # reforma (a segunda frase acende com a voz)
+        (15, -0.3, 41.25, 46.05),
+        (16, -0.3, 46.05, 50.35),
+        (17, -0.3, 50.35, 56.9),
+        (18, -0.4, 56.9, 58.6),   # pirâmide gira rápido e a assinatura ATIVE vem com a voz
+        (18, 0.6, 58.6, 60.0)]),
 }
 
 
 def plano_corrido(nome):
+    """Lista de trechos (T0, T1, página de, página até)."""
     c, voz = CORRIDA[nome], alinhar(nome)
-    anc = [(0.0, 0.0)] + [(c['D'] + voz[k][0] + off, t) for k, off, t in c['anc']]
-    anc.append((c['D'] + voz[-1][1] + c['fim'], 60.0))
-    assert all(b[0] > a[0] and b[1] > a[1] for a, b in zip(anc, anc[1:])), anc
-    return anc
+    if 'seg' not in c:
+        anc = [(0.0, 0.0)] + [(c['D'] + voz[k][0] + off, t) for k, off, t in c['anc']]
+        anc.append((c['D'] + voz[-1][1] + c['fim'], 60.0))
+        assert all(b[0] > a[0] and b[1] > a[1] for a, b in zip(anc, anc[1:])), anc
+        return [(a[0], b[0], a[1], b[1]) for a, b in zip(anc, anc[1:])]
+    ini = [max(0.0, c['D'] + voz[k][0] + off) for k, off, _, _ in c['seg']]
+    fim = c['D'] + voz[-1][1] + c['fim']
+    segs = [(T0, T1, p0, p1) for T0, T1, (_, _, p0, p1) in zip(ini, ini[1:] + [fim], c['seg'])]
+    assert all(T1 > T0 for T0, T1, _, _ in segs), segs
+    return segs
+
+
+def suavizar(segs, ent=0.6, sai=0.4, lim=0.85):
+    """Trecho lento: a entrada e a saída da cena correm em 1x e só o miolo (texto parado) é esticado,
+    para a animação não ficar arrastada."""
+    out = []
+    for T0, T1, p0, p1 in segs:
+        if p1 > p0 and (p1 - p0) / (T1 - T0) < lim and p1 - p0 > ent + sai + 0.2:
+            out += [(T0, T0 + ent, p0, p0 + ent), (T0 + ent, T1 - sai, p0 + ent, p1 - sai), (T1 - sai, T1, p1 - sai, p1)]
+        else:
+            out.append((T0, T1, p0, p1))
+    return out
 
 
 def mostrar(nome):
     if nome in CORRIDA:
-        anc = plano_corrido(nome)
-        print(f'{nome}: voz corrida, duração nova {anc[-1][0]:.2f}s')
-        for (T0, t0), (T1, t1) in zip(anc, anc[1:]):
+        segs = plano_corrido(nome)
+        print(f'{nome}: voz corrida, duração nova {segs[-1][1]:.2f}s')
+        for T0, T1, t0, t1 in segs:
             print(f'  novo {T0:6.2f}-{T1:6.2f}  ← página {t0:6.2f}-{t1:6.2f}   velocidade da página {(t1-t0)/(T1-T0):4.2f}x')
         return
     anc, linhas = plano(nome)
@@ -80,23 +136,30 @@ def mostrar(nome):
 
 def pagina(nome):
     src = PAGINAS[nome][0]
-    anc = plano_corrido(nome) if nome in CORRIDA else plano(nome)[0]
+    if nome in CORRIDA:
+        segs = plano_corrido(nome)
+        if CORRIDA[nome].get('seg'):
+            segs = suavizar(segs)
+    else:
+        anc = plano(nome)[0]
+        segs = [(a[0], b[0], a[1], b[1]) for a, b in zip(anc, anc[1:])]
+    dur = segs[-1][1]
+    inj = ("<script>(function(){const S=%s;const o=window.render;"
+           "window.render=function(T){let k=0;while(k<S.length-1&&T>=S[k][1])k++;"
+           "const [T0,T1,t0,t1]=S[k];const u=Math.min(1,Math.max(0,(T-T0)/(T1-T0)));"
+           "return o(t0+(t1-t0)*u);};window.DURACAO=%s;})();</script>\n" % (json.dumps([[round(x, 3) for x in s] for s in segs]), round(dur, 3)))
     html = open(src, encoding='utf-8').read()
-    inj = ("<script>(function(){const A=%s;const o=window.render;"
-           "window.render=function(T){let k=0;while(k<A.length-2&&T>A[k+1][0])k++;"
-           "const [T0,t0]=A[k],[T1,t1]=A[k+1];const u=Math.min(1,Math.max(0,(T-T0)/(T1-T0)));"
-           "return o(t0+(t1-t0)*u);};window.DURACAO=%s;})();</script>\n" % (json.dumps([[round(a, 3), round(b, 3)] for a, b in anc]), round(anc[-1][0], 3)))
     # entra logo depois do script clássico que define render (antes do módulo 3D)
     marca = '<script type="importmap">' if '<script type="importmap">' in html else '<script type="module">'
     html = html.replace(marca, inj + marca, 1)
     out = os.path.join(FONTE, 'video', f'narr_{nome}.html')
     open(out, 'w', encoding='utf-8', newline='\n').write(html)
-    print(out, 'quadros:', math.ceil(anc[-1][0] * 30))
+    print(out, 'quadros:', math.ceil(dur * 30))
 
 
 def audio_corrido(nome, mudo, saida):
     """Voz inteira, sem filtro nem compressão (só ganho fixo); a música abaixa por baixo dela."""
-    c, dur = CORRIDA[nome], plano_corrido(nome)[-1][0]
+    c, dur = CORRIDA[nome], plano_corrido(nome)[-1][1]
     wav, musica = os.path.join(BRUTA, c['voz']), PAGINAS[nome][1]
     d = int(c['D'] * 1000)
     base = (f"[1:a]aresample=48000,adelay={d}:all=1,apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},asplit[vz1][vz2];"

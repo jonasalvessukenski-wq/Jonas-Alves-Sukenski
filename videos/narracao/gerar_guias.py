@@ -76,6 +76,48 @@ VIDEOS = {
   (46.2, 53.5, 'Daqui de Balneário Camboriú, levamos essa segurança a cada cliente.'),
   (56.9, 59.9, 'Antes de qualquer negócio, existe confiança.'),
  ]),
+ # v2 (02/10/2026): textos novos gravados no ElevenLabs; o tempo aqui é o da cena na página v7/trib v2
+ '1_Estruturacao_v2': (None, [
+  (0.0, 2.9, 'O crédito da sua empresa vem com prazo curto, juros altos e limite baixo?'),
+  (2.9, 4.3, 'Talvez o problema não seja a empresa.'),
+  (4.3, 6.85, 'Pode ser a forma como ela está sendo apresentada.'),
+  (6.85, 10.0, 'Prazer, somos a Ative!'),
+  (10.0, 11.35, 'Sua empresa tem mais a oferecer do que os números mostram.'),
+  (11.35, 12.75, 'Nós ajudamos as instituições financeiras a enxergar esse valor.'),
+  (12.75, 15.7, 'Organizamos as informações, desenhamos a estratégia e preparamos sua empresa para acessar capital.'),
+  (15.7, 18.2, 'Porque as possibilidades vão além do seu banco.'),
+  (18.2, 23.15, 'Crédito bancário, mercado de capitais, fomento.'),
+  (23.15, 26.05, 'O caminho começa pela sua empresa.'),
+  (26.05, 30.47, 'Identificamos as oportunidades e conectamos a sua empresa com mais de trinta instituições.'),
+  (30.47, 33.12, 'Do diagnóstico ao capital no caixa, seguimos do seu lado.'),
+  (33.12, 37.45, 'Energia, indústria, mercado imobiliário.'),
+  (37.45, 41.25, 'Mais de cento e dezoito milhões de reais, só em 2026.'),
+  (50.35, 56.85, 'Mais de setenta empresas em relacionamento, em dezoito estados.'),
+  (46.3, 50.35, 'Porque capital começa com preparo.'),
+  (56.9, 58.6, 'E toda parceria começa com confiança.'),
+  (58.6, 60.0, 'Ative.'),
+ ]),
+ '3_Tributario_v2': (None, [
+  (0, 0, 'Sua empresa está pagando mais tributos do que deveria?'),
+  (0, 0, 'E se parte do dinheiro que sua empresa paga nesses tributos pudesse voltar para o caixa da sua empresa?'),
+  (0, 0, 'Uma auditoria tributária pode revelar valores pagos a mais e oportunidades de economia para o seu negócio.'),
+  (0, 0, 'É aí que a Ative entra.'),
+  (0, 0, 'Nossa equipe técnica e jurídica é especializada em auditoria tributária.'),
+  (0, 0, 'Auditar, recuperar e planejar.'),
+  (0, 0, 'Analisamos toda a estrutura tributária da sua empresa.'),
+  (0, 0, 'Contribuições, enquadramentos, créditos e planejamento.'),
+  (0, 0, 'Cada detalhe importa.'),
+  (0, 0, 'Identificamos possíveis valores pagos a mais nos últimos cinco anos.'),
+  (0, 0, 'Um enquadramento incorreto, estruturas diferentes tratadas como uma só ou cálculos com dados errados podem pesar no seu caixa.'),
+  (0, 0, 'Do diagnóstico à economia no caixa, seguimos do seu lado.'),
+  (0, 0, 'E olhamos para o futuro, com planejamento tributário e estratégia jurídica, dentro da lei.'),
+  (0, 0, 'A reforma tributária muda as regras.'),
+  (0, 0, 'Sua empresa precisa estar preparada.'),
+  (0, 0, 'Tudo começa pelo diagnóstico.'),
+  (0, 0, 'Porque nem sempre o problema está onde aparece.'),
+  (0, 0, 'Mais de cento e trinta empresas em relacionamento, em dezenove estados.'),
+  (0, 0, 'Ative.'),
+ ]),
 }
 
 
@@ -113,6 +155,6 @@ if __name__ == '__main__':
         for nome, (src, falas) in VIDEOS.items():
             if so and nome not in so:
                 continue
-            if not os.path.exists(src):
+            if src is None or not os.path.exists(src):
                 print('FALTA', src); continue
             guia(nome, src, falas, out_dir, tmp)
