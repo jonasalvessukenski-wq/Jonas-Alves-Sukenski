@@ -6,7 +6,7 @@ from gerar_guias import VIDEOS
 
 AUDIO = {'1_Estruturacao_de_Capital': 1, '2_Apresentacao_da_Ative': 2, '3_Tributario': 3, '4_Quem_Somos': 4,
          '1_Estruturacao_v2': '1v2', '3_Tributario_v2': '3v2',
-         '1_Estruturacao_v4': '1v4', '3_Tributario_v4': '3v4'}
+         '1_Estruturacao_v4': '1v4', '3_Tributario_v4': '3v4', '2_Apresentacao_v4': '2v4'}
 BRUTA = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'voz_bruta')
 
 
@@ -17,6 +17,9 @@ def norm(w):
 
 def alinhar(nome):
     i = AUDIO[nome]
+    manual = os.path.join(BRUTA, f'audio{i}_falas.json')  # limites achados pelas pausas da voz
+    if os.path.exists(manual):
+        return [tuple(x) for x in json.load(open(manual))]
     segs = json.load(open(os.path.join(BRUTA, f'audio{i}.json'), encoding='utf-8'))
     words = [(a, b, norm(w)) for s in segs for a, b, w in s['words'] if norm(w)]
     falas = VIDEOS[nome][1]

@@ -26,6 +26,7 @@ PAGINAS = {  # página de origem, música de fundo
     '3_Tributario_v2': (os.path.join(V, 'tributario', 'trib_v2.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '1_Estruturacao_v4': (os.path.join(FONTE, 'video', 'v7.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '3_Tributario_v4': (os.path.join(V, 'tributario', 'trib_v4.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '2_Apresentacao_v4': (os.path.join(V, 'apresentacao-ative', 'inst_v4.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
 }
 ENTRA = 0.12   # a voz entra este tanto depois de a frase começar a aparecer na tela
 
@@ -95,10 +96,15 @@ CORRIDA = {
 }
 # v4 (02/10 noite): vozes novas do ElevenLabs v4 — Larissa (Estruturação) e Ana Alice (Tributário)
 CORRIDA['1_Estruturacao_v4'] = dict(CORRIDA['1_Estruturacao_v2'], voz='vozA_larissa.mp3')
+CORRIDA['2_Apresentacao_v4'] = dict(voz='vozC_aline.mp3', D=1.0, fim=2.5, seg=[(0, -9, 0.0, 102.8)])
 CORRIDA['3_Tributario_v4'] = dict(CORRIDA['3_Tributario_v2'], voz='vozB_anaalice.mp3',
     seg=CORRIDA['3_Tributario_v2']['seg'][:-2] + [
         (18, -0.3, 56.9, 58.6),   # pirâmide gira; "Antes de qualquer negócio, existe confiança." entra com a voz
         (19, -0.25, 58.6, 60.0)]) # assinatura ATIVE com o "Ative!"
+# v4 (Larissa, Ana Alice): elas dizem a fala do logo mais depressa; o logo ganha ~0,8 s da fala seguinte
+# para não correr (a frase seguinte entra um pouco depois da voz, e o logo fica em ~1,1x / 1,5x)
+CORRIDA['1_Estruturacao_v4']['seg'] = [(4, 0.5, 10.0, 11.35) if s[0] == 4 else s for s in CORRIDA['1_Estruturacao_v4']['seg']]
+CORRIDA['3_Tributario_v4']['seg'] = [(4, 0.6, 10.0, 12.75) if s[0] == 4 else s for s in CORRIDA['3_Tributario_v4']['seg']]
 
 
 def plano_corrido(nome):
@@ -165,13 +171,25 @@ def pagina(nome):
     print(out, 'quadros:', math.ceil(dur * 30))
 
 
+def trilha(dur, compasso=60 / 136 * 4, xf=1.0):
+    """Até 63 s a música só estica um pouco. Mais longa, repete um trecho do meio cortado no compasso
+    (136 bpm), sem mexer no andamento; o final da música continua no final do vídeo."""
+    if dur <= 63:
+        return f"[2:a]atrim=start=0.09,asetpts=PTS-STARTPTS,atempo={60.07/dur:.4f},apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},volume=-6dB[mus];"
+    R = math.ceil((dur - 59.98) / compasso) * compasso
+    Y = min(49.5, 8 + R); Z = Y - R
+    return (f"[2:a]asplit[ma][mb];[ma]atrim=start=0.09:end={Y:.3f},asetpts=PTS-STARTPTS[m1];"
+            f"[mb]atrim=start={Z - xf:.3f},asetpts=PTS-STARTPTS[m2];[m1][m2]acrossfade=d={xf}[mx];"
+            f"[mx]apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},volume=-6dB[mus];")
+
+
 def audio_corrido(nome, mudo, saida):
     """Voz inteira, sem filtro nem compressão (só ganho fixo); a música abaixa por baixo dela."""
     c, dur = CORRIDA[nome], plano_corrido(nome)[-1][1]
     wav, musica = os.path.join(BRUTA, c['voz']), PAGINAS[nome][1]
     d = int(c['D'] * 1000)
     base = (f"[1:a]aresample=48000,adelay={d}:all=1,apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},asplit[vz1][vz2];"
-            f"[2:a]atrim=start=0.09,asetpts=PTS-STARTPTS,atempo={60.07/dur:.4f},apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},volume=-6dB[mus];"
+            + trilha(dur) +
             "[mus][vz1]sidechaincompress=threshold=0.03:ratio=5:attack=60:release=600[musd];"
             f"[musd][vz2]amix=inputs=2:normalize=0,volume={{m}}dB,afade=t=out:st={dur-1.5:.3f}:d=1.5[aout]")
     ent = ['-i', mudo, '-i', wav, '-i', musica]
