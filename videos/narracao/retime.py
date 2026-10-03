@@ -26,7 +26,10 @@ PAGINAS = {  # página de origem, música de fundo
     '3_Tributario_v2': (os.path.join(V, 'tributario', 'trib_v2.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '1_Estruturacao_v4': (os.path.join(FONTE, 'video', 'v7.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '3_Tributario_v4': (os.path.join(V, 'tributario', 'trib_v4.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '3_Tributario_v5': (os.path.join(V, 'tributario', 'trib_v5.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v4': (os.path.join(V, 'apresentacao-ative', 'inst_v4.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '1_Estruturacao_v5': (os.path.join(FONTE, 'video', 'v8.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '2_Apresentacao_v5': (os.path.join(V, 'apresentacao-ative', 'inst_v5.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
 }
 ENTRA = 0.12   # a voz entra este tanto depois de a frase começar a aparecer na tela
 
@@ -97,6 +100,7 @@ CORRIDA = {
 # v4 (02/10 noite): vozes novas do ElevenLabs v4 — Larissa (Estruturação) e Ana Alice (Tributário)
 CORRIDA['1_Estruturacao_v4'] = dict(CORRIDA['1_Estruturacao_v2'], voz='vozA_larissa.mp3')
 CORRIDA['2_Apresentacao_v4'] = dict(voz='vozC_aline.mp3', D=1.0, fim=2.5, seg=[(0, -9, 0.0, 102.8)])
+CORRIDA['2_Apresentacao_v5'] = CORRIDA['2_Apresentacao_v4']  # v5 = v4 + imagens de IA por cima
 CORRIDA['3_Tributario_v4'] = dict(CORRIDA['3_Tributario_v2'], voz='vozB_anaalice.mp3',
     seg=CORRIDA['3_Tributario_v2']['seg'][:-2] + [
         (18, -0.3, 56.9, 58.6),   # pirâmide gira; "Antes de qualquer negócio, existe confiança." entra com a voz
@@ -105,6 +109,8 @@ CORRIDA['3_Tributario_v4'] = dict(CORRIDA['3_Tributario_v2'], voz='vozB_anaalice
 # para não correr (a frase seguinte entra um pouco depois da voz, e o logo fica em ~1,1x / 1,5x)
 CORRIDA['1_Estruturacao_v4']['seg'] = [(4, 0.5, 10.0, 11.35) if s[0] == 4 else s for s in CORRIDA['1_Estruturacao_v4']['seg']]
 CORRIDA['3_Tributario_v4']['seg'] = [(4, 0.6, 10.0, 12.75) if s[0] == 4 else s for s in CORRIDA['3_Tributario_v4']['seg']]
+CORRIDA['3_Tributario_v5'] = CORRIDA['3_Tributario_v4']
+CORRIDA['1_Estruturacao_v5'] = CORRIDA['1_Estruturacao_v4']  # v5 = v4 + imagens de IA por cima
 
 
 def plano_corrido(nome):
@@ -161,7 +167,7 @@ def pagina(nome):
     inj = ("<script>(function(){const S=%s;const o=window.render;"
            "window.render=function(T){let k=0;while(k<S.length-1&&T>=S[k][1])k++;"
            "const [T0,T1,t0,t1]=S[k];const u=Math.min(1,Math.max(0,(T-T0)/(T1-T0)));"
-           "return o(t0+(t1-t0)*u);};window.DURACAO=%s;})();</script>\n" % (json.dumps([[round(x, 3) for x in s] for s in segs]), round(dur, 3)))
+           "const r=o(t0+(t1-t0)*u);window.renderReal&&window.renderReal(T);return r;};window.DURACAO=%s;})();</script>\n" % (json.dumps([[round(x, 3) for x in s] for s in segs]), round(dur, 3)))
     html = open(src, encoding='utf-8').read()
     # entra logo depois do script clássico que define render (antes do módulo 3D)
     marca = '<script type="importmap">' if '<script type="importmap">' in html else '<script type="module">'
