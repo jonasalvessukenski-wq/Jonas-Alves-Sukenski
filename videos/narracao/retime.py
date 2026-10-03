@@ -33,6 +33,7 @@ PAGINAS = {  # página de origem, música de fundo
     '2_Apresentacao_v6': (os.path.join(V, 'apresentacao-ative', 'inst_v6.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '1_Estruturacao_v6': (os.path.join(FONTE, 'video', 'v9.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v5': (os.path.join(V, 'apresentacao-ative', 'inst_v5.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '2_Apresentacao_v7': (os.path.join(V, 'apresentacao-ative', 'inst_v7.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
 }
 ENTRA = 0.12   # a voz entra este tanto depois de a frase começar a aparecer na tela
 
@@ -117,6 +118,13 @@ CORRIDA['1_Estruturacao_v5'] = CORRIDA['1_Estruturacao_v4']
 CORRIDA['1_Estruturacao_v6'] = CORRIDA['1_Estruturacao_v4']  # v6 = v4 + cenas reconstruídas em HTML
 CORRIDA['3_Tributario_v6'] = CORRIDA['3_Tributario_v4']
 CORRIDA['2_Apresentacao_v6'] = CORRIDA['2_Apresentacao_v4']  # v5 = v4 + imagens de IA por cima
+# v7 (03/10 tarde): abertura de 6 s (a voz inteira entra em 4,6 s, sem corte), cena "Tudo começa pelo DIAGNÓSTICO"
+# até a fala 4, perguntas uma por tela. A página fica parada em t=0 (cenas novas vivem em renderReal) e corre 1:1
+# a partir de t=10,9 — tudo da v6 acontece 3,6 s mais tarde. abre = (ganho da música antes da voz em dB, início e fim
+# da descida suave até o nível normal). Música medida (03/10): na v4/v6 ela ficava a -40 LUFS sozinha e -48 LUFS sob a
+# voz (inaudível); aqui mus_db=+4 e duck mais leve dão -20 LUFS na abertura e -32 LUFS sob a voz (voz a -16).
+CORRIDA['2_Apresentacao_v7'] = dict(voz='vozC_aline.mp3', D=4.6, fim=2.5, abre=(9.0, 3.0, 4.6), mus_db=4, duck=(0.05, 2.5),
+                                    seg=[(0, -9, 0.0, 0.0), (3, -0.3, 10.9, 102.8)])
 
 
 def plano_corrido(nome):
@@ -183,16 +191,16 @@ def pagina(nome):
     print(out, 'quadros:', math.ceil(dur * 30))
 
 
-def trilha(dur, compasso=60 / 136 * 4, xf=1.0):
+def trilha(dur, compasso=60 / 136 * 4, xf=1.0, mus_db=-6):
     """Até 63 s a música só estica um pouco. Mais longa, repete um trecho do meio cortado no compasso
     (136 bpm), sem mexer no andamento; o final da música continua no final do vídeo."""
     if dur <= 63:
-        return f"[2:a]atrim=start=0.09,asetpts=PTS-STARTPTS,atempo={60.07/dur:.4f},apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},volume=-6dB[mus];"
+        return f"[2:a]atrim=start=0.09,asetpts=PTS-STARTPTS,atempo={60.07/dur:.4f},apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},volume={mus_db}dB[mus];"
     R = math.ceil((dur - 59.98) / compasso) * compasso
     Y = min(49.5, 8 + R); Z = Y - R
     return (f"[2:a]asplit[ma][mb];[ma]atrim=start=0.09:end={Y:.3f},asetpts=PTS-STARTPTS[m1];"
             f"[mb]atrim=start={Z - xf:.3f},asetpts=PTS-STARTPTS[m2];[m1][m2]acrossfade=d={xf}[mx];"
-            f"[mx]apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},volume=-6dB[mus];")
+            f"[mx]apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},volume={mus_db}dB[mus];")
 
 
 def audio_corrido(nome, mudo, saida):
@@ -200,9 +208,14 @@ def audio_corrido(nome, mudo, saida):
     c, dur = CORRIDA[nome], plano_corrido(nome)[-1][1]
     wav, musica = os.path.join(BRUTA, c['voz']), PAGINAS[nome][1]
     d = int(c['D'] * 1000)
+    env, mus = '', 'mus'
+    if c.get('abre'):  # música com mais presença antes da voz, descendo suavemente até o nível normal
+        g, t0, t1 = c['abre']; g = 10 ** (g / 20)
+        env = f"[mus]volume='if(lt(t,{t0}),{g:.3f},if(lt(t,{t1}),1+({g:.3f}-1)*({t1}-t)/({t1 - t0}),1))':eval=frame[musE];"; mus = 'musE'
+    th, ratio = c.get('duck', (0.03, 5))  # quanto a música abaixa sob a voz (limiar linear, razão)
     base = (f"[1:a]aresample=48000,adelay={d}:all=1,apad=whole_dur={dur:.3f},atrim=0:{dur:.3f},asplit[vz1][vz2];"
-            + trilha(dur) +
-            "[mus][vz1]sidechaincompress=threshold=0.03:ratio=5:attack=60:release=600[musd];"
+            + trilha(dur, mus_db=c.get('mus_db', -6)) + env +
+            f"[{mus}][vz1]sidechaincompress=threshold={th}:ratio={ratio}:attack=60:release=600[musd];"
             f"[musd][vz2]amix=inputs=2:normalize=0,volume={{m}}dB,afade=t=out:st={dur-1.5:.3f}:d=1.5[aout]")
     ent = ['-i', mudo, '-i', wav, '-i', musica]
     # 1ª passada mede o volume; a 2ª aplica ganho fixo (sem loudnorm dinâmico, que mexe na voz)
@@ -212,6 +225,10 @@ def audio_corrido(nome, mudo, saida):
     I = float(tail.split('I:')[1].split('LUFS')[0]); pk = float(tail.split('Peak:')[1].split('dBFS')[0])
     m = min(-16 - I, -1.0 - pk)
     print(f'volume medido {I:.1f} LUFS, pico {pk:.1f} dBFS -> ganho {m:+.1f} dB')
+    if os.environ.get('RETIME_MUS'):  # grava só a música (já abaixada sob a voz e com o ganho final) para medir
+        so_mus = base.format(m=f'{m:.2f}').replace('[musd][vz2]amix=inputs=2:normalize=0,', '[vz2]anullsink;[musd]')
+        subprocess.run([FF, '-nostdin', '-v', 'error', '-y', *ent, '-filter_complex', so_mus, '-map', '[aout]', '-ar', '48000',
+                        os.environ['RETIME_MUS']], check=True)
     subprocess.run([FF, '-nostdin', '-v', 'error', '-y', *ent, '-filter_complex', base.format(m=f'{m:.2f}'),
                     '-map', '0:v', '-map', '[aout]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000',
                     '-movflags', '+faststart', '-t', f'{dur:.3f}', saida], check=True)
