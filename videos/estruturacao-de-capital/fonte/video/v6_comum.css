@@ -1,0 +1,27 @@
+/* v6 (03/10/2026): cenas reconstruídas em HTML/SVG a partir das referências de IA — nada colado */
+.v6{position:absolute;inset:0;opacity:0;overflow:hidden;z-index:50;will-change:opacity,filter;font-family:M,sans-serif}
+.v6 .cam{position:absolute;inset:0;will-change:transform}
+.v6.azul{background:radial-gradient(ellipse at 50% 45%,#1e9ff0 0%,#008DE6 55%,#0079cf 100%)}
+.v6.transp{background:transparent;pointer-events:none}
+.v6 .titulo{position:absolute;left:0;right:0;top:112px;text-align:center;color:#fff;font-weight:800;font-size:56px;letter-spacing:-.5px;opacity:0}
+/* passos */
+.v6 .passo{position:absolute;width:820px;height:300px;border-radius:28px;background:#fff;box-shadow:0 30px 60px rgba(0,30,90,.28),0 6px 16px rgba(0,30,90,.18);opacity:0;will-change:transform,opacity,filter}
+.v6 .passo .selo{position:absolute;left:44px;top:72px;width:150px;height:150px;border-radius:50%;background:#000050;box-shadow:0 0 0 4px #fff,0 0 0 7px #C9A24B}
+.v6 .passo .selo svg{position:absolute;left:39px;top:39px;width:72px;height:72px;fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.v6 .passo .num{position:absolute;left:150px;top:58px;width:64px;height:36px;border-radius:18px;background:#fff;color:#000050;font-weight:800;font-size:22px;line-height:36px;text-align:center;box-shadow:0 0 0 3px #C9A24B;letter-spacing:.5px}
+.v6 .passo h3{position:absolute;left:236px;top:78px;color:#000050;font-weight:800;font-size:40px;letter-spacing:-.6px}
+.v6 .passo p{position:absolute;left:236px;top:138px;width:540px;color:#3A3F4B;font-weight:600;font-size:26px;line-height:1.3}
+.v6 .passo .sub{position:absolute;left:236px;top:232px;width:70px;height:5px;border-radius:3px;background:#C9A24B}
+.v6 .liga{position:absolute;inset:0;width:1920px;height:1080px;fill:none;stroke:#2FE1F2;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+/* degraus */
+.v6 .fala{position:absolute;left:120px;color:#fff;font-weight:800;font-size:92px;line-height:1.06;letter-spacing:-2px;white-space:nowrap;opacity:0}
+.v6 .fala.ciano{color:#2FE1F2}
+.v6 .deg{position:absolute;inset:0;width:1920px;height:1080px}
+/* ondas */
+.v6 .onda{position:absolute;inset:0;width:1920px;height:1080px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round}
+.v6 .lin{position:absolute;left:0;right:0;text-align:center;color:#fff;font-weight:600;font-size:60px;letter-spacing:-.5px;opacity:0;white-space:nowrap}
+.v6 .lin.forte{font-weight:800;font-size:92px;letter-spacing:-2px}
+/* feixes de luz + ícone de traço (cenas de texto) */
+.v6 .feixe{position:absolute;top:-40%;width:260px;height:180%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.13),rgba(255,255,255,0));transform:rotate(-28deg);mix-blend-mode:screen}
+.v6 .ico{position:absolute;width:220px;height:220px;fill:none;stroke:#2FE1F2;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+.v6 .fita{position:absolute;inset:0;width:1920px;height:1080px;fill:none;stroke-linecap:round}

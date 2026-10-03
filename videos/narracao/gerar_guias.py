@@ -165,3 +165,6 @@ if __name__ == '__main__':
             guia(nome, src, falas, out_dir, tmp)
 VIDEOS['2_Apresentacao_v5'] = VIDEOS['2_Apresentacao_v4']
 VIDEOS['1_Estruturacao_v5'] = VIDEOS['1_Estruturacao_v4']
+VIDEOS['1_Estruturacao_v6'] = VIDEOS['1_Estruturacao_v4']
+VIDEOS['3_Tributario_v6'] = VIDEOS['3_Tributario_v4']
+VIDEOS['2_Apresentacao_v6'] = VIDEOS['2_Apresentacao_v4']
