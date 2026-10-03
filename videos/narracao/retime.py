@@ -34,6 +34,7 @@ PAGINAS = {  # página de origem, música de fundo
     '1_Estruturacao_v6': (os.path.join(FONTE, 'video', 'v9.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v5': (os.path.join(V, 'apresentacao-ative', 'inst_v5.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v7': (os.path.join(V, 'apresentacao-ative', 'inst_v7.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '2_Apresentacao_v8': (os.path.join(V, 'apresentacao-ative', 'inst_v8.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
 }
 ENTRA = 0.12   # a voz entra este tanto depois de a frase começar a aparecer na tela
 
@@ -125,6 +126,12 @@ CORRIDA['2_Apresentacao_v6'] = CORRIDA['2_Apresentacao_v4']  # v5 = v4 + imagens
 # voz (inaudível); aqui mus_db=+4 e duck mais leve dão -20 LUFS na abertura e -32 LUFS sob a voz (voz a -16).
 CORRIDA['2_Apresentacao_v7'] = dict(voz='vozC_aline.mp3', D=4.6, fim=2.5, abre=(9.0, 3.0, 4.6), mus_db=4, duck=(0.05, 2.5),
                                     seg=[(0, -9, 0.0, 0.0), (3, -0.3, 10.9, 102.8)])
+# v8 (03/10 fim de tarde, correção do Jonas): a abertura ORIGINAL volta (azul + tile branco + logo), precedida pelo
+# campo de ícones em navy dos outros vídeos só com música (0–3,0 s, em renderReal); o tile anima de 3,0 a 5,1 (1:1),
+# o logo completo segura de 5,1 a 5,7 enquanto a voz diz "Esta é a Ative!" (4,64–5,9) e daí a página corre 1:1, 3,6 s atrás da v6.
+# DIAGNÓSTICO vai para onde a narração o diz (página 86,12) e os três cartões do tributário entram na cena das falas 15-16.
+CORRIDA['2_Apresentacao_v8'] = dict(voz='vozC_aline.mp3', D=4.6, fim=2.5, abre=(9.0, 3.4, 4.6), mus_db=4, duck=(0.05, 2.5),
+                                    seg=[(0, -9, 0.0, 0.0), (0, -1.64, 0.0, 2.1), (0, 0.46, 2.1, 2.1), (1, -0.26, 2.1, 102.8)])
 
 
 def plano_corrido(nome):
