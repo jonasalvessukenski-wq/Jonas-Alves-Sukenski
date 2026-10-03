@@ -36,6 +36,7 @@ PAGINAS = {  # página de origem, música de fundo
     '2_Apresentacao_v7': (os.path.join(V, 'apresentacao-ative', 'inst_v7.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v8': (os.path.join(V, 'apresentacao-ative', 'inst_v8.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v9': (os.path.join(V, 'apresentacao-ative', 'inst_v9.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '2_Apresentacao_v10': (os.path.join(V, 'apresentacao-ative', 'inst_v10.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
 }
 ENTRA = 0.12   # a voz entra este tanto depois de a frase começar a aparecer na tela
 
@@ -138,6 +139,7 @@ CORRIDA['2_Apresentacao_v8'] = dict(voz='vozC_aline.mp3', D=4.6, fim=2.5, abre=(
 # frase vem numa tela nova, sem logo. Daí a página corre 1:1, 2,0 s atrás da v6.
 CORRIDA['2_Apresentacao_v9'] = dict(voz='vozC_aline.mp3', D=3.0, fim=2.5, abre=(9.0, 2.0, 3.0), mus_db=4, duck=(0.05, 2.5),
                                     seg=[(0, -9, 0.0, 2.1), (0, -0.94, 2.1, 2.1), (1, -0.26, 2.1, 102.8)])
+CORRIDA['2_Apresentacao_v10'] = CORRIDA['2_Apresentacao_v9']  # v10 (03/10 noite): mesmo tempo da v9; mudam só as telas das pranchas aprovadas
 
 
 def plano_corrido(nome):
