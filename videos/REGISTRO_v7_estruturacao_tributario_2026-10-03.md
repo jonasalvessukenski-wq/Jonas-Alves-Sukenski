@@ -58,6 +58,33 @@ O ganho final do `retime.py audio` é por pico (−2,5 dB na Estruturação, −
 altos); por isso o Tributário fecha 2 dB mais baixo que a Estruturação e 4 dB abaixo da Apresentação (−16,0). Não foi
 posto limitador para não processar a voz. Se o Jonas quiser os três no mesmo nível, é uma decisão à parte.
 
+## Revisão do Jonas (04/10 ~00h30) e correção v7b
+Ele assistiu aos dois: "todos ficaram maravilhosos", três ajustes pequenos. (1) Tributário: tirar o aviso "A Ative não
+realiza atividade privativa de advocacia…" do rodapé da tela branca "Equipe técnica e jurídica…" e da placa "Planejamento
+tributário". (2) O fechamento não estava igual ao da Apresentação v12: a frase "Antes de qualquer negócio…" e o ATIVE
+caíram no meio do símbolo. (3) O mesmo fechamento na Estruturação ("é a única falha do outro também").
+
+**Causa do (2):** o mesmo erro da v11 → v12. Na montagem, um comentário `// v7: …` entrou no meio da linha e engoliu
+`filter` e `transform` do ATIVE e da frase; sem o `translateY`, os dois ficaram no centro da tela. O still de conferência
+mostrou "ATIVE presente" e eu não comparei a altura com a v12. Regra nova: em troca por string, só comentário de bloco.
+
+**Correção (v7b, mesmos arquivos, sem nova versão de nome):** comentários de bloco; frase a 290 px abaixo do centro e
+ATIVE a 262 px (valores da v12); no Tributário as duas linhas do aviso passam a opacidade 0. Só os quadros afetados
+foram refeitos (detecção automática pela visibilidade dos elementos que mudaram; cada trecho em uma sessão, com sobra;
+emenda no quadro em que a sessão nova coincide com a antiga, YMAX ≤ 3):
+
+| Nº | Vídeo | Trecho refeito | Emenda (pares vizinhos → emenda) |
+|---|---|---|---|
+| 1 | Tributário | 580–685 (tela branca, 19,3–22,9 s) | 42, 53 → 64 (entrada do texto) · fim 3, 0 |
+| 2 | Tributário | 1569–1727 (placa Planejamento, 52,3–57,6 s) | 51, 59 → 67 (entrada da placa) · fim 11, 15 |
+| 3 | Tributário | 2175–2371 (encerramento, 72,5 s ao fim) | 227, 227 → 235 (símbolo girando) |
+| 4 | Estruturação | 1884–2069 (encerramento, 62,8 s ao fim) | 215, 221 → 220 (símbolo girando) |
+
+Tributário v7b: 1:19,07, 28,2 MB, −20,4 LUFS, os mesmos 3 trechos parados de antes (telas brancas e o feixe no ponto
+de retorno do seno). Estruturação v7b: 1:09,00, 25,9 MB, −18,4 LUFS, os mesmos 2 trechos parados (telas brancas).
+Conferido no arquivo final: frase sob o símbolo e ATIVE embaixo da pirâmide nos dois, lado a lado com a v12. Observação para o Jonas: o aviso de advocacia existia por prudência com a OAB (a Ative não é
+escritório); saiu das telas a pedido dele; se quiser, pode ir para a descrição do vídeo.
+
 ## Arquivos
 `estruturacao-de-capital/fonte/video/v10.html` (Estruturação v7) · `tributario/trib_v7.html` · `fonte/video/v7_comum.js` ·
 `fonte/video/narr_1_Estruturacao_v7.html` e `narr_3_Tributario_v7.html` (gerados pelo `retime.py pagina`) ·

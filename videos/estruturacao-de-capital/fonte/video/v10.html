@@ -408,8 +408,8 @@ function render(t){
   const sh=$('shine');sh.style.opacity=t>59.0?Math.sin(Math.PI*P(t,59.0,59.95))*.9:0;sh.style.backgroundPosition=`${100-100*P(t,59.0,59.95)}% 0`;sh.style.transform=`scale(${push})`;sh.style.transformOrigin='50% 45%';$('gl').style.filter=`blur(${(1-fin)*12}px)`;
   window.render3d&&window.render3d((1-sp)*3*Math.PI*2,(.62+.38*sp),t);
   const g=0;$('glow').style.opacity=0;$('glow').style.transform=`translate(-50%,-50%) translateY(-110px) scale(${.9+.1*g})`;
-  const w=E(P(t,58.62,59.4));const wm2=$('wmEnd');wm2.style.opacity=w; // v7: ATIVE entra mais devagar, embaixo da pirâmidewm2.style.filter=`blur(${(1-w)*16}px)`;wm2.style.transform=`translate(-50%,-50%) translateY(${262+(1-w)*24}px)`;
-  const f=E(P(t,57.3,57.9))*(1-EIO(P(t,58.35,58.75)));const et=$('endT');et.style.opacity=f; // v7: a frase sai quando o ATIVE entra (como na Apresentação v12)et.style.filter=`blur(${(1-f)*12}px)`;et.style.transform=`translate(-50%,-50%) translateY(${352+(1-f)*20}px)`;
+  const w=E(P(t,58.62,59.4));const wm2=$('wmEnd');wm2.style.opacity=w; /* v7: ATIVE entra mais devagar, embaixo da pirâmide */wm2.style.filter=`blur(${(1-w)*16}px)`;wm2.style.transform=`translate(-50%,-50%) translateY(${262+(1-w)*24}px)`;
+  const f=E(P(t,57.3,57.9))*(1-EIO(P(t,58.35,58.75)));const et=$('endT');et.style.opacity=f; /* v7: a frase sai quando o ATIVE entra (como na Apresentação v12); comentário de bloco: o de linha engolia o resto da linha */et.style.filter=`blur(${(1-f)*12}px)`;et.style.transform=`translate(-50%,-50%) translateY(${290+(1-f)*20}px)`; /* v7b: frase na altura da Apresentação v12 */
  } else {$('pfull').style.opacity=0;$('shine').style.opacity=0;$('gl').style.opacity=0;$('glow').style.opacity=0;$('wmEnd').style.opacity=0;$('endT').style.opacity=0;}
 }
 window.render=render;render(0);

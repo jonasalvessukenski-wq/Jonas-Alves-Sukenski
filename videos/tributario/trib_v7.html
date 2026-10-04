@@ -293,7 +293,7 @@ function render(t){
 
 
  show($('t3'),t,10.0,12.75);$('luzS2').style.opacity=$('t3').style.opacity; // v7: prancha P3
- $('legalJur2').style.opacity=(t>=10.2&&t<12.75)?Math.min(E(P(t,10.2,10.7)),1-P(t,12.4,12.75)):0;
+ $('legalJur2').style.opacity=0; /* v7b (04/10): aviso retirado da tela branca, a pedido do Jonas */
  // ---- círculos (6.25–9.35)
  const cw=$('circles'),c0=0;const C=t-c0;
  if(C>=12.7&&C<15.7){cw.style.opacity=1;cw.style.filter='none';cw.style.transform='translate(-50%,-50%) translateY(-10px) scale(1.04)'; // v7: parado (sem tremor nos rótulos)
@@ -308,7 +308,7 @@ function render(t){
 
 
  show($('t4'),t,15.75,18.25);
- $('legalJur').style.opacity=(t>=33.4&&t<37.35)?Math.min(E(P(t,33.4,33.9)),1-P(t,37.0,37.35)):0;
+ $('legalJur').style.opacity=0; /* v7b (04/10): aviso retirado da placa Planejamento, a pedido do Jonas */
  // ---- parede de instrumentos (15.45–20.3)
  const wall=$('wall'),w0=18.2;
  if(t>=w0&&t<w0+4.9){const pin=E(P(t,w0,w0+.8)),po=EIO(P(t,w0+4.5,w0+4.9)),k=P(t,w0,w0+4.9);
@@ -362,8 +362,8 @@ function render(t){
   const pf=$('pfull');pf.style.opacity=xf;const push=1+.035*P(t,58.5,60);pf.style.transform=`scale(${push})`;pf.style.transformOrigin='50% 45%';
   const sh=$('shine');sh.style.opacity=t>59.0?Math.sin(Math.PI*P(t,59.0,59.95))*.9:0;sh.style.backgroundPosition=`${100-100*P(t,59.0,59.95)}% 0`;sh.style.transform=`scale(${push})`;sh.style.transformOrigin='50% 45%';
   window.render3d&&window.render3d((1-sp)*3*Math.PI*2,(.62+.38*sp),t);
-  const w=E(P(t,58.62,59.4));const wm2=$('wmEnd');wm2.style.opacity=w; // v7: ATIVE entra mais devagar, embaixo da pirâmidewm2.style.filter=`blur(${(1-w)*16}px)`;wm2.style.transform=`translate(-50%,-50%) translateY(${262+(1-w)*24}px)`;
-  const f=E(P(t,57.3,57.9))*(1-EIO(P(t,58.35,58.75)));const et=$('endT');et.style.opacity=f; // v7: a frase sai quando o ATIVE entra (como na Apresentação v12)et.style.filter=`blur(${(1-f)*12}px)`;et.style.transform=`translate(-50%,-50%) translateY(${352+(1-f)*20}px)`;
+  const w=E(P(t,58.62,59.4));const wm2=$('wmEnd');wm2.style.opacity=w; /* v7: ATIVE entra mais devagar, embaixo da pirâmide */wm2.style.filter=`blur(${(1-w)*16}px)`;wm2.style.transform=`translate(-50%,-50%) translateY(${262+(1-w)*24}px)`;
+  const f=E(P(t,57.3,57.9))*(1-EIO(P(t,58.35,58.75)));const et=$('endT');et.style.opacity=f; /* v7: a frase sai quando o ATIVE entra (como na Apresentação v12); comentário de bloco: o de linha engolia o resto da linha */et.style.filter=`blur(${(1-f)*12}px)`;et.style.transform=`translate(-50%,-50%) translateY(${290+(1-f)*20}px)`; /* v7b: frase na altura da Apresentação v12 */
  } else {$('pfull').style.opacity=0;$('shine').style.opacity=0;$('gl').style.opacity=0;$('wmEnd').style.opacity=0;$('endT').style.opacity=0;}
 }
 
