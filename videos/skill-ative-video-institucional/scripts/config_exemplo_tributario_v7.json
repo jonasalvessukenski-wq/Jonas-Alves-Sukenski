@@ -1,0 +1,21 @@
+{
+  "_comentario": "Tributário v7c (aprovado 04/10/2026). Copie, troque key/q/url/n/dur/pasta/nome/previa e as janelas de 'pares' para o vídeo novo.",
+  "key": "3_Tributario_v7",
+  "q": "narr3v7_q",
+  "url": "http://127.0.0.1:8765/video/narr_3_Tributario_v7.html",
+  "n": 2417,
+  "dur": 80.57,
+  "pasta": "tributario",
+  "nome": "ATIVE_Tributario_v7",
+  "previa": "PREVIA_Tributario_v7_cenas.jpg",
+  "tile": "6x7",
+  "pares": [
+    ["pergunta 1 digitada", "1920:400:0:100", [[124, 125], [130, 131]]],
+    ["pergunta 2 digitada", "1920:400:0:300", [[275, 276], [282, 283]]],
+    ["frase fala 3 (navy)", "1600:300:160:300", [[400, 401], [450, 451], [480, 481]]],
+    ["tile parado", "400:400:760:340", [[517, 518], [520, 521]]],
+    ["placa Planejamento", "1920:800:0:140", [[1660, 1661], [1670, 1671]]],
+    ["placa Reforma", "1920:800:0:140", [[1800, 1801], [1810, 1811]]],
+    ["numeros +130/19", "1920:600:0:240", [[2115, 2116], [2120, 2121]]]
+  ]
+}

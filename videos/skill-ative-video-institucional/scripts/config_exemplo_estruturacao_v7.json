@@ -1,0 +1,19 @@
+{
+  "_comentario": "Estruturação de Capital v7d (entregue 04/10/2026). Copie, troque key/q/url/n/dur/pasta/nome/previa e as janelas de 'pares' para o vídeo novo.",
+  "key": "1_Estruturacao_v7",
+  "q": "narr1v7_q",
+  "url": "http://127.0.0.1:8765/video/narr_1_Estruturacao_v7.html",
+  "n": 2115,
+  "dur": 70.5,
+  "pasta": "estruturacao-de-capital",
+  "nome": "ATIVE_Estruturacao_de_Capital_v7",
+  "previa": "PREVIA_Estruturacao_v7_cenas.jpg",
+  "tile": "6x6",
+  "pares": [
+    ["pergunta digitada (entre letras)", "1920:400:0:100", [[170, 171], [180, 181]]],
+    ["frase fala 2 (navy)", "1600:300:160:300", [[260, 261], [290, 291], [310, 311]]],
+    ["tile parado", "400:400:760:340", [[360, 361], [366, 367]]],
+    ["numeros +70/18", "1920:600:0:240", [[1765, 1766], [1770, 1771]]],
+    ["placa Capital começa", "1920:800:0:140", [[1870, 1871], [1880, 1881]]]
+  ]
+}
