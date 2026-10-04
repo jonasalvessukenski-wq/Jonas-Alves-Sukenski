@@ -28,7 +28,7 @@ Proibido: verde, degradê chamativo, azul royal `#1A2B9E`, serifa (exceto placa 
 
 ## 3. Abertura
 **Estruturação e Tributário:** fundo navy com feixes de luz (gradiente suave, movimento seno lento) e a **pergunta do
-gancho digitada** ("Sua empresa tem alto faturamento, mas o caixa continua apertado?") ; voz entra em **1,5 s** (`D=1.5`).
+gancho digitada** ("Se a sua empresa tem um faturamento alto, por que o caixa continua apertado?") ; voz entra em **1,5 s** (`D=1.5`).
 Pergunta: uma por tela, máquina de escrever ~28–60 ms/letra, cursor ciano pisca e some; a anterior sai 0,22 s antes.
 
 **Apresentação:** direto no azul `#008DE6` com o tile branco e o símbolo; o logo fica **sozinho** enquanto ela diz
@@ -47,6 +47,7 @@ Sem campo de ícones coloridos antes (reprovado em 03/10: "azul com bolinhas col
 | Parede de parceiros / painéis | desenhados (gradiente + ícone em traço + logos reais), nunca foto embaçada |
 | Cenas de processo (`v7_comum.js`) | **passos** (quatro etapas numeradas), **degraus**, **ondas**, **fita**, **motivo** — cada uma com **feixes próprios** (`luzes(c)`), porque o fundo delas é opaco |
 | Cartões de caso | três cartões brancos com cabeçalho-imagem, valor em destaque, linhas OPERAÇÃO/SITUAÇÃO/ORIGINAÇÃO; sem rodapé legal |
+| **Cartões ilustrados** (elogiado 04/10 09h50, "muito bom") | cartão 560×680 navy com borda fina; em cima ilustração **desenhada em SVG** (560×440, luz radial, arco dourado no canto) animada pelo tempo da página; embaixo painel escuro com rótulo ciano em caixa alta (21 px, espaçamento 6) e frase branca Manrope 38 px, texto parado. Exemplos prontos: documento com varredura e moedas (RECUPERAR), tablet com barras + linha + caneta (PLANEJAR), equipe à mesa com notebook e selo (A REFORMA). Script: `scripts/exemplos/montar_previa_cartoes.py` |
 
 Movimento permitido: entrada por desfoque/translação (0,35–0,6 s), saída por desfoque; feixes de luz atrás (gradiente,
 **sem** `filter:blur`), brilhos grandes lentos (`ambG`). Texto **parado** enquanto está na tela.

@@ -6,6 +6,7 @@
 | `patch_v7c.py` | como uma alteração pedida vira patch no montador (frase digitada em tela própria + `fim=4.0` no retime), em vez de editar a página à mão |
 | `montar_v12.py`, `pipeline_v12.py` | Apresentação v12: a correção de uma linha e o render parcial com hardlink dos quadros anteriores |
 | `tile_png.js` | pinta a placa de vidro UMA vez em PNG (lição 3) |
+| `montar_previa_cartoes.py` | cartões ILUSTRADOS (04/10, elogiado): troca a imagem com foto da cena RECUPERAR/PLANEJAR/A REFORMA da Apresentação v12 por três ilustrações SVG animadas pelo tempo da página (varredura/moedas, barras/linha/caneta, equipe/selo), texto em HTML parado; gera página narrada paralela sem tocar na v12; prévia = render só do trecho + áudio recortado do mp4 final |
 | `../render.js` | cópia do motor de render (o oficial fica em `videos/estruturacao-de-capital/fonte/video/render.js`): modos `frames` (FRAMES_DIR/FROM/TO, retoma), `stills <t…>` e pipe direto para o ffmpeg |
 
 Caminhos dentro dos scripts apontam para o repo `C:\Users\Jonas\dev\Jonas-Alves-Sukenski\videos` e para o scratchpad
