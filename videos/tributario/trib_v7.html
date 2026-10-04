@@ -46,6 +46,9 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-fam
 .tp .d{margin-top:12px;font-weight:700;font-size:40px;line-height:1.18;color:#fff}
 /* v7 (03/10 noite): padrão da Apresentação v12 — sem zoom em texto, placa de vidro em PNG, feixes sem filter, parede e painéis desenhados, perguntas digitadas */
 .fio{width:64px;height:5px;border-radius:3px;background:#C9A24B;transform-origin:50% 50%}
+#fim2{z-index:60}
+.fimQ{color:#fff;font-weight:800;font-size:108px;line-height:1.1;letter-spacing:-2.2px;white-space:nowrap;text-align:center}
+.fimQ .cur{display:inline-block;width:8px;height:92px;margin-left:10px;vertical-align:-10px;border-radius:3px;background:#2FE1F2;opacity:0}
 .h2{font-weight:800;font-size:80px;line-height:1.1;letter-spacing:-1.5px;color:#fff;text-shadow:0 6px 40px rgba(0,20,80,.25);white-space:nowrap}
 .h3{font-weight:800;font-size:104px;line-height:1.1;letter-spacing:-1.5px;color:var(--navy);white-space:nowrap}
 .h3 b{font-weight:800;color:var(--blue)}
@@ -133,6 +136,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-fam
 <img id="pfull" src="../assets/piramide_full.png" style="position:absolute;left:530px;top:-50px;width:860px;height:860px;opacity:0;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%)">
 <div id="shine" style="position:absolute;left:530px;top:-50px;width:860px;height:860px;opacity:0;mix-blend-mode:screen;-webkit-mask-image:url(../assets/piramide_mask.png);mask-image:url(../assets/piramide_mask.png);-webkit-mask-size:100% 100%;mask-size:100% 100%;background:linear-gradient(112deg,rgba(255,236,190,0) 42%,rgba(255,240,205,.85) 50%,rgba(255,236,190,0) 58%);background-size:320% 100%"></div>
 <img id="wmEnd" class="el" src="../crops/wordmark_branco_limpo.png" style="height:78px">
+<div id="fim2" class="el" style="text-align:center"><div class="fio" style="margin:0 auto 40px"></div><div class="fimQ"><span id="fmL1"></span><span class="cur" id="fmC1"></span><br><span id="fmL2"></span><span class="cur" id="fmC2"></span></div></div>
 <div id="endT" class="el t" style="font-size:34px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,.88)">Antes de qualquer negócio, existe confiança.</div>
 
 <!-- v6 (03/10): cenas reconstruídas em HTML/SVG · v7 (03/10 noite): padrão da Apresentação v12 -->
@@ -181,6 +185,22 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-fam
   const k1=Math.min(k,L1.length),k2=Math.max(0,k-L1.length);$(q.id+'a').textContent=L1.slice(0,k1);$(q.id+'b').textContent=L2.slice(0,k2);
   const blink=(Math.floor(T/.4)%2?0:1);
   $(q.id+'c1').style.opacity=k<L1.length?(T<q.a?blink:1):0;$(q.id+'c2').style.opacity=k>=L1.length?(k<n?1:blink):0;});}
+ // v7c (04/10, pedido do Jonas): a frase de confiança vira tela própria, digitada com a voz; no "Ative." o símbolo gira e o
+ // ATIVE entra embaixo da pirâmide, com os tempos do encerramento da Apresentação v12. A frase pequena sob o logo sai.
+ const FL1='Antes de qualquer negócio,',FL2='existe confiança.',FA=R(18),FB=R(19),FIM=R(20)+4.0;
+ function fimReal(T){const e=$('fim2'),a0=FA+.1,ta=FA+.25,cut=EIO(P(T,FB-.3,FB));
+  if(T<a0||cut>=1){e.style.opacity=0;}else{const ent=E(P(T,a0,a0+.35));e.style.opacity=ent*(1-cut);e.style.filter=`blur(${((1-ent)*10+cut*10).toFixed(2)}px)`;e.style.transform='translate(-50%,-50%)';
+   const n=FL1.length+FL2.length,sp=Math.min(.06,(FB-.5-ta)/n),tx=ta+n*sp,k=T<ta?0:Math.min(n,Math.floor(n*P(T,ta,tx)+1e-6)),k1=Math.min(k,FL1.length),k2=Math.max(0,k-FL1.length);
+   $('fmL1').textContent=FL1.slice(0,k1);$('fmL2').textContent=FL2.slice(0,k2);
+   const blink=k<n?1:(Math.floor((T-tx)/.45)%2?0:1);$('fmC1').style.opacity=k<FL1.length?1:0;$('fmC2').style.opacity=k>=FL1.length?blink:0;}
+  const P0=FB-.2,gl=$('gl'),pf=$('pfull'),sh=$('shine'),wm=$('wmEnd');$('endT').style.opacity=0;
+  if(T<P0){gl.style.opacity=0;pf.style.opacity=0;sh.style.opacity=0;wm.style.opacity=0;return;}
+  const sp=E(P(T,P0,P0+1.8)),fin=E(P(T,P0,P0+.45)),xf=EIO(P(T,P0+1.6,P0+2.15)),push=1+.05*P(T,P0+1.6,FIM);
+  gl.style.opacity=fin*(1-xf);gl.style.filter=`blur(${(1-fin)*12}px)`;
+  pf.style.opacity=xf;pf.style.transform=`scale(${push})`;pf.style.transformOrigin='50% 45%';
+  const s1=(T>P0+2.1&&T<P0+3.05)?Math.sin(Math.PI*P(T,P0+2.1,P0+3.05))*.9:0;sh.style.opacity=s1;sh.style.backgroundPosition=`${100-100*P(T,P0+2.1,P0+3.05)}% 0`;sh.style.transform=`scale(${push})`;sh.style.transformOrigin='50% 45%';
+  if(T<P0+2.3)window.render3d&&window.render3d((1-sp)*3*Math.PI*2,(.62+.38*sp),T);
+  const w=E(P(T,P0+2.15,P0+3.15));wm.style.opacity=w;wm.style.filter=`blur(${(1-w)*16}px)`;wm.style.transform=`translate(-50%,-50%) translateY(${262+(1-w)*24}px)`;}
  window.renderReal=function(T){
   perguntas(T);
   // 7 "Analisamos toda a estrutura tributária da sua empresa." (azul, prancha P5): luz + feixes + vinheta + fita
@@ -191,6 +211,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-fam
   V.ondas('wC',T-DS,34.1,38.8,[34.3,35.0,36.4]);
   V.degraus('wB',T-DS,46.6,51.05,[46.8,47.4,49.6]);
   V.passos('wA',T-DS,61.15,64.45,[61.7,62.15,62.6,63.05]);
+  fimReal(T);
  };})();
 </script>
 </div>

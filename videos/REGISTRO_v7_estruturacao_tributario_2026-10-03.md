@@ -85,6 +85,41 @@ de retorno do seno). Estruturação v7b: 1:09,00, 25,9 MB, −18,4 LUFS, os mesm
 Conferido no arquivo final: frase sob o símbolo e ATIVE embaixo da pirâmide nos dois, lado a lado com a v12. Observação para o Jonas: o aviso de advocacia existia por prudência com a OAB (a Ative não é
 escritório); saiu das telas a pedido dele; se quiser, pode ir para a descrição do vídeo.
 
+## Segunda revisão do Jonas (04/10 ~01h15) e v7c: a frase de confiança vira tela digitada
+Ele gostou dos dois ("ficou muito, muito bom"), mas achou feia a frase pequena embaixo do logo no fechamento e pediu:
+trazer a frase digitada numa tela própria, como a assinatura da v12, e só depois o símbolo girando com o ATIVE —
+"dar uma atrasada quando ela fala Ative"; um vídeo por vez.
+
+**Como ficou (nos dois, mesma mecânica, tempos da voz de cada um):**
+
+| Nº | Momento | O que acontece |
+|---|---|---|
+| 1 | 0,3 s antes da fala de confiança | navy dos números dissolve para o fundo escuro do encerramento (igual antes) |
+| 2 | fala "…confiança." (Trib 72,4–75,7 s; Estr 62,7–65,7 s) | tela própria: fio dourado + frase em 108 px digitada com a voz (0,06 s por letra, cursor ciano pisca ao terminar), duas linhas: "Antes de qualquer negócio, / existe confiança." · "Toda parceria / começa com confiança." |
+| 3 | 0,3 s antes de "Ative." | a frase sai em desfoque (corte da v12) |
+| 4 | "Ative." (Trib 75,7 s; Estr 65,7 s) | símbolo 3D entra girando (1,8 s), vira a imagem completa, brilho passa, e o ATIVE entra devagar embaixo da pirâmide (2,15–3,15 s depois do início do giro) — exatamente os tempos do encerramento da v12 |
+| 5 | fim | o final segura 4,0 s depois da voz (era 2,5) para o ATIVE respirar ~1,9 s parado; Trib 1:20,57 (2.417 quadros), Estr 1:10,50 (2.115) |
+
+A frase pequena sob o logo (`#endT`) foi desligada. Tudo em tempo real (`fimReal` em `renderReal`), por cima do bloco de
+encerramento da página, que continua cuidando só do fundo. `retime.py`: `fim=4.0` nas duas CORRIDA v7.
+
+**Tributário v7c (render 04/10 ~07h00):** render parcial só do encerramento, em uma sessão (quadros 2159–2417, sobra de
+15 antes do trecho forçado 2174–2417). Emenda no quadro 2163 (fundo puro: os números já em opacidade 0; de 2164 em diante
+a v7b já mostrava o símbolo entrando, por isso não coincide). 254 quadros substituídos (2163–2417).
+
+| Nº | Medida | Resultado |
+|---|---|---|
+| 1 | pares na emenda (YMAX) | 2160/2161: 15 · 2161/2162: 9 · 2162/2163: 5 — é o desvanecimento natural dos números, sem degrau |
+| 2 | quadros 2410→2416 | 32–57 por par, contínuo: é o push lento de 5 % da imagem do símbolo (igual à v12), não corte |
+| 3 | saída | 1:20,57 · 2.417 quadros · 29,4 MB (1080p) · 7,2 MB (720p) |
+| 4 | som | −20,3 LUFS, pico −1,2 dBFS (ganho −4,7 dB pelo pico); só música 0–1,5 s: −20,6 LUFS |
+| 5 | `freezedetect` | os mesmos 3 pontos de antes (19,6 s tela branca · 24,3 s círculos no branco · 68,8 s retorno do feixe) |
+| 6 | telas conferidas | digitação 73,3–75,3 s · desfoque de saída 75,6 s · símbolo girando 76,2–77,8 s · ATIVE sob a pirâmide até 80,5 s · sem frase pequena |
+
+**Estruturação v7c:** página `v10.html` e `narr_1_Estruturacao_v7.html` já regeneradas (2.115 quadros, final de 4,0 s);
+o render do encerramento (quadros 1884–2115, emenda prevista em 1872–1884, só fundo) aguarda o OK do Jonas no
+Tributário — ele pediu um vídeo por vez.
+
 ## Arquivos
 `estruturacao-de-capital/fonte/video/v10.html` (Estruturação v7) · `tributario/trib_v7.html` · `fonte/video/v7_comum.js` ·
 `fonte/video/narr_1_Estruturacao_v7.html` e `narr_3_Tributario_v7.html` (gerados pelo `retime.py pagina`) ·
