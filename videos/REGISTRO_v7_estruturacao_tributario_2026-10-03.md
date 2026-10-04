@@ -116,9 +116,33 @@ a v7b já mostrava o símbolo entrando, por isso não coincide). 254 quadros sub
 | 5 | `freezedetect` | os mesmos 3 pontos de antes (19,6 s tela branca · 24,3 s círculos no branco · 68,8 s retorno do feixe) |
 | 6 | telas conferidas | digitação 73,3–75,3 s · desfoque de saída 75,6 s · símbolo girando 76,2–77,8 s · ATIVE sob a pirâmide até 80,5 s · sem frase pequena |
 
-**Estruturação v7c:** página `v10.html` e `narr_1_Estruturacao_v7.html` já regeneradas (2.115 quadros, final de 4,0 s);
-o render do encerramento (quadros 1884–2115, emenda prevista em 1872–1884, só fundo) aguarda o OK do Jonas no
-Tributário — ele pediu um vídeo por vez.
+## Tributário v7c APROVADO (04/10 ~07h15: "agora sim... muito bom... esse está perfeito") e Estruturação v7d
+Antes de fechar, o Jonas pediu mais uma alteração na Estruturação: tirar as frases pequenas do rodapé que aparecem na
+parede de parceiros ("Instituições com que operam os parceiros da Ative…") e nos cartões de casos ("Operações conduzidas
+pela rede de parceria…", que cobre as duas telas de cartões) e aplicar o mesmo encerramento do Tributário.
+
+| Nº | Mudança | Como |
+|---|---|---|
+| 1 | aviso da parede de parceiros (`#legalRede`, página 26,6–30,45 s = vídeo 37,9–43,0 s) | desligado (`opacity=0`) |
+| 2 | aviso dos cartões de casos (`#legal`, página 33,4–41,2 s = vídeo 47,8–55,9 s, as duas telas) | desligado |
+| 3 | encerramento | igual ao Tributário v7c: "Toda parceria / começa com confiança." digitada em 62,8–65,4 s, desfoque, símbolo girando em 65,7 s, ATIVE embaixo da pirâmide, final de 4,0 s |
+| 4 | render | **completo, em uma sessão só** (2.115 quadros), em vez de três emendas em telas de texto; quadros v7b guardados em `narr1v7_q_v7b/` |
+
+Só restam estes dois avisos na página; a detecção por visibilidade (`legalRede`, `legal`, `endT`) devolveu lista vazia
+nos 2.115 quadros. A sugestão de levar os avisos para a descrição do vídeo continua valendo.
+
+**Estruturação v7d (render 04/10 ~07h25–07h56, completo, uma sessão):**
+
+| Nº | Medida | Resultado |
+|---|---|---|
+| 1 | saída | 1:10,50 · 2.115 quadros · 26,9 MB (1080p) · 6,7 MB (720p) |
+| 2 | som | −18,4 LUFS, pico −0,9 dBFS (ganho −2,5 dB pelo pico); só música 0–1,5 s: −18,4 LUFS |
+| 3 | `freezedetect` | 3 pontos: 14,9 s e 17,6 s (telas brancas de frase, como antes) e 65,0 s — novo e proposital: a frase "começa com confiança." termina de ser digitada em 65,0 s e fica parada 0,4 s antes de sair em desfoque (65,4 s); no Tributário a mesma pausa dura 0,26 s e não acusa |
+| 4 | telas conferidas | parede de parceiros (40 s), cartões (50 s) e R$ 118,6 milhões (55 s) sem frase no rodapé · digitação 63,3–65,4 s · símbolo girando 65,8–67,0 s · ATIVE sob a pirâmide de 68,7 s ao fim |
+| 5 | emendas | nenhuma (render inteiro em uma sessão) |
+
+Pendência de conteúdo que continua: os avisos de responsabilidade saíram das telas dos dois vídeos; vale levá-los para a
+descrição do vídeo ou para o rodapé da página onde ele for publicado.
 
 ## Arquivos
 `estruturacao-de-capital/fonte/video/v10.html` (Estruturação v7) · `tributario/trib_v7.html` · `fonte/video/v7_comum.js` ·
