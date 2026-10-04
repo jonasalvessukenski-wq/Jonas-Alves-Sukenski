@@ -1,0 +1,66 @@
+# Registro — Estruturação de Capital v7 e Tributário v7 (03/10/2026, noite)
+
+Pedido do Jonas depois de aprovar a Apresentação v12 ("o resto tá perfeito; os próximos vídeos podem seguir tudo nesse
+mesmo padrão… cada vídeo tem a sua especificação pela narração, mas tudo que você fez nesse pode aplicar nos outros").
+Os dois vídeos foram refeitos a partir das versões v6 (Estruturação `fonte/video/v9.html`, Tributário `trib_v6.html`),
+com a **mesma voz, a mesma música, a mesma ordem de cenas e os mesmos textos**; mudou o desenho das telas e a mistura,
+no padrão da Apresentação v11/v12.
+
+## O que foi aplicado (igual nos dois)
+
+| Nº | Item da Apresentação v12 | Como ficou aqui |
+|---|---|---|
+| 1 | abertura sem o campo de ícones coloridos | navy com dois feixes de luz lentos; a primeira pergunta é **digitada** com cursor ciano enquanto a voz fala (Tributário: as duas perguntas das falas 1 e 2); o cursor pisca antes da voz entrar |
+| 2 | voz entra em 1,5 s | D passa de 0,3 para 1,5 s (música e cursor antes da primeira pergunta); as cenas antigas recebem T − 1,2 s, então nada sai do lugar em relação à voz |
+| 3 | tile branco + logo | mantidos como sempre (tile entra 0,3 s depois do corte navy → azul, como na v6) |
+| 4 | tela de frase P3 (branco) | frase das falas 3/4 em 92 px, destaque azul na palavra-chave, fio dourado |
+| 5 | tela de frase P5 (azul) | luz difusa + feixes + vinheta + fio + fita |
+| 6 | placas de vidro P6/P8 | placa de vidro em PNG (sem desenho em CSS que tremia), ícone em traço, fio, etiqueta, frase. Estruturação: "Capital começa com preparo." (navy). Tributário: "PLANEJAMENTO TRIBUTÁRIO" (azul, 3 linhas) e "REFORMA TRIBUTÁRIA" (navy; a segunda linha acende na fala 15) |
+| 7 | parede e painéis desenhados | cartões da parede (Estruturação, 13 produtos) e painéis tributários (Enquadramento, Estruturas, Fator previdenciário) com gradiente + ícone em traço no lugar das fotos comprimidas (1180×310 px, 12–43 KB, saíam embaçadas); ícones novos: pessoas, gráfico, calendário, balança, escudo, prédio, documento |
+| 8 | sem zoom contínuo em texto ou caixa | retirado o zoom lento de 2,5 % das frases, da parede, dos círculos e do contêiner dos painéis; `v7_comum.js` = `v6_comum.js` sem a câmera lenta das cenas (passos, degraus, ondas) |
+| 9 | feixes sem `filter:blur` | luz por gradiente radial; dois feixes globais (`#ambG`) só sobre azul e navy (somem no branco e no encerramento) |
+| 10 | encerramento | frase "Toda parceria…/Antes de qualquer negócio…" sai em desfoque quando o ATIVE entra; ATIVE entra devagar (0,8 s), **embaixo da pirâmide** (correção da v12) |
+| 11 | mistura | igual à Apresentação: música +4 dB, abertura a +9 dB até 0,8 s descendo até 1,5 s, duck leve (0,05 / 2,5), final segura 2,5 s |
+
+## Decisões desta versão
+- **Sem frase digitada no fim.** Na Apresentação a voz termina em "…dar mais vida à sua empresa" e a tela "Mais vida /
+  para sua empresa!" é digitada por cima. Nestes dois a voz termina em "Ative." sobre o símbolo; digitar uma frase que a
+  voz não diz quebraria a regra "o vídeo se adapta à narração". O encerramento fica símbolo → ATIVE embaixo → preto.
+  Se o Jonas quiser a assinatura escrita, é uma linha para acrescentar.
+- **Números seguem a voz:** Estruturação "+70 empresas / 18 estados"; Tributário "+130 empresas / 19 estados" (a voz
+  diz 130/19; os números públicos autorizados são +70/18 — item aberto desde a v4, não mexido aqui).
+- **Transição navy → tile:** mantida da v6 (frase sai em desfoque, corte para o azul, tile entra em 0,3 s). Não foi
+  trocada por crossfade para não mexer no que já estava aprovado.
+- Render em **uma sessão só** de navegador por vídeo (regra da v11: navegador novo por bloco gera salto de sub-pixel).
+
+## Correção no meio do caminho (04/10 ~00h)
+A primeira conferência da Estruturação acusou 8 trechos parados; 6 deles eram as cenas dos **passos** (22–26 s) e dos
+**degraus** (45–47 s), que vêm da v6 com fundo azul opaco próprio e tapavam os feixes globais: entre uma entrada e outra
+a tela ficava morta. Correção em `v7_comum.js`: cada cena azul (passos, degraus, ondas) ganhou dois feixes próprios,
+com o mesmo desenho e o mesmo movimento dos globais. Na Estruturação só esses dois trechos foram refeitos (quadros
+636–844 e 1291–1444); a emenda foi escolhida onde não há texto na tela e a sessão nova coincide com a antiga (diferença
+≤ 2 níveis: a primeira tentativa, com a emenda em cima da frase branca, acusou 41 e 90 de salto de sub-pixel e foi
+descartada). O Tributário, que ainda estava renderizando, foi reiniciado do zero com a correção.
+
+## Render e conferências (ffmpeg)
+
+| Nº | Item | Estruturação v7 | Tributário v7 |
+|---|---|---|---|
+| 1 | quadros | 2.070 (1:09,00), uma sessão + 2 trechos refeitos | 2.372 (1:19,07), uma sessão |
+| 2 | arquivo 1080p CRF 17 | `ATIVE_Estruturacao_de_Capital_v7_narrado.mp4` 25,9 MB | `ATIVE_Tributario_v7_narrado.mp4` 28,3 MB |
+| 3 | cópia 720p | 6,5 MB | 6,9 MB |
+| 4 | som (ebur128) | música sozinha 0–1,5 s −18,4 LUFS · inteiro −18,4 LUFS, pico −0,9 dBFS | música sozinha −20,6 LUFS · inteiro −20,4 LUFS, pico −0,9 dBFS |
+| 5 | `freezedetect` (≥ 0,4 s) | 2: as duas telas brancas de frase (14,9 e 17,6 s), de propósito | 3: tela branca de frase (19,7 s), círculos no branco (24,3 s) e o feixe no ponto de retorno do seno sobre os números (68,8 s; os quadros diferem em ≤ 4 níveis, não é tela parada) |
+| 6 | pares estáticos (YMAX quadro a quadro) | pergunta digitada 6 · frase navy 7/6/9 · números 6/6 · placa 7 | perguntas 7 e 5 · frase navy 6/4/7 · placas 8/9 e 7/8 · números 6/6 |
+| 7 | emendas dos trechos refeitos | 635/636 = 19 (vizinhos 37 e 38) · 1290/1291 = 6 (vizinhos 18 e 5) | — |
+
+O ganho final do `retime.py audio` é por pico (−2,5 dB na Estruturação, −4,7 dB no Tributário, cuja voz tem picos mais
+altos); por isso o Tributário fecha 2 dB mais baixo que a Estruturação e 4 dB abaixo da Apresentação (−16,0). Não foi
+posto limitador para não processar a voz. Se o Jonas quiser os três no mesmo nível, é uma decisão à parte.
+
+## Arquivos
+`estruturacao-de-capital/fonte/video/v10.html` (Estruturação v7) · `tributario/trib_v7.html` · `fonte/video/v7_comum.js` ·
+`fonte/video/narr_1_Estruturacao_v7.html` e `narr_3_Tributario_v7.html` (gerados pelo `retime.py pagina`) ·
+`retime.py` (`PAGINAS` + `CORRIDA['1_Estruturacao_v7']`/`['3_Tributario_v7']`) · `alinhar.py` · `gerar_guias.py` ·
+quadros em `fonte/video/narr1v7_q/` e `narr3v7_q/` · `PREVIA_Estruturacao_v7_cenas.jpg` · `PREVIA_Tributario_v7_cenas.jpg` ·
+cópias no Drive (`Ative — Vídeos institucionais`). v6 e anteriores intactas.

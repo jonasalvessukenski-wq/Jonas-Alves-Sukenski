@@ -6,7 +6,7 @@ from gerar_guias import VIDEOS
 
 AUDIO = {'1_Estruturacao_de_Capital': 1, '2_Apresentacao_da_Ative': 2, '3_Tributario': 3, '4_Quem_Somos': 4,
          '1_Estruturacao_v2': '1v2', '3_Tributario_v2': '3v2',
-         '1_Estruturacao_v4': '1v4', '3_Tributario_v4': '3v4', '2_Apresentacao_v4': '2v4', '3_Tributario_v5': '3v4', '2_Apresentacao_v5': '2v4', '1_Estruturacao_v5': '1v4', '1_Estruturacao_v6': '1v4', '3_Tributario_v6': '3v4', '2_Apresentacao_v6': '2v4', '2_Apresentacao_v7': '2v4', '2_Apresentacao_v8': '2v4', '2_Apresentacao_v9': '2v4', '2_Apresentacao_v10': '2v4', '2_Apresentacao_v11': '2v4', '2_Apresentacao_v12': '2v4'}
+         '1_Estruturacao_v4': '1v4', '3_Tributario_v4': '3v4', '2_Apresentacao_v4': '2v4', '3_Tributario_v5': '3v4', '2_Apresentacao_v5': '2v4', '1_Estruturacao_v5': '1v4', '1_Estruturacao_v6': '1v4', '3_Tributario_v6': '3v4', '2_Apresentacao_v6': '2v4', '2_Apresentacao_v7': '2v4', '2_Apresentacao_v8': '2v4', '2_Apresentacao_v9': '2v4', '2_Apresentacao_v10': '2v4', '2_Apresentacao_v11': '2v4', '2_Apresentacao_v12': '2v4', '1_Estruturacao_v7': '1v4', '3_Tributario_v7': '3v4'}
 BRUTA = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'voz_bruta')
 
 

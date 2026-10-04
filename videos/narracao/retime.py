@@ -32,6 +32,8 @@ PAGINAS = {  # página de origem, música de fundo
     '3_Tributario_v6': (os.path.join(V, 'tributario', 'trib_v6.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v6': (os.path.join(V, 'apresentacao-ative', 'inst_v6.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '1_Estruturacao_v6': (os.path.join(FONTE, 'video', 'v9.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '1_Estruturacao_v7': (os.path.join(FONTE, 'video', 'v10.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '3_Tributario_v7': (os.path.join(V, 'tributario', 'trib_v7.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v5': (os.path.join(V, 'apresentacao-ative', 'inst_v5.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v7': (os.path.join(V, 'apresentacao-ative', 'inst_v7.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v8': (os.path.join(V, 'apresentacao-ative', 'inst_v8.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
@@ -122,6 +124,10 @@ CORRIDA['3_Tributario_v5'] = CORRIDA['3_Tributario_v4']
 CORRIDA['1_Estruturacao_v5'] = CORRIDA['1_Estruturacao_v4']
 CORRIDA['1_Estruturacao_v6'] = CORRIDA['1_Estruturacao_v4']  # v6 = v4 + cenas reconstruídas em HTML
 CORRIDA['3_Tributario_v6'] = CORRIDA['3_Tributario_v4']
+# v7 (03/10 noite): padrão da Apresentação v12 — mesma voz e mesmos trechos da v4; a voz entra em 1,5 s (música e cursor
+# antes da primeira pergunta), o final segura 2,5 s e a música ganha a mistura medida da Apresentação (+4 dB, duck leve).
+CORRIDA['1_Estruturacao_v7'] = dict(CORRIDA['1_Estruturacao_v4'], D=1.5, fim=2.5, abre=(9.0, 0.8, 1.5), mus_db=4, duck=(0.05, 2.5))
+CORRIDA['3_Tributario_v7'] = dict(CORRIDA['3_Tributario_v4'], D=1.5, fim=2.5, abre=(9.0, 0.8, 1.5), mus_db=4, duck=(0.05, 2.5))
 CORRIDA['2_Apresentacao_v6'] = CORRIDA['2_Apresentacao_v4']  # v5 = v4 + imagens de IA por cima
 # v7 (03/10 tarde): abertura de 6 s (a voz inteira entra em 4,6 s, sem corte), cena "Tudo começa pelo DIAGNÓSTICO"
 # até a fala 4, perguntas uma por tela. A página fica parada em t=0 (cenas novas vivem em renderReal) e corre 1:1
