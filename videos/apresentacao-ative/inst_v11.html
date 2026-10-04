@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>ATIVE · Apresentação v11</title>
+<style>
+@font-face{font-family:M;src:url(../assets/Manrope-SemiBold.ttf);font-weight:600}
+@font-face{font-family:M;src:url(../assets/Manrope-Bold.ttf);font-weight:700}
+@font-face{font-family:M;src:url(../assets/Manrope-ExtraBold.ttf);font-weight:800}
+:root{--navy:#000050;--blue:#008DE6;--cyan:#2FE1F2}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#000050;font-family:M,sans-serif}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden}
+.bg{position:absolute;inset:0;opacity:0}
+#bgNavy{background:radial-gradient(ellipse at 50% 55%,#14147a 0%,#06065a 45%,#000044 100%)}
+#bgBlue{background:radial-gradient(ellipse at 50% 45%,#1e9ff0 0%,#008DE6 55%,#0079cf 100%)}
+#bgWhite{background:#fff}
+#bgFlash{background:radial-gradient(ellipse at 50% 50%,#d9f1ff 0%,#7cc7f5 60%,#2f9fe8 100%)}
+.el{position:absolute;left:50%;top:50%;opacity:0;will-change:transform,filter,opacity}
+.t{color:#fff;font-weight:700;font-size:70px;line-height:1.18;text-align:center;letter-spacing:-.5px;white-space:nowrap}
+.t.dark{color:var(--navy)}
+.t.sm{font-size:62px}
+.icon{position:absolute;width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center}
+.icon svg{width:38px;height:38px;stroke:#0b0b3c;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.circ{position:absolute;width:300px;height:300px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;letter-spacing:1px;color:#fff;top:-150px}
+.shot{border-radius:16px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,50,.35),0 8px 20px rgba(0,0,50,.2);background:#fff}
+.shot img{display:block;width:100%;height:100%}
+.row{position:absolute;left:0;display:flex;gap:28px;height:260px}
+.row .shot{height:260px;flex:none}
+.gcard{position:relative;width:760px;height:310px;flex:none;border-radius:30px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,50,.35),0 10px 24px rgba(0,0,50,.2),inset 0 0 0 1px rgba(255,255,255,.35)}
+.gcard .ph{position:absolute;inset:-3%;background-size:auto 100%;background-repeat:no-repeat;background-position:100% center;filter:saturate(1.2) contrast(1.08) brightness(1.18)}
+.gcard .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,40,0) 45%,rgba(0,0,40,.28) 100%)}
+.gcard .glass{position:absolute;left:20px;bottom:20px;min-width:420px;max-width:600px;padding:20px 26px 22px;border-radius:22px;background:rgba(255,255,255,.16);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);border:1px solid rgba(255,255,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 10px 30px rgba(0,0,40,.25)}
+.gcard .nm{font-weight:800;font-size:46px;color:#fff;letter-spacing:-.5px;line-height:1.05;text-shadow:0 2px 12px rgba(0,0,40,.3)}
+.gcard .nm.long{font-size:36px}
+.gcard .sb{margin-top:8px;font-weight:700;font-size:15px;letter-spacing:2.2px;color:rgba(255,255,255,.92)}
+.grow{position:absolute;left:0;display:flex;gap:36px}
+.legal{position:absolute;left:0;right:0;bottom:30px;text-align:center;color:rgba(255,255,255,.85);font-weight:600;font-size:22px;opacity:0}
+.num{display:flex;align-items:center;gap:30px}
+.num .big{font-weight:800;font-size:170px;color:var(--cyan);letter-spacing:-4px;line-height:1}
+.num .lab{font-weight:800;font-size:44px;color:#fff;line-height:1.1;letter-spacing:.5px}
+.eyb{font-weight:800;font-size:30px;letter-spacing:9px;color:rgba(255,255,255,.9);margin-bottom:28px}
+.tp{position:absolute;top:0;width:560px;height:680px;border-radius:32px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,40,.45),inset 0 0 0 1px rgba(255,255,255,.3)}
+#tp0{left:0}#tp1{left:590px}#tp2{left:1180px}
+.tp .ph{position:absolute;inset:0;background-size:auto 100%;background-position:100% center;filter:saturate(1.15) brightness(1.12)}
+.tp .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,40,0) 30%,rgba(0,0,40,.45) 100%)}
+.tp .glass{position:absolute;left:22px;right:22px;bottom:22px;padding:26px 28px 28px;border-radius:24px;background:rgba(255,255,255,.14);backdrop-filter:blur(24px) saturate(1.5);-webkit-backdrop-filter:blur(24px) saturate(1.5);border:1px solid rgba(255,255,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
+.tp .k{font-weight:800;font-size:22px;letter-spacing:6px;color:#2FE1F2}
+.tp .d{margin-top:12px;font-weight:700;font-size:40px;line-height:1.18;color:#fff}
+.chip{display:inline-block;padding:14px 30px;border-radius:40px;border:2px solid rgba(255,255,255,.35);font-weight:800;font-size:26px;letter-spacing:4px;color:rgba(255,255,255,.45);margin:0 12px}
+.bar{position:absolute;bottom:0;width:95px;background:var(--blue);border-radius:10px 10px 0 0}
+.lg{display:inline-flex;align-items:center;gap:14px;font-weight:800;font-size:24px;letter-spacing:3px;color:rgba(255,255,255,.85);margin-right:44px}
+.q{color:#fff;font-weight:700;font-size:68px;line-height:1.18;white-space:nowrap;text-align:center;letter-spacing:-.5px}
+.q .cur{display:inline-block;width:6px;height:58px;margin-left:8px;vertical-align:-6px;border-radius:2px;background:#2FE1F2;opacity:0}
+#qLuz{position:absolute;left:50%;top:50%;width:1400px;height:800px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(120,170,255,.16) 0%,rgba(120,170,255,.05) 40%,rgba(120,170,255,0) 70%);filter:blur(30px);opacity:0;transform:translate(-50%,-50%)}
+/* v8 (03/10 fim de tarde): campo de ícones antes do tile, cena DIAGNÓSTICO na fala 18, cartões do tributário com a imagem recebida */
+.v7{position:absolute;inset:0;opacity:0;overflow:hidden;z-index:55;will-change:opacity,filter;font-family:M,sans-serif}
+.v7 .cam{position:absolute;inset:0;will-change:transform,filter,opacity;transform-origin:50% 50%}
+#dg .cam{background:radial-gradient(ellipse at 50% 55%,#14147a 0%,#06065a 45%,#000044 100%)}
+.v7 .feixe{position:absolute;top:-40%;width:300px;height:180%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.09),rgba(255,255,255,0));transform:rotate(-28deg);mix-blend-mode:screen}
+#dgMold{position:absolute;inset:0;width:1920px;height:1080px;fill:none;stroke:#C9A24B;stroke-width:2.5;stroke-opacity:.5}
+#dgSelo{position:absolute;left:300px;top:380px;width:320px;height:320px;border-radius:50%;background:#000050;box-shadow:0 0 0 5px rgba(255,255,255,.92),0 0 0 10px #C9A24B,0 30px 70px rgba(0,0,40,.55);opacity:0}
+#dgIco{position:absolute;left:55px;top:55px;width:210px;height:210px;fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+#dgIco .ciano{stroke:#2FE1F2}
+#dgT1{position:absolute;left:760px;top:362px;color:rgba(255,255,255,.92);font-weight:600;font-size:56px;letter-spacing:1px;white-space:nowrap;opacity:0}
+#dgT2{position:absolute;left:752px;top:478px;color:#fff;font-weight:800;font-size:150px;line-height:1.05;letter-spacing:-5px;white-space:nowrap;opacity:0}
+/* cartões do tributário: a imagem recebida em 03/10 recortada em três cartões (2000 px → 1800 px), cada um entra na sua fala */
+.tpi{width:549px;height:805px;border-radius:40px;background:url(../ia_apres/cartoes_tributario_recebido_0310.jpg) no-repeat;background-size:1800px auto;box-shadow:0 40px 80px rgba(0,0,40,.5)}
+#tax.img{width:1705px;height:805px}#tax.img #tp1{left:578px}#tax.img #tp2{left:1156px}
+/* v10 (03/10 noite): telas no desenho das pranchas aprovadas — P3 (Existimos, branco), P5 (Soluções, azul), P6/P8 (títulos de área) */
+.fio{width:64px;height:5px;border-radius:3px;background:#C9A24B;transform-origin:50% 50%}
+.h2{font-weight:800;font-size:80px;line-height:1.1;letter-spacing:-1.5px;color:#fff;text-shadow:0 6px 40px rgba(0,20,80,.25);white-space:nowrap}
+.h3{font-weight:800;font-size:104px;line-height:1.1;letter-spacing:-1.5px;color:var(--navy);white-space:nowrap}
+.h3 b{font-weight:800;color:var(--blue)}
+#luzS2{position:absolute;inset:0;opacity:0;background:radial-gradient(ellipse 45% 50% at 50% 50%,rgba(0,141,230,.07),rgba(0,141,230,0) 70%)}
+.tt .luz{position:absolute;inset:0;background:radial-gradient(ellipse 55% 60% at 22% 12%,rgba(255,255,255,.20),rgba(255,255,255,0) 70%)}
+.tt.navy .luz{background:radial-gradient(ellipse 55% 60% at 25% 15%,rgba(90,120,255,.30),rgba(90,120,255,0) 70%)}
+.tt .vinheta{position:absolute;inset:0;background:radial-gradient(ellipse 75% 80% at 50% 50%,rgba(0,0,0,0) 55%,rgba(0,20,80,.32) 100%)}
+.tt .feixe{width:560px;transform:rotate(-24deg);mix-blend-mode:normal;background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.04) 28%,rgba(255,255,255,.11) 50%,rgba(255,255,255,.04) 72%,rgba(255,255,255,0) 100%)}
+/* v11: a placa é uma imagem pintada uma vez (assets/tile_vidro.png) — desenhada por CSS, o Chromium em software pintava blocos brancos dentro dela a cada quadro ("quadradinhos tremendo") */
+.tt .tile{position:absolute;left:810px;top:150px;width:300px;height:300px;display:flex;align-items:center;justify-content:center;opacity:0}
+.tt .tile .tbg{position:absolute;left:-120px;top:-120px;width:540px;height:540px}
+.tt .tile svg{position:relative;width:62%;height:62%;fill:none;stroke:#fff;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.tt .tile .barra{fill:rgba(255,255,255,.22);stroke:rgba(255,255,255,.95);stroke-width:3.5}
+.tt .tile .lin{stroke:#2FE1F2;stroke-width:8}
+.tt .tile .pt{fill:#2FE1F2;stroke:none}
+.tt .centro{position:absolute;left:0;right:0;top:63%;transform:translateY(-50%);text-align:center}
+.tt .centro .fio{margin:0 auto 32px}
+.tt .eyb2{font-weight:800;font-size:26px;letter-spacing:9px;color:rgba(255,255,255,.88);margin-bottom:26px;opacity:0}
+.tt .h2{opacity:0}
+/* v11 (03/10 noite): sem zoom contínuo em texto (tremor); parede desenhada; feixes globais; tela final digitada */
+#ambG{position:absolute;inset:0;opacity:0;overflow:hidden;pointer-events:none}
+/* feixes sem filter:blur (o blur em elemento gigante derrubou o render para 1 quadro/s e estourou o tempo da captura): o desfoque vem do próprio gradiente */
+#ambG .feixe{position:absolute;top:-40%;width:640px;height:180%;background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.035) 28%,rgba(255,255,255,.10) 50%,rgba(255,255,255,.035) 72%,rgba(255,255,255,0) 100%);transform:rotate(-24deg)}
+.gcard .arte{position:absolute;inset:0;overflow:hidden}
+.gcard .arte.t1{background:radial-gradient(ellipse at 20% 0%,#2a7fd6 0%,#0b2a7a 45%,#06154a 100%)}
+.gcard .arte.t2{background:radial-gradient(ellipse at 80% 100%,#1aa7e8 0%,#0a4fa8 50%,#07215e 100%)}
+.gcard .arte.t3{background:radial-gradient(ellipse at 30% 100%,#0e3f9a 0%,#0a1f66 55%,#060f3a 100%)}
+.gcard .arte::after{content:'';position:absolute;top:-40%;left:36%;width:180px;height:180%;background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.04) 30%,rgba(255,255,255,.10) 50%,rgba(255,255,255,.04) 70%,rgba(255,255,255,0) 100%);transform:rotate(-24deg)}
+.gcard .arte svg{position:absolute;right:28px;top:18px;width:274px;height:274px;fill:none;stroke:rgba(255,255,255,.62);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.gcard .arte svg .lin{stroke:#2FE1F2;stroke-opacity:.9}
+#fim{z-index:60}
+.fimQ{color:#fff;font-weight:800;font-size:140px;line-height:1.08;letter-spacing:-3px;white-space:nowrap;text-align:center}
+.fimQ .cur{display:inline-block;width:10px;height:118px;margin-left:12px;vertical-align:-12px;border-radius:3px;background:#2FE1F2;opacity:0}
+</style></head>
+<body><div id="stage">
+<div class="bg" id="bgNavy"></div><div class="bg" id="bgBlue"></div><div class="bg" id="bgWhite"></div>
+<div class="bg" id="bgEnd" style="background:radial-gradient(ellipse 62% 72% at 50% 40%,#0a1a33 0%,#071427 32%,#030b19 62%,#01050d 100%)"></div>
+<canvas id="gl" width="1920" height="1080" style="position:absolute;inset:0;opacity:0"></canvas>
+<div id="qLuz"></div>
+<div id="luzS2"></div>
+<div id="ambG"><div class="feixe" id="agF0" style="left:420px;opacity:.55"></div><div class="feixe" id="agF1" style="left:1240px;opacity:.4"></div></div>
+
+<!-- 1-2 LOGO + PROPÓSITO -->
+<div id="tile" class="el" style="width:340px;height:340px;border-radius:72px;background:#fff;overflow:hidden">
+  <div id="sheen" style="position:absolute;top:-50%;width:120px;height:200%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.85),rgba(255,255,255,0));transform:rotate(20deg);left:-200px;z-index:2"></div>
+</div>
+<img id="sym" class="el" src="../assets/logo3d_simbolo.png" style="height:190px">
+<img id="wm" class="el" src="../assets/ative_wordmark_navy.png" style="height:96px">
+<div id="s2" class="el" style="text-align:center"><div class="fio" style="margin:0 auto 32px"></div><div class="h3">Existimos para dar<br><b>mais vida</b> à sua empresa.</div></div>
+
+<!-- 3 SOLUÇÕES -->
+<div id="s3" class="el" style="text-align:center"><div class="fio" style="margin:0 auto 32px"></div><div class="h2">Soluções financeiras e tributárias<br>para melhorar resultados e crescer.</div></div>
+<div id="circles" class="el" style="width:900px;height:0">
+  <div class="circ" id="c1" style="background:var(--navy);font-size:26px">FINANCEIRO</div>
+  <div class="circ" id="c2" style="background:var(--cyan);color:var(--navy);font-size:26px">RESULTADOS</div>
+  <div class="circ" id="c3" style="background:#fff;color:var(--navy);font-size:26px">TRIBUTÁRIO</div>
+</div>
+
+<!-- 4-6 FINANCEIRO -->
+<div id="s5" class="el" style="text-align:center"><div class="eyb">FINANCEIRO</div><div class="t">Estruturamos operações de crédito<br>de alto valor para grandes empresas.</div></div>
+<div id="wall" class="el" style="width:1920px;height:670px">
+  <div style="position:absolute;inset:0"><div class="grow" id="r0" style="top:0"></div><div class="grow" id="r1" style="top:360px"></div></div>
+</div>
+<div id="redeT" class="el t" style="font-size:56px">Mais de <span id="n30" style="color:var(--cyan);font-weight:800">30</span> instituições financeiras na rede de parceria.</div>
+<div id="redeT2" class="el t" style="font-size:56px">Identificamos os caminhos para <span style="color:var(--cyan)">acessar capital</span>.</div>
+<div id="rd0" class="el shot" style="width:1640px;height:183px"><img src="../crops/rede_0.jpg"></div>
+<div id="rd1" class="el shot" style="width:1640px;height:183px"><img src="../crops/rede_1.jpg"></div>
+<div id="rd2" class="el shot" style="width:1640px;height:183px"><img src="../crops/rede_2.jpg"></div>
+<div id="legalRede" class="legal">Instituições com que operam os parceiros da Ative. A menção não indica vínculo contratual direto com a Ative.</div>
+
+<!-- 7-13 CUSTOS E RESULTADOS -->
+<div id="s7" class="el t">Sua empresa fatura alto,<br><span id="s7b">mas o caixa continua apertado?</span></div>
+<div id="s8a" class="el t">Para empresas e indústrias<br>que enfrentam esse desafio.</div>
+<div id="s8b" class="el" style="text-align:center"><div class="eyb">CUSTOS E RESULTADOS</div><div class="t">Consultoria especializada<br>em custos e resultados.</div></div>
+<div id="chips" class="el" style="white-space:nowrap"><span class="chip" id="ch0">INVESTIGAR</span><span class="chip" id="ch1">CRUZAR OS NÚMEROS</span><span class="chip" id="ch2">DESCOBRIR</span></div>
+<div id="chart" class="el" style="width:1560px;height:580px">
+  <div style="position:absolute;left:0;top:0;white-space:nowrap"><span class="lg"><i style="width:28px;height:28px;border-radius:6px;background:var(--blue);display:inline-block"></i>FATURAMENTO</span><span class="lg"><i style="width:40px;height:8px;border-radius:4px;background:var(--cyan);display:inline-block"></i>CAIXA</span></div>
+  <div id="plot" style="position:absolute;left:0;top:60px;width:1100px;height:520px;border-bottom:3px solid rgba(255,255,255,.3)"></div>
+  <svg width="1100" height="520" style="position:absolute;left:0;top:60px;overflow:visible"><polyline id="cl" pathLength="1000" fill="none" stroke="#2FE1F2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000"/><g id="dots"></g></svg>
+  <svg width="120" height="520" style="position:absolute;left:1095px;top:60px;overflow:visible"><path id="brk" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" pathLength="1000" stroke-dasharray="1000"/></svg>
+  <div id="brkL" style="position:absolute;left:1175px;top:234px;font-weight:800;font-size:38px;line-height:1.15;color:#fff;opacity:0;white-space:nowrap;transform-origin:0 50%">ONDE O<br>RESULTADO<br>SE PERDE?</div>
+</div>
+<div id="q1" class="el q"><span class="tx"></span><span class="cur"></span></div>
+<div id="q2" class="el q"><span class="tx"></span><span class="cur"></span></div>
+<div id="q3" class="el q"><span class="tx"></span><span class="cur"></span></div>
+<div id="s13a" class="el t">Interpretamos os dados e entregamos<br>um diagnóstico claro.</div>
+<div id="s13b" class="el t sm">Caminhos para decidir com segurança<br>e melhorar o resultado.</div>
+
+<!-- 14-17 TRIBUTÁRIO -->
+<div id="s14" class="el" style="text-align:center"><div class="eyb">TRIBUTÁRIO</div><div class="t">Analisamos cada detalhe<br>da estrutura do seu negócio.</div></div>
+<div id="tax" class="el img" style="width:1705px;height:805px">
+  <div class="tp tpi" id="tp0" style="background-position:-47px -99px"></div>
+  <div class="tp tpi" id="tp1" style="background-position:-625px -99px"></div>
+  <div class="tp tpi" id="tp2" style="background-position:-1202px -99px"></div>
+</div>
+<div id="s17" class="el" style="text-align:center"><div class="eyb">REFORMA TRIBUTÁRIA</div><div class="t">Orientamos sua empresa e treinamos<br>sua equipe para as novas regras.</div></div>
+
+<!-- 18-21 FECHAMENTO -->
+<div id="s18" class="el t sm">Tudo começa pelo diagnóstico.</div>
+<div id="p4" class="el shot" style="width:1760px;height:442px;background:#F3F0EB;padding:28px 30px"><img src="../crops/passos.jpg" style="width:1700px;height:387px"></div>
+<div id="s19" class="el t sm" style="color:#3FC3F7">Uma oportunidade que hoje passa despercebida<br>pode fazer a diferença no seu resultado.</div>
+
+<img id="pfull" src="../assets/piramide_full.png" style="position:absolute;left:530px;top:-50px;width:860px;height:860px;opacity:0;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%)">
+<div id="shine" style="position:absolute;left:530px;top:-50px;width:860px;height:860px;opacity:0;mix-blend-mode:screen;-webkit-mask-image:url(../assets/piramide_mask.png);mask-image:url(../assets/piramide_mask.png);-webkit-mask-size:100% 100%;mask-size:100% 100%;background:linear-gradient(112deg,rgba(255,236,190,0) 42%,rgba(255,240,205,.85) 50%,rgba(255,236,190,0) 58%);background-size:320% 100%"></div>
+<div id="endT1" class="el t" style="font-size:42px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,.92)">Antes de qualquer negócio, existe confiança.</div>
+<img id="wmEnd" class="el" src="../crops/wordmark_branco_limpo.png" style="height:78px">
+<div id="endT2" class="el t" style="font-size:44px;font-weight:700;letter-spacing:.3px;color:#3FC3F7">Mais vida para sua empresa!</div>
+<!-- v11: tela final — a assinatura digitada, bem grande, sozinha -->
+<div id="fim" class="el" style="text-align:center"><div class="fio" style="margin:0 auto 40px"></div><div class="fimQ"><span id="fimL1"></span><span class="cur" id="fimC1"></span><br><span id="fimL2"></span><span class="cur" id="fimC2"></span></div></div>
+
+<!-- v8: campo de ícones (abertura dos outros vídeos) só com música, antes do tile; cena DIAGNÓSTICO na fala 18 -->
+<div id="dg" class="v7"><div class="cam">
+  <svg id="dgMold" viewBox="0 0 1920 1080"><rect id="dgFrame" x="110" y="110" width="1700" height="860" rx="44"/></svg>
+  <div class="feixe" id="dgF0" style="left:420px"></div><div class="feixe" id="dgF1" style="left:1180px;opacity:.7"></div>
+  <div id="dgSelo"><svg id="dgIco" viewBox="0 0 260 260">
+    <path d="M62 36h88l44 44v138a10 10 0 0 1-10 10H62a10 10 0 0 1-10-10V46a10 10 0 0 1 10-10z"/><path d="M150 36v44h44"/>
+    <path d="M84 118h66"/><path d="M84 148h66"/><path d="M84 178h36"/>
+    <circle class="ciano" cx="170" cy="172" r="40"/><path class="ciano" d="M199 201l40 40"/>
+  </svg></div>
+  <div id="dgT1">Tudo começa pelo</div>
+  <div id="dgT2">DIAGNÓSTICO</div>
+</div></div>
+
+<!-- v6 (03/10): cenas reconstruídas em HTML/SVG, sem imagem colada -->
+<link rel="stylesheet" href="v6_comum.css"><script src="v6_comum.js"></script>
+<script>
+(function(){const V=window.V6,$=id=>document.getElementById(id);
+ const P=V.P,E=V.E,EIO=V.EIO,cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+ const SH=2.0; // v9: a voz entra em 3,0 s (era 1,0 s); a partir de "Existimos" tudo acontece 2,0 s mais tarde que na v6
+ V.montarFita('wF');
+ // v10: a fita fica branca + dourada ("Soluções…" agora é sobre o azul, prancha P5)
+ {const f=$('wF');f._a.setAttribute('stroke','#fff');f._a.setAttribute('stroke-opacity','.30');f._b.setAttribute('stroke-opacity','.9');}
+ // v10: títulos de área no desenho das pranchas P6/P8: luz difusa, feixes, vinheta, placa de vidro com ícone em traço, fio dourado, etiqueta e frase
+ const ICO={
+  grafico:'<path d="M38 252h228"/><rect class="barra" x="60" y="170" width="36" height="82" rx="7"/><rect class="barra" x="116" y="136" width="36" height="116" rx="7"/><rect class="barra" x="172" y="104" width="36" height="148" rx="7"/><rect class="barra" x="228" y="66" width="36" height="186" rx="7"/><path class="lin" d="M52 152 L110 118 L166 126 L236 52"/><path class="lin" d="M206 52h30v30"/><circle class="pt" cx="52" cy="152" r="9"/><circle class="pt" cx="110" cy="118" r="9"/><circle class="pt" cx="166" cy="126" r="9"/>',
+  lupa:'<circle cx="128" cy="122" r="76"/><path class="lin" d="M184 178l62 62"/><path d="M98 148v-30M128 148V88M158 148v-46"/>',
+  documento:'<path d="M70 34h104l58 58v170a12 12 0 0 1-12 12H70a12 12 0 0 1-12-12V46a12 12 0 0 1 12-12z"/><path d="M174 34v58h58"/><path d="M94 140h92M94 174h92"/><path class="lin" d="M100 222l20 20 46-46"/>',
+  equipe:'<circle cx="150" cy="92" r="34"/><path d="M82 250v-34a68 68 0 0 1 136 0v34"/><circle cx="68" cy="116" r="26"/><path class="lin" d="M22 240v-26a46 46 0 0 1 58-44"/><circle cx="232" cy="116" r="26"/><path class="lin" d="M278 240v-26a46 46 0 0 0-58-44"/>'};
+ function montarTitulo(id,tom,ico,eyb,frase){const e=document.createElement('div');e.id=id;e.className='v7 tt '+tom;
+  e.innerHTML=`<div class="cam"><div class="luz"></div><div class="feixe" style="left:300px"></div><div class="feixe" style="left:860px;opacity:.7"></div><div class="feixe" style="left:1420px;opacity:.5"></div><div class="vinheta"></div><div class="tile"><img class="tbg" src="../assets/tile_vidro.png"><svg viewBox="0 0 300 300">${ICO[ico]}</svg></div><div class="centro"><div class="fio"></div><div class="eyb2">${eyb}</div><div class="h2">${frase}</div></div></div>`;
+  $('dg').parentNode.insertBefore(e,$('dg'));e._fx=[...e.querySelectorAll('.feixe')];e._tile=e.querySelector('.tile');e._tr=[...e.querySelectorAll('svg *')];
+  e._fio=e.querySelector('.fio');e._eyb=e.querySelector('.eyb2');e._h=e.querySelector('.h2');return e;}
+ montarTitulo('tt1','navy','grafico','FINANCEIRO','Estruturamos operações de crédito<br>de alto valor para grandes empresas.');
+ montarTitulo('tt2','azul','lupa','CUSTOS E RESULTADOS','Consultoria especializada<br>em custos e resultados.');
+ montarTitulo('tt3','azul','documento','TRIBUTÁRIO','Analisamos cada detalhe<br>da estrutura do seu negócio.');
+ montarTitulo('tt4','azul','equipe','REFORMA TRIBUTÁRIA','Orientamos sua empresa e treinamos<br>sua equipe para as novas regras.');
+ // v10: ambiente (luz, feixes, vinheta) da tela "Soluções…" sobre o azul — fica atrás do texto (z-index auto, antes dos elementos)
+ {const e=document.createElement('div');e.id='ambS3';e.className='v7 tt azul';e.style.zIndex='auto';
+  e.innerHTML='<div class="cam"><div class="luz"></div><div class="feixe" style="left:300px"></div><div class="feixe" style="left:1200px;opacity:.6"></div><div class="vinheta"></div></div>';
+  $('qLuz').parentNode.insertBefore(e,$('qLuz'));e._fx=[...e.querySelectorAll('.feixe')];}
+ function amb(id,T,a,b){const e=$(id);if(T<a||T>b){e.style.opacity=0;return;}const k=P(T,a,b);e.style.opacity=E(P(T,a,a+.4))*(1-P(T,b-.3,b));
+  e._fx.forEach((f,i)=>{f.style.transform=`translateX(${((k*300-150)*(1+i*.3)).toFixed(1)}px) rotate(-24deg)`;});}
+ function titulo(id,T,a,b){const e=$(id);if(T<a||T>b+.05){e.style.opacity=0;return;}
+  const out=EIO(P(T,b-.4,b)),k=P(T,a,b);e.style.opacity=1-out;e.style.filter=`blur(${(out*14).toFixed(2)}px)`;
+  e._fx.forEach((f,i)=>{f.style.transform=`translateX(${((k*300-150)*(1+i*.3)).toFixed(1)}px) rotate(-24deg)`;});
+  const tp=E(P(T,a,a+.6)),tl=e._tile;tl.style.opacity=tp;tl.style.transform=`translateY(${((1-tp)*40).toFixed(1)}px) scale(${(.92+.08*tp).toFixed(4)})`; // v11: sem filter na placa (o blur, mesmo em 0 px, fazia o Chromium pintar blocos brancos dentro dela)
+  const n=e._tr.length;e._tr.forEach((p,i)=>{const q=P(T,a+.25+i*(1.1/n),a+.25+i*(1.1/n)+.5);if(p.classList.contains('pt')){p.style.opacity=q;}else{dash(p,q);p.style.fillOpacity=q;}});
+  e._fio.style.transform=`scaleX(${E(P(T,a+.2,a+.6)).toFixed(3)})`;
+  const ep=E(P(T,a+.3,a+.7));e._eyb.style.opacity=ep;e._eyb.style.transform=`translateY(${((1-ep)*14).toFixed(1)}px)`;
+  const hp=E(P(T,a+.4,a+.95));e._h.style.opacity=hp;e._h.style.filter=`blur(${((1-hp)*12).toFixed(2)}px)`;e._h.style.transform=`translateY(${((1-hp)*36).toFixed(1)}px)`;}
+ const dash=(p,k)=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=(L*(1-cl(k))).toFixed(1);};
+ const icoTr=[...$('dgIco').querySelectorAll('path,circle')];
+ // o logo completo segura de 2,1 a 4,1 s (música, depois "Esta é a Ative!"): aproximação lenta e contínua de 2 % (1 %/s)
+ // para a imagem nunca ficar parada; a escala fica em 1,02 até o logo sumir (4,66 s), sem salto na saída
+ function respiro(T){if(T<2.05||T>4.7)return;const k=(1+.02*P(T,2.05,4.3)).toFixed(4);['sym','wm'].forEach(id=>{$(id).style.transform+=` scale(${k})`;});}
+ // cena DIAGNÓSTICO na fala 18 (página 86,12–89,95): moldura dourada, selo com documento + lupa, "Tudo começa pelo" e DIAGNÓSTICO
+ function diagnostico(T,a,b){const e=$('dg');if(T<a||T>b+.05){e.style.opacity=0;return;}
+  e.style.opacity=1;const ent=E(P(T,a,a+.4)),out=EIO(P(T,b-.4,b)),cam=e.firstElementChild,k=P(T,a,b);
+  e.style.opacity=ent;cam.style.opacity=1-out;cam.style.filter=`blur(${((1-ent)*8+out*14).toFixed(2)}px)`;cam.style.transform=`scale(${(1+.04*out).toFixed(4)})`; // v11: sem zoom lentocam.style.transformOrigin='46% 52%';
+  dash($('dgFrame'),EIO(P(T,a,a+1.8)));
+  [$('dgF0'),$('dgF1')].forEach((f,i)=>{f.style.transform=`translateX(${((k*300-150)*(1+i*.4)).toFixed(1)}px) rotate(-28deg)`;});
+  const se=E(P(T,a+.05,a+.6)),selo=$('dgSelo');selo.style.opacity=se;selo.style.transform=`translateY(${((1-se)*40).toFixed(1)}px) scale(${(.9+.1*se).toFixed(3)})`;
+  const n=icoTr.length;icoTr.forEach((p,i)=>dash(p,P(T,a+.3+i*(1.6/n),a+.3+i*(1.6/n)+.55)));
+  const t1=E(P(T,a+.2,a+.75)),x1=$('dgT1');x1.style.opacity=t1;x1.style.filter=`blur(${((1-t1)*10).toFixed(2)}px)`;x1.style.transform=`translateY(${((1-t1)*30).toFixed(1)}px)`;
+  const t2=E(P(T,a+.65,a+1.35)),x2=$('dgT2');x2.style.opacity=t2;x2.style.filter=`blur(${((1-t2)*8).toFixed(2)}px)`;
+  x2.style.clipPath=`inset(0 0 ${((1-t2)*100).toFixed(1)}% 0)`;x2.style.transform=`translateY(${((1-t2)*48).toFixed(1)}px)`;}
+ window.renderReal=function(T){
+  respiro(T);
+  // 3 "Soluções financeiras e tributárias…" sobre o azul (prancha P5): luz + feixes + vinheta e a fita branca + dourada
+  amb('ambS3',T,4.92+SH,11.2+SH);V.fita('wF',T,5.3+SH,11.2+SH);
+  // 4 financeiro (navy, P8) · 8 custos e resultados · 14 tributário · 17 reforma (azul, P6): placa de vidro + ícone + fio + etiqueta + frase
+  titulo('tt1',T,11.25+SH,17.0+SH);titulo('tt2',T,33.98+SH,38.49+SH);titulo('tt3',T,63.78+SH,68.32+SH);titulo('tt4',T,80.83+SH,86.22+SH);
+  // 18 "Tudo começa pelo diagnóstico." — a cena DIAGNÓSTICO entra exatamente quando a frase é dita
+  diagnostico(T,86.12+SH,89.95+SH);
+ };})();
+</script>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const P=(t,a,b)=>clamp((t-a)/(b-a));
+const E=x=>1-Math.pow(1-x,3);
+const EB=x=>{const c1=1.4,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2);};
+const EIO=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+// início de cada fala na página (voz da Aline + 1,0 s); marcas internas pelas pausas da voz
+const V=[1.04,2.36,5.22,11.20,16.95,20.58,27.28,30.89,38.44,47.39,48.79,51.12,54.02,63.73,68.27,75.26,80.78,86.17,88.40,94.27,97.55];
+const M={rede2:24.26,s7b:28.8,s8b:33.98,cruzar:39.85,descobrir:42.18,caixa:44.38,s13b:58.1,sobe:61.15,tp1:70.7,slogan:98.4,fim:102.8};
+const INS={cri:['CRI','CERTIFICADO DE RECEBÍVEIS IMOBILIÁRIOS'],cra:['CRA','CERTIFICADO DE RECEBÍVEIS DO AGRONEGÓCIO'],fidc:['FIDC','FUNDO DE DIREITOS CREDITÓRIOS'],
+ fiagro:['Fiagro','FUNDO DAS CADEIAS DO AGRONEGÓCIO'],debenture:['Debênture','TÍTULO DE DÍVIDA DA S.A.'],nota:['Nota comercial','TÍTULO DE DÍVIDA DA EMPRESA'],
+ ccb:['CCB','CÉDULA DE CRÉDITO BANCÁRIO'],giro:['Capital de giro','E ANTECIPAÇÃO DE RECEBÍVEIS'],garantia:['Garantia real','IMÓVEIS, MÁQUINAS E RECEBÍVEIS'],
+ safra:['Plano Safra','CRÉDITO RURAL'],finep:['Finep','FINANCIAMENTO À INOVAÇÃO'],bndes:['BNDES e Finame','LINHAS DE FOMENTO'],fco:['Fundos constitucionais','FCO, FNE E FNO']};
+const GROWS=[['cra','cri','fidc','debenture','nota','fiagro','cra'],['ccb','giro','safra','bndes','garantia','finep','fco']];
+// v11: cartões da parede desenhados (gradiente + ícone em traço) — as fotos antigas tinham ~1180×310 px e saíam embaçadas
+const ICOW={
+ predio:'<path d="M60 262V92l90-42 90 42v170"/><path d="M40 262h220"/><path d="M100 124h20M140 124h20M180 124h20M100 164h20M140 164h20M180 164h20M100 204h20M140 204h20M180 204h20"/><path class="lin" d="M130 262v-42h40v42"/>',
+ agro:'<path d="M150 272V70"/><path d="M150 122c-30 0-55-20-60-52 30 0 55 20 60 52z"/><path d="M150 122c30 0 55-20 60-52-30 0-55 20-60 52z"/><path d="M150 178c-30 0-55-20-60-52 30 0 55 20 60 52z"/><path d="M150 178c30 0 55-20 60-52-30 0-55 20-60 52z"/><path d="M150 234c-30 0-55-20-60-52 30 0 55 20 60 52z"/><path class="lin" d="M150 234c30 0 55-20 60-52-30 0-55 20-60 52z"/>',
+ fundo:'<ellipse cx="150" cy="92" rx="80" ry="28"/><path d="M70 92v50c0 15 36 28 80 28s80-13 80-28V92"/><path d="M70 142v50c0 15 36 28 80 28s80-13 80-28v-50"/><path class="lin" d="M70 192v40c0 15 36 28 80 28s80-13 80-28v-40"/>',
+ titulo:'<path d="M70 30h110l50 50v180a10 10 0 0 1-10 10H70a10 10 0 0 1-10-10V40a10 10 0 0 1 10-10z"/><path d="M180 30v50h50"/><path d="M90 130h100M90 165h100M90 200h60"/><circle class="lin" cx="200" cy="225" r="26"/><path class="lin" d="M188 225l9 9 16-18"/>',
+ ciclo:'<path d="M60 150a90 90 0 0 1 160-56"/><path d="M240 150a90 90 0 0 1-160 56"/><path class="lin" d="M222 60v36h-36"/><path class="lin" d="M78 240v-36h36"/>',
+ escudo:'<path d="M150 30l100 36v80c0 60-42 104-100 124C92 250 50 206 50 146V66z"/><path class="lin" d="M108 150l28 28 56-60"/>',
+ ideia:'<path d="M110 200c-24-18-40-46-40-78a80 80 0 0 1 160 0c0 32-16 60-40 78v24H110z"/><path d="M118 250h64M126 272h48"/><path class="lin" d="M150 122v78"/><path class="lin" d="M128 148l22 22 22-22"/>',
+ banco:'<path d="M40 112l110-62 110 62H40z"/><path d="M70 112v110M120 112v110M180 112v110M230 112v110"/><path d="M50 222h200M36 252h228"/><circle class="lin" cx="150" cy="86" r="10"/>'};
+const ARTE={cra:['t2','agro'],cri:['t1','predio'],fidc:['t3','fundo'],debenture:['t1','titulo'],nota:['t2','titulo'],fiagro:['t3','agro'],
+ ccb:['t3','titulo'],giro:['t1','ciclo'],safra:['t2','agro'],bndes:['t1','banco'],garantia:['t3','escudo'],finep:['t2','ideia'],fco:['t1','fundo']};
+const wallCards=[];
+GROWS.forEach((r,ri)=>r.forEach((n,ci)=>{const d=document.createElement('div');d.className='gcard';const [nm,sb]=INS[n];
+ d.innerHTML=`<div class="arte ${ARTE[n][0]}"><svg viewBox="0 0 300 300">${ICOW[ARTE[n][1]]}</svg></div><div class="shade"></div><div class="glass"><div class="nm${nm.length>14?' long':''}">${nm}</div><div class="sb">${sb}</div></div>`;
+ $('r'+ri).appendChild(d);wallCards.push({d,ri,ci});}));
+// gráfico: faturamento sobe, caixa fica parado; depois o caixa acompanha
+const BH=[220,260,300,330,370,400,430,470],CL=[95,105,90,100,85,95,80,90],CU=[110,150,190,235,280,320,360,400],X=i=>i*143+47.5;
+const bars=[],dots=[];
+for(let i=0;i<8;i++){const b=document.createElement('div');b.className='bar';b.style.left=(i*143)+'px';$('plot').appendChild(b);bars.push(b);
+ const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('r',10);c.setAttribute('fill','#2FE1F2');$('dots').appendChild(c);dots.push(c);}
+function show(el,t,a,b,o={}){const inD=o.in??.5,outD=o.out??.35,dy=o.dy??36,bl=o.blur??16,sc=o.scale??0,base=o.base??'translate(-50%,-50%)';
+ if(t<a||t>b){el.style.opacity=0;return 0;}
+ const pi=(o.ease||E)(P(t,a,a+inD)),po=o.noOut?0:EIO(P(t,b-outD,b));
+ el.style.opacity=clamp(pi)*(1-po);
+ el.style.filter=(bl?`blur(${(clamp(1-pi)+po)*bl}px)`:'none');
+ const s=(1+sc*(1-pi)+(o.outScale??0)*po); // v11: sem o zoom lento de 2,5 % (fazia o texto tremer quadro a quadro)
+ el.style.transform=`${base} translateY(${(1-pi)*dy-po*dy*.4}px) scale(${s})${o.extra?' '+o.extra:''}`;
+ return pi;}
+const P0=V[19];
+const QS=[['q1','Onde estão os gargalos?',V[9],V[10]],['q2','O que pode ser mais eficiente?',V[10],V[11]],['q3','Quais custos estão consumindo o resultado?',V[11],V[12]+.05]]
+ .map(([id,txt,a,b])=>{const el=$(id);el._txt=txt;el._sp=el.querySelector('.tx');el._cur=el.querySelector('.cur');return [id,a,b];});
+const BGS=[[0,1.8,'bgBlue'],[1.5,V[2]-.3,'bgWhite'],[V[2]-.6,V[3]-.3,'bgBlue'],[V[3]-.6,V[4],'bgNavy'],[V[4]-.3,V[6],'bgBlue'], // v10: branco → azul (Soluções) → navy (FINANCEIRO) → azul (parede)
+[V[6]-.3,V[7],'bgNavy'],[V[7]-.3,V[8],'bgBlue'],[V[8]-.3,V[12],'bgNavy'],
+ [V[12]-.3,M.s13b,'bgBlue'],[M.s13b-.3,V[13],'bgNavy'],[V[13]-.3,V[14],'bgBlue'],[V[14]-.3,V[16],'bgNavy'],[V[16]-.3,V[17],'bgBlue'],[V[17]-.1,P0+.1,'bgNavy'],[P0-.1,999,'bgEnd']];
+function chart(t){
+ const c=$('chart'),ch=$('chips'),s1=t>=V[8]&&t<V[9],s2=t>=M.s13b-.1&&t<V[13];
+ if(!s1)ch.style.opacity=0;
+ if(!s1&&!s2){c.style.opacity=0;return;}
+ show(c,t,s1?V[8]:M.s13b-.1,s1?V[9]:V[13],{base:'translate(-50%,-50%) translateY(110px)',dy:60,blur:12,in:.6});
+ bars.forEach((el,i)=>{const p=s1?E(P(t,V[8]+.15+i*.1,V[8]+.85+i*.1)):1;el.style.height=(BH[i]*p)+'px';});
+ const u=s1?0:EIO(P(t,M.sobe,M.sobe+1.5)),cv=CL.map((v,i)=>v+(CU[i]-v)*u);
+ $('cl').setAttribute('points',cv.map((v,i)=>`${X(i)},${520-v}`).join(' '));
+ const d=s1?EIO(P(t,M.cruzar,M.cruzar+1.4)):1;$('cl').style.strokeDashoffset=1000*(1-d);
+ const pulse=s1?Math.sin(Math.PI*P(t,M.caixa,M.caixa+.9)):Math.sin(Math.PI*P(t,M.sobe,M.sobe+1.5));
+ dots.forEach((el,i)=>{el.setAttribute('cx',X(i));el.setAttribute('cy',520-cv[i]);el.style.opacity=clamp((d-i/7)*8+.0001);el.setAttribute('r',10+6*pulse);});
+ const top=520-BH[7],bot=520-cv[7];$('brk').setAttribute('d',`M0 ${top} H30 V${bot} H0`);
+ $('brk').style.strokeDashoffset=1000*(1-(s1?EIO(P(t,M.descobrir,M.descobrir+.7)):1));
+ const lb=$('brkL');lb.style.opacity=s1?E(P(t,M.descobrir+.3,M.descobrir+.8)):0;lb.style.transform=`scale(${1+.06*(s1?pulse:0)})`;
+ if(s1){show(ch,t,V[8],V[9],{base:'translate(-50%,-50%) translateY(-390px)',dy:20,noDrift:true});
+  const st=[V[8],M.cruzar,M.descobrir];
+  st.forEach((a,i)=>{const on=E(P(t,a,a+.35)),off=i<2?E(P(t,st[i+1],st[i+1]+.35)):0,k=on*(1-.75*off),e=$('ch'+i);
+   e.style.background=`rgba(47,225,242,${k})`;e.style.color=k>.5?'#000050':`rgba(255,255,255,${.45+.5*on})`;e.style.borderColor=`rgba(47,225,242,${.35+.65*on})`;});}
+}
+// v11: tela final — "Mais vida / para sua empresa!" digitada (60 ms por letra, termina com a voz), cursor ciano piscando até o fim
+function fimTela(t,cut){const e=$('fim');if(cut<=0){e.style.opacity=0;return;}
+ const L1='Mais vida',L2='para sua empresa!',a=M.slogan,n=L1.length+L2.length,fimTx=a+n*.06;
+ e.style.opacity=cut;e.style.filter=`blur(${((1-cut)*10).toFixed(2)}px)`;e.style.transform='translate(-50%,-50%)';
+ const k=Math.min(n,Math.floor(n*P(t,a,fimTx)+1e-6)),k1=Math.min(k,L1.length),k2=Math.max(0,k-L1.length);
+ $('fimL1').textContent=L1.slice(0,k1);$('fimL2').textContent=L2.slice(0,k2);
+ const blink=k<n?1:(Math.floor((t-fimTx)/.45)%2?0:1);
+ $('fimC1').style.opacity=k<L1.length?1:0;$('fimC2').style.opacity=k>=L1.length?blink:0;}
+function render(t){
+ const op={bgNavy:0,bgBlue:0,bgWhite:0,bgEnd:0};
+ BGS.forEach(([a,b,id])=>{if(t>=a&&t<b+.3){op[id]=Math.max(op[id],Math.min(E(P(t,a,a+.3)),1-P(t,b,b+.3)));}});
+ op.bgWhite=(t>=1.45&&t<V[2]-.3)?1:op.bgWhite; if(t<1.45)op.bgWhite=0; // v10: o branco vai só até a virada para "Soluções…"
+ for(const k in op)$(k).style.opacity=op[k];
+ if(t<0.3){$('bgBlue').style.opacity=1;}
+ // v11: dois feixes de luz lentos sobre o azul e o navy, atrás de tudo — a tela nunca fica morta e o texto não se mexe
+ $('ambG').style.opacity=Math.max(op.bgBlue,op.bgNavy,t<0.3?1:0)*(1-op.bgWhite);
+ $('agF0').style.transform=`translateX(${(140*Math.sin(t*.45)).toFixed(1)}px) rotate(-24deg)`;$('agF1').style.transform=`translateX(${(-110*Math.sin(t*.37+1)).toFixed(1)}px) rotate(-24deg)`;
+
+ // ---- 1-2 logo; na fala 2 sobe e abre espaço para o propósito
+ const tile=$('tile'),sym=$('sym'),wm=$('wm'),o0=0.1-6.85;const T=t-o0;
+ if(t>=0.1&&t<V[1]+.3){ // v9: o logo sai sozinho quando começa "Existimos…"
+  const pin=EB(P(T,6.85,7.45)),grow=EIO(P(T,7.5,8.4)),slide=EIO(P(T,7.98,8.85)),out=EIO(P(t,V[1]-.1,V[1]+.3));
+  const up=0,k=1;
+  const push=(1+.09*P(t,1.35,V[2]))*k,tdrift=1+.07*P(T,6.9,7.7),rotY=(1-E(P(T,6.85,7.8)))*-38;
+  tile.style.opacity=clamp(pin)*(T<8.45?1:0);tile.style.filter=`blur(${clamp(1-pin)*14}px)`;
+  tile.style.borderRadius=(72*(1-grow))+'px';tile.style.boxShadow=`0 ${40*(1-grow)}px ${80*(1-grow)}px rgba(0,0,60,${.35*(1-grow)})`;
+  tile.style.transform=`translate(-50%,-50%) perspective(1200px) rotateY(${rotY*(1-grow)}deg) scale(${(.55+.45*pin)*tdrift*(1+grow*6.2)})`;
+  $('sheen').style.left=(-200+620*EIO(P(T,7.2,7.9)))+'px';
+  const ss=(.55+.45*pin)*tdrift*push;
+  sym.style.opacity=clamp(pin)*(1-out);sym.style.filter=`blur(${clamp(1-pin)*14+out*14}px) drop-shadow(0 ${14*slide}px ${20*slide}px rgba(0,0,60,.16))`;
+  sym.style.transform=`translate(-50%,-50%) translateX(${-265*slide*push}px) translateY(${-6-30*out-130*up}px) perspective(1200px) rotateY(${rotY}deg) scale(${ss})`;
+  const wp=E(P(T,8.25,9.0));wm.style.opacity=wp*(1-out);wm.style.filter=`blur(${(1-wp)*16+out*14}px)`;
+  wm.style.transform=`translate(-50%,-50%) translateX(${(150+70*(1-wp))*push}px) translateY(${10-30*out-130*up}px) scale(${push})`;
+ } else {tile.style.opacity=0;sym.style.opacity=0;wm.style.opacity=0;}
+ show($('s2'),t,V[1]+.25,V[2]); // v9: tela nova, só a frase, centrada · v10: prancha P3 (104 px, "mais vida" em azul, fio, brilho)
+ $('luzS2').style.opacity=$('s2').style.opacity;
+
+ // ---- 3 soluções + círculos que abrem para o azul
+ const cS=V[3]-3.0;
+ show($('s3'),t,V[2]+.05,cS+.1);
+ const cw=$('circles'),c0=cS-12.7;const C=t-c0;
+ if(C>=12.7&&C<15.7){cw.style.opacity=1;cw.style.filter='none';cw.style.transform='translate(-50%,-50%) translateY(-10px) scale(1.04)'; // v11: parado (sem tremor nos rótulos)
+  const cs=[$('c1'),$('c2'),$('c3')],tx=[150,450,750];
+  cs.forEach((c,i)=>{const p=E(P(C,12.8+i*.18,13.5+i*.18));const spread=(1-E(P(C,13.7,14.3)))*110*(i-1);
+   let o=p;if(i!==0&&C>14.9)o*=1-P(C,14.9,15.2); // v10: quem abre a tela é o círculo FINANCEIRO (navy), que vira o fundo do título
+   c.style.opacity=o;c.style.filter=`blur(${(1-p)*18}px)`;c.style.left=(tx[i]-150+spread+(1-p)*(i-1)*220)+'px';
+   c.style.transform=`scale(${.7+.3*p})`;c.style.zIndex=i===1?3:(i===2?2:1);});
+  const ex=EIO(P(C,15.0,15.6)),c1=$('c1');
+  if(C>14.9){c1.style.zIndex=4;c1.style.background='radial-gradient(ellipse at 50% 55%,#14147a 0%,#06065a 45%,#000044 100%)';c1.style.color=`rgba(255,255,255,${1-P(C,14.9,15.1)})`;c1.style.left=(300*ex)+'px';c1.style.transform=`scale(${1+ex*8})`;}else{c1.style.color='#fff';c1.style.background='var(--navy)';}
+ } else cw.style.opacity=0;
+
+ // ---- 4 financeiro
+ $('s5').style.opacity=0; // v10: título FINANCEIRO desenhado em renderReal (tt1, prancha P8)
+ // ---- 5 parede de instrumentos
+ const wall=$('wall'),w0=V[4],WL=V[5]-V[4]+.1;
+ if(t>=w0&&t<w0+WL){const pin=E(P(t,w0,w0+.8)),po=EIO(P(t,w0+WL-.4,w0+WL)),k=P(t,w0,w0+WL);
+  wall.style.opacity=1-po;wall.style.filter=`blur(${po*16}px)`;
+  wall.style.transform=`translate(-50%,-50%) perspective(2400px) rotateX(${9-4*pin}deg) rotateY(${-12+5*k}deg) rotateZ(-2deg) scale(${1+.05*k})`;
+  $('r0').style.transform=`translateX(${-120-165*(t-w0)}px)`;$('r1').style.transform=`translateX(${-1350+165*(t-w0)}px)`;
+  wallCards.forEach(c=>{const a=w0+.05+c.ci*.1+c.ri*.12,p=E(P(t,a,a+.6));c.d.style.opacity=p;c.d.style.transform=`translateY(${(1-p)*70}px) scale(${.9+.1*p})`;c.d.style.filter=`blur(${(1-p)*12}px)`;
+   });
+ } else wall.style.opacity=0;
+ // ---- 6 rede de parceiros
+ const r0=V[5]+.05,r1=V[6];
+ show($('redeT'),t,r0,M.rede2+.1,{base:'translate(-50%,-50%) translateY(-385px)'});
+ show($('redeT2'),t,M.rede2,r1,{base:'translate(-50%,-50%) translateY(-385px)',dy:24});
+ $('n30').textContent=Math.round(30*E(P(t,r0+.2,r0+1.4)));
+ [0,1,2].forEach(i=>{const el=$('rd'+i),a=r0+.25+i*.3;
+  if(t<a||t>r1){el.style.opacity=0;return;}
+  const p=E(P(t,a,a+.7)),po=EIO(P(t,r1-.35,r1)),push=1; // v11: sem zoom lento
+  el.style.opacity=p*(1-po);el.style.filter=`blur(${(1-p)*14+po*14}px)`;
+  el.style.transform=`translate(-50%,-50%) translateY(${-150+i*215}px) translateX(${(1-p)*420*(i%2?-1:1)}px) perspective(1600px) rotateY(${(1-p)*(i%2?10:-10)}deg) scale(${push})`;});
+ $('legalRede').style.opacity=(t>=r0+.4&&t<r1)?Math.min(E(P(t,r0+.4,r0+1)),1-P(t,r1-.35,r1)):0;
+
+ // ---- 7-8 a dor e a consultoria de custos
+ show($('s7'),t,V[6]+.05,V[7]+.05);
+ const lit=E(P(t,M.s7b,M.s7b+.5));$('s7b').style.color=`rgb(${255-208*lit},${255-30*lit},${255-13*lit})`;
+ show($('s8a'),t,V[7]+.05,M.s8b+.1);
+ $('s8b').style.opacity=0; // v10: tt2
+ // ---- 9 e 13b gráfico
+ chart(t);
+ // ---- 10-12 as três perguntas, uma por tela, em máquina de escrever (28 ms por letra), trocando no início de cada fala
+ const ql=$('qLuz'),qa=V[9]-.1,qb=V[12]+.3;
+ if(t>=qa&&t<qb){ql.style.opacity=E(P(t,qa,qa+.6))*(1-P(t,V[12],qb));ql.style.transform=`translate(-50%,-50%) translateX(${(-520+1040*P(t,qa,qb)).toFixed(1)}px) translateY(${(60*Math.sin(t*.8)).toFixed(1)}px)`;}else ql.style.opacity=0;
+ QS.forEach(([id,a,b],i)=>{const el=$(id),n=el._txt.length;
+  if(t<a||t>=b){el.style.opacity=0;return;}
+  const fimTx=a+n*.028,k=Math.min(n,Math.floor(n*P(t,a,fimTx)+1e-6)),sai=EIO(P(t,b-(i<2?.22:.35),b));
+  el.style.opacity=1-sai;el.style.filter=`blur(${(sai*8).toFixed(2)}px)`;el.style.transform=`translate(-50%,-50%) translateY(${(-sai*14).toFixed(1)}px)`;
+  el._sp.textContent=el._txt.slice(0,k);
+  el._cur.style.opacity=k<n?1:(t<fimTx+.9?(Math.floor((t-fimTx)/.4)%2?0:1)*(1-P(t,fimTx+.6,fimTx+.9)):0);});
+ // ---- 13 diagnóstico claro
+ show($('s13a'),t,V[12]+.05,M.s13b+.05);
+ show($('s13b'),t,M.s13b-.05,V[13]+.05,{base:'translate(-50%,-50%) translateY(-330px)'});
+
+ // ---- 14 tributário
+ $('s14').style.opacity=0; // v10: tt3
+ // ---- 15-16 três painéis
+ const tx=$('tax'),ta=V[14],tb=V[16];
+ if(t>=ta&&t<tb){const po=EIO(P(t,tb-.4,tb));tx.style.opacity=1-po;tx.style.filter=`blur(${po*16}px)`;tx.style.transform=`translate(-50%,-50%) scale(${1+.04*P(t,ta,tb)})`;
+  [ta+.1,M.tp1,V[15]].forEach((a,i)=>{const el=$('tp'+i),p=E(P(t,a,a+.8));
+   el.style.opacity=p;el.style.filter=`blur(${(1-p)*14}px)`;el.style.transform=`translateY(${(1-p)*90}px) perspective(1600px) rotateY(${(1-p)*(i-1)*-22}deg)`;
+   const ph=el.querySelector('.ph');if(ph)ph.style.transform=`scale(${1.04+.06*P(t,a,tb)})`;});
+ } else tx.style.opacity=0;
+ // ---- 17 reforma: orientar e treinar
+ $('s17').style.opacity=0; // v10: tt4
+
+ // ---- 18 tudo começa pelo diagnóstico
+ const dA=V[17]+.05,dB=89.95;
+ $('s18').style.opacity=0;$('p4').style.opacity=0; // v8: a cena DIAGNÓSTICO (renderReal) ocupa este trecho
+ // ---- 19 a oportunidade
+ show($('s19'),t,dB-.05,P0+.15);
+
+ // ---- 20-21 pirâmide, confiança, marca e assinatura
+ if(t>=P0){const sp=E(P(t,P0,P0+1.8)),fin=E(P(t,P0,P0+.45)),xf=EIO(P(t,P0+1.6,P0+2.15)),cut=EIO(P(t,M.slogan-.25,M.slogan+.05)); // v11: corte para a tela final, pronto quando ela diz "Mais vida…"
+  $('gl').style.opacity=fin*(1-xf);$('gl').style.filter=`blur(${(1-fin)*12}px)`;
+  const pf=$('pfull');pf.style.opacity=xf*(1-cut);const push=1+.05*P(t,P0+1.6,M.fim);pf.style.transform=`scale(${push})`;pf.style.transformOrigin='50% 45%';
+  const sw=(a)=>t>a&&t<a+.95?Math.sin(Math.PI*P(t,a,a+.95))*.9:0,sh=$('shine');
+  const s1=sw(P0+2.1),s2=sw(V[20]+1.1),sa=s1?P0+2.1:V[20]+1.1;
+  sh.style.opacity=Math.max(s1,s2)*(1-cut);sh.style.backgroundPosition=`${100-100*P(t,sa,sa+.95)}% 0`;sh.style.transform=`scale(${push})`;sh.style.transformOrigin='50% 45%';
+  if(t<P0+2.3)window.render3d&&window.render3d((1-sp)*3*Math.PI*2,(.62+.38*sp),t);
+  const f1=E(P(t,P0+.3,P0+.9))*(1-EIO(P(t,V[20]-.3,V[20]+.1)));const e1=$('endT1');e1.style.opacity=f1;e1.style.filter=`blur(${(1-f1)*12}px)`;e1.style.transform=`translate(-50%,-50%) translateY(${290+(1-E(P(t,P0+.3,P0+.9)))*20}px)`;
+  const w=E(P(t,V[20]-.15,V[20]+.85));const wm2=$('wmEnd');wm2.style.opacity=w*(1-cut);wm2.style.filter=`blur(${(1-w)*16+cut*14}px)`; // v11: ATIVE entra mais devagar (1,0 s) e sai no cortewm2.style.transform=`translate(-50%,-50%) translateY(${262+(1-w)*24}px)`;
+  $('endT2').style.opacity=0;fimTela(t,cut); // v11: a assinatura vai para uma tela nova, digitada
+ } else {$('pfull').style.opacity=0;$('shine').style.opacity=0;$('gl').style.opacity=0;$('wmEnd').style.opacity=0;$('endT1').style.opacity=0;$('endT2').style.opacity=0;$('fim').style.opacity=0;}
+}
+window.render=render;render(0);
+</script>
+
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {RoomEnvironment} from './node_modules/three/examples/jsm/environments/RoomEnvironment.js';
+const DATA={"shapes": [{"pts": [[-0.40939597315436244, 0.25], [-0.412751677852349, 0.25], [-0.5, 0.16610738255033558], [-0.5, 0.0], [-0.40939597315436244, 0.0]], "holes": [], "col": [170.10625993928002, 128.68599103657655, 65.09238109006795], "bbox": [162, 313, 55, 150]}, {"pts": [[-0.2600671140939597, 0.3926174496644295], [-0.2651006711409396, 0.3926174496644295], [-0.35067114093959734, 0.31208053691275167], [-0.35067114093959734, 0.0], [-0.2600671140939597, 0.0]], "holes": [], "col": [170.406006006006, 128.5048477048477, 64.57400257400258], "bbox": [251, 228, 55, 235]}, {"pts": [[0.1040268456375839, 0.46476510067114096], [0.1040268456375839, 0.37080536912751677], [0.28859060402684567, 0.0016778523489932886], [0.337248322147651, 0.0], [0.3271812080536913, 0.026845637583892617], [0.10738255033557047, 0.46476510067114096]], "holes": [], "col": [170.65954658629275, 130.68195518280697, 68.58275455379373], "bbox": [522, 185, 140, 278]}, {"pts": [[-0.1174496644295302, 0.5268456375838926], [-0.1342281879194631, 0.5151006711409396], [-0.2063758389261745, 0.4463087248322148], [-0.2063758389261745, 0.0], [-0.1174496644295302, 0.0]], "holes": [], "col": [168.1325721535046, 125.93802727561052, 61.377798921661906], "bbox": [337, 148, 54, 315]}, {"pts": [[0.10738255033557047, 0.7734899328859061], [-0.050335570469798654, 0.5889261744966443], [-0.050335570469798654, 0.0], [0.0050335570469798654, 0.0], [0.13926174496644295, 0.2684563758389262], [0.13926174496644295, 0.27181208053691275], [0.07550335570469799, 0.27348993288590606], [0.07550335570469799, 0.5], [0.10570469798657718, 0.540268456375839], [0.23657718120805368, 0.28187919463087246], [0.3724832214765101, 0.003355704697986577], [0.37583892617449666, 0.0], [0.5, 0.0], [0.5, 0.0050335570469798654], [0.2348993288590604, 0.5369127516778524], [0.11073825503355705, 0.7734899328859061]], "holes": [], "col": [252.0079108349614, 252.41093104442237, 253.05950741440606], "bbox": [430, 1, 329, 462]}], "aspect": 0.7734899328859061};
+const canvas=document.getElementById('gl');
+const R=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,preserveDrawingBuffer:true});
+R.setPixelRatio(1);R.setSize(1920,1080,false);R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.05;R.outputColorSpace=THREE.SRGBColorSpace;
+R.shadowMap.enabled=true;
+const scene=new THREE.Scene();
+const pm=new THREE.PMREMGenerator(R);
+// estúdio escuro com softboxes: dá ao ouro reflexos fortes e sombras profundas
+const env=new THREE.Scene();env.background=new THREE.Color(0x020308);
+function panel(w,h,pos,look,rgb){const m=new THREE.MeshBasicMaterial({side:THREE.DoubleSide});m.color.setRGB(...rgb);const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),m);p.position.set(...pos);p.lookAt(...look);env.add(p);}
+panel(10,4,[0,9,4],[0,0,0],[9,8.2,7]);        // softbox de cima
+panel(2.2,10,[-9,2,3],[0,0,0],[6,5.4,4.6]);   // faixa esquerda
+panel(2.2,10,[9,2,-2],[0,0,0],[5,4.6,4]);     // faixa direita
+panel(12,7,[-1.5,2.8,10.5],[0,0,0],[3.4,2.6,1.7]);  // softbox frontal quente
+panel(3,9,[-5,4,9],[0,0,0],[6,5,3.8]);  // faixa de brilho à esquerda
+panel(8,1,[0,-2.5,10],[0,0,0],[.5,.42,.32]);  // rebatedor baixo fraco
+panel(6,3,[0,4,-9],[0,0,0],[2.5,2.2,1.8]);    // contraluz
+scene.environment=pm.fromScene(env,0.02).texture;
+const cam=new THREE.PerspectiveCamera(28,1920/1080,0.1,100);
+const gold=new THREE.MeshPhysicalMaterial({color:0xEDB04A,metalness:1,roughness:.24,clearcoat:.4,clearcoatRoughness:.2,envMapIntensity:1.25});
+const goldDim=gold.clone();goldDim.roughness=.28;
+const navy=new THREE.MeshPhysicalMaterial({color:0x060d20,metalness:.6,roughness:.22,clearcoat:.3,envMapIntensity:.45});
+const key=new THREE.DirectionalLight(0xfff0d8,1.4);key.position.set(-4,6,6);key.castShadow=true;scene.add(key);
+const rim=new THREE.DirectionalLight(0xffe2a8,1.6);rim.position.set(5,4,-5);scene.add(rim);
+const fill=new THREE.DirectionalLight(0x8fb4ff,.15);fill.position.set(0,2,8);scene.add(fill);
+const obj=new THREE.Group();scene.add(obj);
+// símbolo extrudado (largura 2.6 unidades)
+const SW=2.6,DEPTH=.30;
+const sym=new THREE.Group();
+DATA.shapes.forEach(sh=>{const shape=new THREE.Shape(sh.pts.map(p=>new THREE.Vector2(p[0]*SW,p[1]*SW)));
+ sh.holes.forEach(hh=>shape.holes.push(new THREE.Path(hh.map(p=>new THREE.Vector2(p[0]*SW,p[1]*SW)))));
+ const g=new THREE.ExtrudeGeometry(shape,{depth:DEPTH,bevelEnabled:true,bevelThickness:.018,bevelSize:.012,bevelSegments:3,curveSegments:4});
+ g.translate(0,0,-DEPTH/2);const m=new THREE.Mesh(g,gold);m.castShadow=true;sym.add(m);});
+// base em degraus (proporções da imagem)
+const U=SW/690;
+function box(w,h,d,mat,y){const g=new THREE.BoxGeometry(w,h,d);const m=new THREE.Mesh(g,mat);m.position.y=y;m.receiveShadow=true;obj.add(m);return m;}
+const hBot=23*U,hMid=50*U,hTop=100*U;
+box(950*U,hBot,1.45,goldDim,hBot/2);
+box(900*U,hMid,1.28,navy,hBot+hMid/2);
+box(920*U,hTop,1.36,gold,hBot+hMid+hTop/2);
+sym.scale.y=1.097;sym.position.set(20*U,hBot+hMid+hTop,0);obj.add(sym);
+const H=hBot+hMid+hTop+DATA.aspect*SW*1.097;
+obj.position.y=-H/2;
+const FIT=window.FIT||{s:1.054,oy:131,cy:.45};cam.position.set(0,FIT.cy,13.2);cam.lookAt(0,0,0);
+cam.setViewOffset(1920,1080,0,FIT.oy,1920,1080);  // sobe o objeto ~120px na tela
+window.render3d=(ang,sc,t)=>{obj.rotation.y=ang;obj.scale.setScalar(sc*FIT.s);R.render(scene,cam);};
+window.render3dReady=true;
+</script></body></html>

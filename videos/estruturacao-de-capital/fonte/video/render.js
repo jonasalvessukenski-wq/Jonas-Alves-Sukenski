@@ -3,7 +3,7 @@ const {chromium}=require('playwright');const {spawn}=require('child_process');
 const FF=process.env.FFMPEG||(()=>{const {execSync}=require('child_process');for(const py of[process.env.PYTHON,'python','python3','py'].filter(Boolean)){try{return execSync(`"${py}" -c "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())"`,{stdio:['ignore','pipe','ignore']}).toString().trim();}catch(e){}}return 'ffmpeg';})();
 (async()=>{const mode=process.argv[2];
  const b=await chromium.launch({...(process.env.CHROME?{executablePath:process.env.CHROME}:{}),args:['--allow-file-access-from-files','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
- const pg=await b.newPage({viewport:{width:1920,height:1080}});
+ const pg=await b.newPage({viewport:{width:1920,height:1080}});pg.setDefaultTimeout(180000); // um quadro lento não derruba o render inteiro
  await pg.goto(process.env.URL?process.env.URL:'file://'+__dirname+'/'+(process.env.PAGE||'index.html'),{timeout:180000});if(process.env.URL)await pg.waitForFunction(()=>window.render3dReady,null,{timeout:60000});await pg.evaluate(()=>document.fonts.ready);
  if(mode==='stills'){for(const t of process.argv.slice(3)){await pg.evaluate(t=>render(+t),t);await pg.screenshot({path:`still_${t}.jpg`,quality:80,type:'jpeg'});}}
  else if(process.env.FRAMES_DIR){const fs=require('fs');const D=process.env.FRAMES_DIR;fs.mkdirSync(D,{recursive:true});const I0=+(process.env.FROM||0),I1=+(process.env.TO||1800);
