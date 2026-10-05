@@ -41,6 +41,7 @@ PAGINAS = {  # página de origem, música de fundo
     '2_Apresentacao_v10': (os.path.join(V, 'apresentacao-ative', 'inst_v10.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v11': (os.path.join(V, 'apresentacao-ative', 'inst_v11.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
     '2_Apresentacao_v12': (os.path.join(V, 'apresentacao-ative', 'inst_v12.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
+    '2_Apresentacao_v14': (os.path.join(V, 'apresentacao-ative', 'inst_v14.html'), os.path.join(FONTE, 'audio', 'musica_sem_voz.wav')),
 }
 ENTRA = 0.12   # a voz entra este tanto depois de a frase começar a aparecer na tela
 
@@ -151,6 +152,7 @@ CORRIDA['2_Apresentacao_v9'] = dict(voz='vozC_aline.mp3', D=3.0, fim=2.5, abre=(
 CORRIDA['2_Apresentacao_v10'] = CORRIDA['2_Apresentacao_v9']  # v10 (03/10 noite): mesmo tempo da v9; mudam só as telas das pranchas aprovadas
 CORRIDA['2_Apresentacao_v11'] = CORRIDA['2_Apresentacao_v9']  # v11: mesmo tempo; sem tremor, parede desenhada, tela final digitada
 CORRIDA['2_Apresentacao_v12'] = CORRIDA['2_Apresentacao_v9']  # v12: mesmo tempo; só o ATIVE do final de volta para baixo da pirâmide
+CORRIDA['2_Apresentacao_v14'] = CORRIDA['2_Apresentacao_v12']  # v14 (05/10): cartões do tributário ilustrados e animados; mesmo tempo e mesma voz
 
 
 def plano_corrido(nome):
