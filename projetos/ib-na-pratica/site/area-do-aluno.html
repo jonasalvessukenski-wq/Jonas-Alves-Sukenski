@@ -6,84 +6,90 @@
 <title>Área do Aluno</title>
 <meta name="description" content="Protótipo da área do aluno do IB na Prática. Dados de exemplo.">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#061225">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=Schibsted+Grotesk:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="style.css">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body class="app">
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="logo-ib" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="square"><path d="M10 6.5v21M5.5 6.5h12M5.5 27.5h12"/><path d="M15 6.5h6.5a5.25 5.25 0 0 1 0 10.5H15M15 17h7.5a5.25 5.25 0 0 1 0 10.5H15M15 6.5v21"/></symbol>
   <symbol id="i-inicio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3.75 10.5L12 3.75l8.25 6.75v9.75H14.5v-6h-5v6H3.75z"/></symbol>
   <symbol id="i-trilha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.75" cy="6" r="1.25"/><circle cx="4.75" cy="12" r="1.25"/><circle cx="4.75" cy="18" r="1.25"/></symbol>
-  <symbol id="i-aula" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.75" y="4.75" width="18.5" height="12.5"/><path d="M10 8.5v5l4.25-2.5z"/><path d="M6 20.25h12"/></symbol>
-  <symbol id="i-agenda" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><rect x="3.75" y="5.25" width="16.5" height="15"/><path d="M3.75 9.75h16.5M8 3v4M16 3v4"/></symbol>
-  <symbol id="i-comunidade" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="5.5" r="2.5"/><circle cx="5" cy="17.5" r="2.5"/><circle cx="19" cy="17.5" r="2.5"/><path d="M10.7 7.7l-4.4 7.6M13.3 7.7l4.4 7.6M7.5 17.5h9"/></symbol>
+  <symbol id="i-aula" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.75" y="4.75" width="18.5" height="12.5" rx="1.5"/><path d="M10 8.5v5l4.25-2.5z"/><path d="M6 20.25h12"/></symbol>
+  <symbol id="i-agenda" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><rect x="3.75" y="5.25" width="16.5" height="15" rx="1.5"/><path d="M3.75 9.75h16.5M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-rede" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="5.5" r="2.5"/><circle cx="5" cy="17.5" r="2.5"/><circle cx="19" cy="17.5" r="2.5"/><path d="M10.7 7.7l-4.4 7.6M13.3 7.7l4.4 7.6M7.5 17.5h9"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M7 4.5v15l12-7.5z"/></symbol>
-  <symbol id="i-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
   <symbol id="i-voltar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H5M11 6l-6 6 6 6"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l4.5 4.5 10.5-10.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l4.5 4.5 10.5-10.5"/></symbol>
   <symbol id="i-andamento" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.25"/><path d="M12 3.75a8.25 8.25 0 0 1 0 16.5z" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-aberto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.25"/></symbol>
-  <symbol id="i-cadeado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="4.75" y="10.75" width="14.5" height="10.5"/><path d="M8 10.75V7.5a4 4 0 0 1 8 0v3.25"/></symbol>
+  <symbol id="i-cadeado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="4.75" y="10.75" width="14.5" height="10.5" rx="1.5"/><path d="M8 10.75V7.5a4 4 0 0 1 8 0v3.25"/></symbol>
   <symbol id="i-pdf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M5.75 2.75h8.5l4 4v14.5H5.75z"/><path d="M14.25 2.75v4h4M9 12.5h6M9 16h6"/></symbol>
-  <symbol id="i-planilha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3.75" y="3.75" width="16.5" height="16.5"/><path d="M3.75 9.25h16.5M3.75 14.75h16.5M9.25 9.25v11"/></symbol>
+  <symbol id="i-planilha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3.75" y="3.75" width="16.5" height="16.5" rx="1.5"/><path d="M3.75 9.25h16.5M3.75 14.75h16.5M9.25 9.25v11"/></symbol>
   <symbol id="i-baixar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></symbol>
   <symbol id="i-resposta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4.75 4.75h14.5v10.5H11l-4.25 4v-4h-2z"/></symbol>
   <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.25"/><path d="M12 11v5.5M12 7.75v.5"/></symbol>
+  <symbol id="i-certificado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><rect x="2.75" y="3.75" width="18.5" height="13" rx="1.5"/><path d="M6.5 8h11M6.5 11.5h6"/><circle cx="16.5" cy="15.5" r="2.5"/><path d="M15 17.5l-.75 3.5 2.25-1.25 2.25 1.25-.75-3.5"/></symbol>
 </svg>
 
 <a class="pular" href="#principal">Pular para o conteúdo</a>
 
-<!-- Navegação lateral fina (desktop) -->
-<aside class="app-lateral escuro" aria-label="Navegação da área do aluno">
+<!-- Navegação lateral fina (computador) -->
+<aside class="app-lateral grao" aria-label="Navegação da área do aluno">
  <div class="app-lateral__fixo">
-  <a class="marca" href="index.html">IB <em>na Prática</em></a>
+  <a class="marca" href="index.html"><svg aria-hidden="true"><use href="#logo-ib"/></svg><span><b>IB</b> na Prática</span></a>
   <nav>
     <a href="#inicio" data-nav="inicio"><svg aria-hidden="true"><use href="#i-inicio"/></svg>Início</a>
     <a href="#trilha" data-nav="trilha"><svg aria-hidden="true"><use href="#i-trilha"/></svg>Trilha</a>
     <a href="#aula" data-nav="aula"><svg aria-hidden="true"><use href="#i-aula"/></svg>Aula atual</a>
-    <a href="#agenda" data-nav="agenda"><svg aria-hidden="true"><use href="#i-agenda"/></svg>Agenda ao vivo</a>
-    <a href="#comunidade" data-nav="comunidade"><svg aria-hidden="true"><use href="#i-comunidade"/></svg>Comunidade</a>
+    <a href="#agenda" data-nav="agenda"><svg aria-hidden="true"><use href="#i-agenda"/></svg>Ao vivo</a>
+    <a href="#comunidade" data-nav="comunidade"><svg aria-hidden="true"><use href="#i-rede"/></svg>Networking</a>
   </nav>
-  <div class="app-lateral__pe" style="margin-top:auto">
+  <div class="app-lateral__pe">
     <span class="avatar" aria-hidden="true">AE</span>
-    <div>Aluno exemplo<span>Turma de lançamento</span></div>
+    <div>Aluno exemplo<span>IB na Prática</span></div>
   </div>
-  <div class="app-lateral__voltar" style="margin:16px 0 0">
-    <a href="index.html"><svg aria-hidden="true"><use href="#i-voltar"/></svg>Voltar ao site</a>
-  </div>
+  <div class="app-lateral__voltar"><a href="index.html"><svg aria-hidden="true"><use href="#i-voltar"/></svg>Voltar ao site</a></div>
  </div>
 </aside>
 
 <!-- Barra superior (celular) -->
-<header class="app-barra escuro">
-  <a class="marca" href="index.html">IB <em>na Prática</em></a>
+<header class="app-barra">
+  <a class="marca" href="index.html"><svg aria-hidden="true"><use href="#logo-ib"/></svg><span><b>IB</b> na Prática</span></a>
   <span class="avatar" aria-label="Aluno exemplo">AE</span>
 </header>
 
-<main id="principal" class="app-principal">
+<main id="principal" class="app-principal grao">
+ <div class="app-miolo">
 
-  <p class="app-aviso"><svg aria-hidden="true"><use href="#i-info"/></svg><span>Protótipo. Nomes de aulas, progresso, datas e tópicos são exemplos ilustrativos, não dados reais.</span></p>
+  <p class="app-aviso"><svg aria-hidden="true"><use href="#i-info"/></svg><span>Protótipo. Progresso, datas, durações, materiais e tópicos são exemplos ilustrativos, não dados reais.</span></p>
 
   <!-- ============ VISTA: INÍCIO ============ -->
   <div class="vista" data-vista="inicio" id="inicio">
     <span class="rotulo">Área do aluno</span>
-    <h1 class="app-titulo">Continue de onde parou.</h1>
-    <p class="app-sub">IB na Prática · Turma de lançamento <span class="tag">Exemplo</span></p>
+    <h1 class="app-titulo">Continue de <b>onde parou</b></h1>
+    <p class="app-sub">IB na Prática · imersão de 6 dias <span class="tag">Exemplo</span></p>
 
     <section class="bloco" aria-labelledby="h-continuar">
       <div class="bloco__cabeca"><h2 id="h-continuar">Continuar assistindo</h2></div>
-      <a class="continuar" href="#aula" style="text-decoration:none">
-        <div class="tela escuro">
-          <span class="tela__marca">Módulo 02</span>
+      <a class="continuar painel" href="#aula">
+        <div class="tela">
+          <svg class="tela__fundo" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <g fill="rgba(156,194,255,.04)" stroke="rgba(156,194,255,.08)"><rect x="380" y="250" width="34" height="110"/><rect x="430" y="210" width="34" height="150"/><rect x="480" y="160" width="34" height="200"/><rect x="530" y="110" width="34" height="250"/><rect x="580" y="60" width="34" height="300"/></g>
+            <path d="M0 300 C120 290 200 250 300 230 S 480 140 640 60" fill="none" stroke="rgba(203,167,90,.5)"/>
+          </svg>
+          <span class="tela__marca">2º dia</span>
           <span class="tela__play" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
-          <span class="tela__legenda"><span>Gravação da aula ao vivo</span><span>38:12 / 1:24:00</span></span>
+          <span class="tela__legenda"><span>Aula gravada</span><span>54:10 / 2:00:00</span></span>
         </div>
         <div class="continuar__info">
-          <span class="meta">Módulo 02 · Análise · Aula 3 de 6</span>
-          <h3>Geração de caixa e capacidade de pagamento</h3>
+          <span class="meta">IB na Prática · 2º dia</span>
+          <h3>Finanças Corporativas</h3>
           <div class="barra" role="img" aria-label="45% assistido (exemplo)"><i style="width:45%"></i></div>
           <span class="meta">45% assistido · exemplo</span>
           <span class="botao botao--primario">Continuar aula <svg aria-hidden="true"><use href="#i-seta"/></svg></span>
@@ -91,13 +97,13 @@
       </a>
     </section>
 
-    <section class="bloco" id="agenda" aria-labelledby="h-agenda" style="scroll-margin-top:84px">
+    <section class="bloco" id="agenda" aria-labelledby="h-agenda">
       <div class="bloco__cabeca"><h2 id="h-agenda">Próxima aula ao vivo</h2><span class="tag">Data exemplo</span></div>
-      <div class="ao-vivo">
-        <div class="data" aria-label="Data de exemplo: quinta, 14"><b>14</b><span>Qui</span></div>
+      <div class="ao-vivo painel">
+        <div class="data" aria-label="Data de exemplo: quarta, 14"><b>14</b><span>Qua</span></div>
         <div>
-          <h3>Discussão de caso: estrutura de garantias</h3>
-          <p class="meta">19h30 · Google Meet · sala fechada para alunos<br>A aula fica gravada e entra na trilha depois.</p>
+          <h3>3º dia · Venture Capital</h3>
+          <p class="meta">19h30 · ao vivo, online<br>Aula + dúvidas com o professor. Fica gravada na trilha.</p>
         </div>
         <div class="ao-vivo__acoes">
           <a class="botao botao--linha" href="#agenda">Adicionar à agenda</a>
@@ -107,57 +113,40 @@
     </section>
 
     <div class="duas-colunas">
-      <section class="bloco" id="trilha" aria-labelledby="h-trilha" style="scroll-margin-top:84px">
-        <div class="bloco__cabeca"><h2 id="h-trilha">Trilha de módulos</h2><span class="tag">Exemplo</span></div>
-        <div class="trilha">
-          <a class="modulo" href="#aula">
-            <span class="modulo__n">01</span>
-            <span class="modulo__titulo">Originação</span>
-            <span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-check"/></svg>Concluído</span><span class="barra" aria-hidden="true"><i style="width:100%"></i></span><span>6 de 6</span></span>
-          </a>
-          <a class="modulo" href="#aula">
-            <span class="modulo__n">02</span>
-            <span class="modulo__titulo">Análise</span>
-            <span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-andamento"/></svg>Em andamento</span><span class="barra" aria-hidden="true"><i style="width:40%"></i></span><span>2 de 6</span></span>
-          </a>
-          <div class="modulo modulo--fechado">
-            <span class="modulo__n">03</span>
-            <span class="modulo__titulo">Estruturação</span>
-            <span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-cadeado"/></svg>Libera após o módulo 02</span></span>
-          </div>
-          <div class="modulo modulo--fechado">
-            <span class="modulo__n">04</span>
-            <span class="modulo__titulo">Investidor</span>
-            <span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-cadeado"/></svg>Libera após o módulo 03</span></span>
-          </div>
-          <div class="modulo modulo--fechado">
-            <span class="modulo__n">05</span>
-            <span class="modulo__titulo">Fechamento</span>
-            <span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-cadeado"/></svg>Libera após o módulo 04</span></span>
-          </div>
+      <section class="bloco" id="trilha" aria-labelledby="h-trilha">
+        <div class="bloco__cabeca"><h2 id="h-trilha">Trilha</h2><span class="tag">Exemplo</span></div>
+
+        <div class="trilha-grupo">
+          <h3>IB na Prática · imersão de 6 dias</h3>
+          <a class="modulo" href="#aula"><span class="modulo__n">1º dia</span><span class="modulo__titulo">Mercado de Capitais</span><span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-check"/></svg>Concluído</span><span class="barra" aria-hidden="true"><i style="width:100%"></i></span></span></a>
+          <a class="modulo" href="#aula"><span class="modulo__n">2º dia</span><span class="modulo__titulo">Finanças Corporativas</span><span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-andamento"/></svg>Em andamento</span><span class="barra" aria-hidden="true"><i style="width:45%"></i></span></span></a>
+          <div class="modulo modulo--fechado"><span class="modulo__n">3º dia</span><span class="modulo__titulo">Venture Capital</span><span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-agenda"/></svg>Ao vivo em breve</span></span></div>
+          <div class="modulo modulo--fechado"><span class="modulo__n">4º dia</span><span class="modulo__titulo">Private Equity</span><span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-cadeado"/></svg>Libera após a aula ao vivo</span></span></div>
+          <div class="modulo modulo--fechado"><span class="modulo__n">5º dia</span><span class="modulo__titulo">M&amp;A</span><span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-cadeado"/></svg>Libera após a aula ao vivo</span></span></div>
+          <div class="modulo modulo--fechado"><span class="modulo__n">6º dia</span><span class="modulo__titulo">Private Banking</span><span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-cadeado"/></svg>Libera após a aula ao vivo</span></span></div>
+        </div>
+
+        <div class="trilha-grupo">
+          <h3>Valuation e Modelagem Financeira <span class="tag">Turma 5</span></h3>
+          <div class="modulo modulo--fechado"><span class="modulo__n">Aula</span><span class="modulo__titulo">Receitas: premissas e projeção</span><span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-cadeado"/></svg>Para alunos do programa</span></span></div>
+          <div class="modulo modulo--fechado"><span class="modulo__n">Aula</span><span class="modulo__titulo">Investimentos</span><span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-cadeado"/></svg>Para alunos do programa</span></span></div>
+          <div class="modulo modulo--fechado"><span class="modulo__n">Aula</span><span class="modulo__titulo">Demonstrações financeiras</span><span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-cadeado"/></svg>Para alunos do programa</span></span></div>
+          <div class="modulo modulo--fechado"><span class="modulo__n">Aula</span><span class="modulo__titulo">Análise do modelo</span><span class="modulo__detalhe"><span class="estado"><svg aria-hidden="true"><use href="#i-cadeado"/></svg>Para alunos do programa</span></span></div>
         </div>
       </section>
 
-      <section class="bloco" id="comunidade" aria-labelledby="h-comunidade" style="scroll-margin-top:84px">
-        <div class="bloco__cabeca"><h2 id="h-comunidade">Comunidade</h2><a href="#comunidade">Ver tudo</a></div>
-        <div class="topicos">
-          <a class="topico" href="#comunidade">
-            <h3>Garantias em Nota Comercial: cessão fiduciária ou aval?</h3>
-            <span class="meta">Aluno exemplo · Estruturação</span>
-            <span class="topico__n"><svg aria-hidden="true"><use href="#i-resposta"/></svg>4</span>
-          </a>
-          <a class="topico" href="#comunidade">
-            <h3>Como vocês normalizam o EBITDA antes da primeira reunião?</h3>
-            <span class="meta">Aluno exemplo · Análise</span>
-            <span class="topico__n"><svg aria-hidden="true"><use href="#i-resposta"/></svg>7</span>
-          </a>
-          <a class="topico" href="#comunidade">
-            <h3>Material complementar da aula ao vivo</h3>
-            <span class="meta">Equipe IB na Prática · Avisos</span>
-            <span class="topico__n"><svg aria-hidden="true"><use href="#i-resposta"/></svg>2</span>
-          </a>
+      <section class="bloco" id="comunidade" aria-labelledby="h-comunidade">
+        <div class="bloco__cabeca"><h2 id="h-comunidade">Networking</h2><a href="#comunidade">Ver tudo</a></div>
+        <div>
+          <a class="topico" href="#comunidade"><h3>Alguém da turma anterior trabalha com DCM?</h3><span class="meta">Aluno exemplo · Mercado de Capitais</span><span class="topico__n"><svg aria-hidden="true"><use href="#i-resposta"/></svg>5</span></a>
+          <a class="topico" href="#comunidade"><h3>Material complementar do 2º dia</h3><span class="meta">Equipe IB na Prática · Avisos</span><span class="topico__n"><svg aria-hidden="true"><use href="#i-resposta"/></svg>2</span></a>
+          <a class="topico" href="#comunidade"><h3>Dúvida sobre a diferença entre PE e VC</h3><span class="meta">Aluno exemplo · Private Equity</span><span class="topico__n"><svg aria-hidden="true"><use href="#i-resposta"/></svg>8</span></a>
         </div>
-        <p class="meta" style="margin-top:16px">Tópicos de exemplo. Plataforma da comunidade <span class="confirmar">[CONFIRMAR]</span></p>
+        <p class="meta" style="margin-top:14px">Tópicos de exemplo. Plataforma do grupo <span class="confirmar">[CONFIRMAR]</span></p>
+        <div class="certificado painel">
+          <svg aria-hidden="true"><use href="#i-certificado"/></svg>
+          <div><b>Certificado</b><span class="meta">Disponível ao concluir os 6 dias. Exemplo.</span></div>
+        </div>
       </section>
     </div>
   </div>
@@ -165,35 +154,44 @@
   <!-- ============ VISTA: AULA ============ -->
   <div class="vista" data-vista="aula" hidden>
     <nav class="trilha-migalha" aria-label="Você está em">
-      <a href="#trilha">Trilha</a><span aria-hidden="true">/</span><span>Módulo 02 · Análise</span><span aria-hidden="true">/</span><span>Aula 3</span>
+      <a href="#trilha">Trilha</a><span aria-hidden="true">/</span><span>IB na Prática</span><span aria-hidden="true">/</span><span>2º dia</span>
     </nav>
 
     <div class="player">
-      <div class="tela escuro">
+      <div class="tela">
+        <svg class="tela__fundo" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <g fill="rgba(156,194,255,.04)" stroke="rgba(156,194,255,.08)"><rect x="380" y="250" width="34" height="110"/><rect x="430" y="210" width="34" height="150"/><rect x="480" y="160" width="34" height="200"/><rect x="530" y="110" width="34" height="250"/><rect x="580" y="60" width="34" height="300"/></g>
+          <path d="M0 300 C120 290 200 250 300 230 S 480 140 640 60" fill="none" stroke="rgba(203,167,90,.5)"/>
+        </svg>
         <span class="tela__marca">IB na Prática</span>
         <button class="tela__play" type="button" aria-label="Reproduzir (protótipo)"><svg aria-hidden="true"><use href="#i-play"/></svg></button>
-        <span class="tela__legenda"><span>Player com proteção de conteúdo — a definir</span><span>1:24:00</span></span>
+        <span class="tela__legenda"><span>Player com proteção de conteúdo — a definir</span><span>2:00:00</span></span>
       </div>
     </div>
 
     <div class="duas-colunas">
       <div>
         <header class="aula__cabeca">
-          <span class="meta">Módulo 02 · Análise · Aula 3 de 6 <span class="tag">Exemplo</span></span>
-          <h1>Geração de caixa e capacidade de pagamento</h1>
-          <p class="meta">Gravação da aula ao vivo · Adriano Leite, CFP</p>
+          <span class="meta">IB na Prática · 2º dia <span class="tag">Exemplo</span></span>
+          <h1><b>Finanças</b> Corporativas</h1>
+          <p class="meta">Aula gravada ao vivo · Adriano Leite, CFP®</p>
         </header>
         <div class="aula__acoes">
           <button class="botao botao--linha" type="button" data-concluir aria-pressed="false"><svg aria-hidden="true"><use href="#i-check"/></svg><span>Marcar como concluída</span></button>
-          <a class="botao botao--primario" href="#aula">Próxima aula <svg aria-hidden="true"><use href="#i-seta"/></svg></a>
+          <a class="botao botao--primario" href="#aula">Próximo dia <svg aria-hidden="true"><use href="#i-seta"/></svg></a>
+        </div>
+
+        <div class="capitulos">
+          <div class="capitulo painel"><small>Parte 1</small><b>Aula</b><span>exemplo · 1h20</span></div>
+          <div class="capitulo painel"><small>Parte 2</small><b>Dúvidas com o professor</b><span>exemplo · 40 min</span></div>
         </div>
 
         <section class="bloco" aria-labelledby="h-materiais">
-          <div class="bloco__cabeca"><h2 id="h-materiais">Materiais</h2><span class="tag">Exemplo</span></div>
-          <div class="materiais">
+          <div class="bloco__cabeca"><h2 id="h-materiais">Material didático</h2><span class="tag">Exemplo</span></div>
+          <div>
+            <a class="material" href="#aula"><svg aria-hidden="true"><use href="#i-pdf"/></svg><span><b>Apostila do 2º dia</b><span class="meta">PDF</span></span><svg aria-hidden="true"><use href="#i-baixar"/></svg></a>
             <a class="material" href="#aula"><svg aria-hidden="true"><use href="#i-pdf"/></svg><span><b>Slides da aula</b><span class="meta">PDF</span></span><svg aria-hidden="true"><use href="#i-baixar"/></svg></a>
-            <a class="material" href="#aula"><svg aria-hidden="true"><use href="#i-planilha"/></svg><span><b>Planilha de apoio: fluxo de caixa</b><span class="meta">XLSX</span></span><svg aria-hidden="true"><use href="#i-baixar"/></svg></a>
-            <a class="material" href="#aula"><svg aria-hidden="true"><use href="#i-pdf"/></svg><span><b>Leitura complementar</b><span class="meta">PDF</span></span><svg aria-hidden="true"><use href="#i-baixar"/></svg></a>
+            <a class="material" href="#aula"><svg aria-hidden="true"><use href="#i-planilha"/></svg><span><b>Planilha de apoio</b><span class="meta">XLSX</span></span><svg aria-hidden="true"><use href="#i-baixar"/></svg></a>
           </div>
         </section>
 
@@ -205,30 +203,31 @@
         </section>
       </div>
 
-      <aside class="bloco" aria-labelledby="h-aulas-modulo">
-        <div class="bloco__cabeca"><h2 id="h-aulas-modulo">Aulas do módulo</h2></div>
+      <aside class="bloco" aria-labelledby="h-dias">
+        <div class="bloco__cabeca"><h2 id="h-dias">Dias da imersão</h2></div>
         <ol class="aulas-modulo">
-          <li><a href="#aula"><svg aria-hidden="true"><use href="#i-check"/></svg><span>Como o investidor lê uma empresa</span><small>52 min</small></a></li>
-          <li><a href="#aula"><svg aria-hidden="true"><use href="#i-check"/></svg><span>Demonstrativos: o que olhar primeiro</span><small>1h10</small></a></li>
-          <li><a class="atual" href="#aula" aria-current="true"><svg aria-hidden="true"><use href="#i-andamento"/></svg><span>Geração de caixa e capacidade de pagamento</span><small>1h24</small></a></li>
-          <li><a href="#aula"><svg aria-hidden="true"><use href="#i-aberto"/></svg><span>Endividamento e estrutura de capital</span><small>1h05</small></a></li>
-          <li><a href="#aula"><svg aria-hidden="true"><use href="#i-aberto"/></svg><span>Riscos e mitigantes</span><small>58 min</small></a></li>
-          <li><a href="#aula"><svg aria-hidden="true"><use href="#i-aberto"/></svg><span>Ao vivo: discussão de caso</span><small>1h30</small></a></li>
+          <li><a href="#aula"><svg aria-hidden="true"><use href="#i-check"/></svg><span>Mercado de Capitais</span><small>1º dia</small></a></li>
+          <li><a class="atual" href="#aula" aria-current="true"><svg aria-hidden="true"><use href="#i-andamento"/></svg><span>Finanças Corporativas</span><small>2º dia</small></a></li>
+          <li><a href="#aula"><svg aria-hidden="true"><use href="#i-aberto"/></svg><span>Venture Capital</span><small>3º dia</small></a></li>
+          <li><a href="#aula"><svg aria-hidden="true"><use href="#i-aberto"/></svg><span>Private Equity</span><small>4º dia</small></a></li>
+          <li><a href="#aula"><svg aria-hidden="true"><use href="#i-aberto"/></svg><span>M&amp;A</span><small>5º dia</small></a></li>
+          <li><a href="#aula"><svg aria-hidden="true"><use href="#i-aberto"/></svg><span>Private Banking</span><small>6º dia</small></a></li>
         </ol>
-        <p class="meta" style="margin-top:16px">Títulos e durações de exemplo. Ementa real <span class="confirmar">[CONFIRMAR]</span></p>
+        <p class="meta" style="margin-top:14px">Durações e materiais de exemplo. Ementa real <span class="confirmar">[CONFIRMAR]</span></p>
       </aside>
     </div>
   </div>
 
+ </div>
 </main>
 
 <!-- Abas inferiores (celular) -->
-<nav class="app-abas escuro" aria-label="Navegação da área do aluno">
+<nav class="app-abas" aria-label="Navegação da área do aluno">
   <a href="#inicio" data-nav="inicio"><svg aria-hidden="true"><use href="#i-inicio"/></svg>Início</a>
   <a href="#trilha" data-nav="trilha"><svg aria-hidden="true"><use href="#i-trilha"/></svg>Trilha</a>
   <a href="#aula" data-nav="aula"><svg aria-hidden="true"><use href="#i-aula"/></svg>Aula</a>
-  <a href="#agenda" data-nav="agenda"><svg aria-hidden="true"><use href="#i-agenda"/></svg>Agenda</a>
-  <a href="#comunidade" data-nav="comunidade"><svg aria-hidden="true"><use href="#i-comunidade"/></svg>Comunidade</a>
+  <a href="#agenda" data-nav="agenda"><svg aria-hidden="true"><use href="#i-agenda"/></svg>Ao vivo</a>
+  <a href="#comunidade" data-nav="comunidade"><svg aria-hidden="true"><use href="#i-rede"/></svg>Rede</a>
 </nav>
 
 <script src="app.js"></script>

@@ -4,306 +4,494 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>IB na Prática</title>
-<meta name="description" content="Formação prática em investment banking: assessoria financeira, M&amp;A e dívida estruturada, com Adriano Leite, CFP. Protótipo para revisão.">
+<meta name="description" content="Escola de formação e especialização em Private, Corporate e Investment Banking. Imersão ao vivo de 6 dias com Adriano Leite, CFP®. Protótipo para revisão.">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#061225">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=Schibsted+Grotesk:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="style.css">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- duotone azul-marinho: sombras no navy da Ative, luzes em creme dourado -->
+    <filter id="duotone-navy" color-interpolation-filters="sRGB">
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncR type="linear" slope="1.12" intercept="-.04"/>
+        <feFuncG type="linear" slope="1.12" intercept="-.04"/>
+        <feFuncB type="linear" slope="1.12" intercept="-.04"/>
+      </feComponentTransfer>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues=".024 .10 .20 .62 .96"/>
+        <feFuncG type="table" tableValues=".071 .19 .32 .64 .92"/>
+        <feFuncB type="table" tableValues=".145 .32 .50 .66 .78"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+  <symbol id="logo-ib" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="square"><path d="M10 6.5v21M5.5 6.5h12M5.5 27.5h12"/><path d="M15 6.5h6.5a5.25 5.25 0 0 1 0 10.5H15M15 17h7.5a5.25 5.25 0 0 1 0 10.5H15M15 6.5v21"/></symbol>
+  <symbol id="i-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
   <symbol id="i-mais" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 4v16M4 12h16"/></symbol>
   <symbol id="i-fechar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
-  <symbol id="i-aovivo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.75" y="6.75" width="13.5" height="10.5"/><path d="M16.25 10.5l5-3v9l-5-3"/><circle cx="6.5" cy="10.25" r="1" fill="currentColor" stroke="none"/></symbol>
-  <symbol id="i-gravacao" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.75" y="4.75" width="18.5" height="12.5"/><path d="M10 8.5v5l4.25-2.5z"/><path d="M6 20.25h12"/></symbol>
-  <symbol id="i-comunidade" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="5.5" r="2.5"/><circle cx="5" cy="17.5" r="2.5"/><circle cx="19" cy="17.5" r="2.5"/><path d="M10.7 7.7l-4.4 7.6M13.3 7.7l4.4 7.6M7.5 17.5h9"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l4.5 4.5 10.5-10.5"/></symbol>
-  <symbol id="i-cadeado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="4.75" y="10.75" width="14.5" height="10.5"/><path d="M8 10.75V7.5a4 4 0 0 1 8 0v3.25"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l4.5 4.5 10.5-10.5"/></symbol>
+  <symbol id="i-pergunta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.25"/><path d="M9.75 9.5a2.25 2.25 0 1 1 3.2 2.04c-.6.28-.95.86-.95 1.52v.44M12 16.5v.25"/></symbol>
+  <symbol id="i-cadeado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="4.75" y="10.75" width="14.5" height="10.5" rx="1.5"/><path d="M8 10.75V7.5a4 4 0 0 1 8 0v3.25"/></symbol>
+  <symbol id="i-escudo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2.75l7.25 2.75v6c0 4.5-3 8-7.25 9.75C7.75 19.5 4.75 16 4.75 11.5v-6z"/><path d="M8.75 12l2.25 2.25 4.25-4.5"/></symbol>
   <symbol id="i-pix" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2.75L21.25 12 12 21.25 2.75 12z"/><path d="M8.5 12h7"/></symbol>
-  <symbol id="i-cartao" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.75" y="5.75" width="18.5" height="12.5"/><path d="M2.75 9.75h18.5M6 14.5h4"/></symbol>
+  <symbol id="i-cartao" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.75" y="5.75" width="18.5" height="12.5" rx="1.5"/><path d="M2.75 9.75h18.5M6 14.5h4"/></symbol>
+  <symbol id="i-calendario" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><rect x="3.75" y="5.25" width="16.5" height="15" rx="1.5"/><path d="M3.75 9.75h16.5M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-aovivo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.75" y="6.75" width="13.5" height="10.5" rx="1.5"/><path d="M16.25 10.5l5-3v9l-5-3"/></symbol>
+  <symbol id="i-relogio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.25"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-gravacao" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.75" y="4.75" width="18.5" height="12.5" rx="1.5"/><path d="M10 8.5v5l4.25-2.5z"/><path d="M6 20.25h12"/></symbol>
+  <symbol id="i-pessoas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="8" r="3.25"/><path d="M3 19.25c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><path d="M15.5 4.9a3.25 3.25 0 0 1 0 6.2M17.5 14.6c1.8.6 3.1 2.2 3.5 4.65"/></symbol>
+  <symbol id="i-pessoa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.75"/><path d="M4.75 20c.8-3.75 3.75-6 7.25-6s6.45 2.25 7.25 6"/></symbol>
+  <symbol id="i-maleta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.75" y="7.25" width="18.5" height="12.5" rx="1.5"/><path d="M8.75 7.25v-2.5h6.5v2.5M2.75 12.5h18.5"/></symbol>
+  <symbol id="i-dialogo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3.75 4.75h12.5v8.5H9l-3.5 3.25v-3.25H3.75z"/><path d="M16.25 8.75h4v8.5h-1.75v3l-3.25-3h-5.5v-4"/></symbol>
+  <symbol id="i-rede" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="5.5" r="2.5"/><circle cx="5" cy="17.5" r="2.5"/><circle cx="19" cy="17.5" r="2.5"/><path d="M10.7 7.7l-4.4 7.6M13.3 7.7l4.4 7.6M7.5 17.5h9"/></symbol>
+  <symbol id="i-certificado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><rect x="2.75" y="3.75" width="18.5" height="13" rx="1.5"/><path d="M6.5 8h11M6.5 11.5h6"/><circle cx="16.5" cy="15.5" r="2.5"/><path d="M15 17.5l-.75 3.5 2.25-1.25 2.25 1.25-.75-3.5"/></symbol>
+  <symbol id="i-material" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M5.75 2.75h8.5l4 4v14.5H5.75z"/><path d="M14.25 2.75v4h4M9 12.5h6M9 16h6"/></symbol>
+  <!-- ícones dos 6 dias: traço próprio, grade de 24 -->
+  <symbol id="d-capitais" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20.5h18"/><path d="M6 8v9M6 10.5h0"/><rect x="4.75" y="10" width="2.5" height="5"/><path d="M12 5v11"/><rect x="10.75" y="7" width="2.5" height="6.5"/><path d="M18 3.5v9"/><rect x="16.75" y="5" width="2.5" height="4.5"/></symbol>
+  <symbol id="d-corporativas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="1"/><path d="M12 3.5v17M3.5 8.5h17M6 12h3.5M6 15h3.5M14.5 12h3.5M14.5 15h3.5M6 18h3.5M14.5 18h3.5"/></symbol>
+  <symbol id="d-venture" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20.5h18M3.5 16c3 0 4-3.5 6-3.5S12.5 15 15 10.5 18.5 4 20.5 3.5"/><circle cx="20.5" cy="3.5" r="1"/><path d="M3.5 12.5v8"/></symbol>
+  <symbol id="d-equity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 3.5l8.5 4.25L12 12 3.5 7.75z"/><path d="M3.5 12L12 16.25 20.5 12M3.5 16.25L12 20.5l8.5-4.25"/></symbol>
+  <symbol id="d-ma" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></symbol>
+  <symbol id="d-private" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="15" rx="1"/><circle cx="12" cy="11.5" r="4"/><path d="M12 7.5v1.5M12 14v1.5M8 11.5h1.5M14.5 11.5H16M6 19v1.5M18 19v1.5"/></symbol>
 </svg>
 
 <a class="pular" href="#conteudo">Pular para o conteúdo</a>
 
 <header class="topo">
   <div class="conteiner">
-    <a class="marca" href="index.html" aria-label="IB na Prática — início">IB <em>na Prática</em></a>
+    <a class="marca" href="index.html" aria-label="IB na Prática — início"><svg aria-hidden="true"><use href="#logo-ib"/></svg><span><b>IB</b> na Prática</span></a>
     <nav class="nav" aria-label="Principal">
-      <a href="#metodo">Método</a>
-      <a href="#programas">Programas</a>
-      <a href="#professor">Quem ensina</a>
+      <a href="#programa">Programa</a>
+      <a href="#professores">Quem ensina</a>
+      <a href="#mercado">Leitura de mercado</a>
       <a href="#inscricao">Inscrição</a>
-      <a class="nav-entrar" href="area-do-aluno.html">Área do aluno</a>
+      <a class="botao botao--linha botao--pequeno" href="area-do-aluno.html">Área do aluno</a>
     </nav>
   </div>
 </header>
 
 <main id="conteudo">
 
-  <!-- 1. Hero: título, linha de apoio, um botão -->
-  <section class="hero escuro" aria-labelledby="h-hero">
-    <div class="hero__corpo conteiner">
-      <h1 id="h-hero" class="titulo-1">Investment banking,<br> <em>na prática.</em></h1>
-      <p class="lead">Assessoria financeira, M&amp;A e dívida estruturada, aprendidos dentro da operação, com Adriano Leite, CFP.</p>
-      <div class="hero__acao">
-        <a class="botao botao--primario" href="#inscricao">Quero participar <svg aria-hidden="true"><use href="#i-seta"/></svg></a>
-      </div>
-    </div>
-    <div class="hero__base conteiner" aria-hidden="true">
-      <div class="hero__fio"></div>
-      <div class="hero__legenda"><span>IB na Prática</span><span>Adriano Leite, CFP</span></div>
-    </div>
-  </section>
-
-  <!-- 2. O problema -->
-  <section class="secao" aria-labelledby="h-problema">
-    <div class="conteiner problema problema__grade revela">
+  <!-- 1. HERO de programa -->
+  <section class="secao hero grao" aria-labelledby="h-hero">
+    <div class="conteiner hero__grade">
       <div>
-        <span class="rotulo">O problema</span>
-        <h2 id="h-problema" class="titulo-2">Finanças corporativas se aprende <em>fazendo.</em></h2>
-      </div>
-      <div class="texto">
-        <p>O livro explica o que é um valuation, um term sheet, uma estrutura de garantias. Não explica como uma operação nasce, emperra, é renegociada e, enfim, fecha.</p>
-        <p class="secundario">Essa parte do ofício costuma ser passada de quem está na mesa para quem chega, ao longo de anos. O IB na Prática encurta esse caminho: leva o aluno para o lado de dentro e mostra o trabalho como ele acontece.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3. O método -->
-  <section id="metodo" class="secao escuro" aria-labelledby="h-metodo">
-    <div class="conteiner">
-      <div class="cabeca-secao lado revela">
-        <div>
-          <span class="rotulo">O método</span>
-          <h2 id="h-metodo" class="titulo-2">Aprender acompanhando uma operação real.</h2>
-        </div>
-        <p class="lead">O curso segue o caminho de uma operação, da primeira conversa à assinatura. Cada etapa é estudada no ponto em que ela de fato acontece.</p>
-      </div>
-      <ol class="metodo__lista revela">
-        <li class="etapa"><span class="etapa__n">01</span><h3>Originação</h3><p>Onde as operações nascem, como se qualifica uma empresa e o que torna uma tese defensável.</p></li>
-        <li class="etapa"><span class="etapa__n">02</span><h3>Análise</h3><p>Demonstrativos, geração de caixa, endividamento e riscos lidos com o olhar de quem vai investir.</p></li>
-        <li class="etapa"><span class="etapa__n">03</span><h3>Estruturação</h3><p>Instrumento, prazo, garantias e covenants desenhados para a operação ficar de pé.</p></li>
-        <li class="etapa"><span class="etapa__n">04</span><h3>Investidor</h3><p>Como apresentar a operação, responder à diligência e negociar termos do lado de quem coloca o capital.</p></li>
-        <li class="etapa"><span class="etapa__n">05</span><h3>Fechamento</h3><p>Documentação, condições precedentes e o que costuma travar a reta final.</p></li>
-      </ol>
-      <p class="metodo__nota revela">Ementa detalhada por etapa: <span class="confirmar">[CONFIRMAR: ementa e carga horária]</span></p>
-    </div>
-  </section>
-
-  <!-- 4. Programas -->
-  <section id="programas" class="secao" aria-labelledby="h-programas">
-    <div class="conteiner">
-      <div class="cabeca-secao lado revela">
-        <div>
-          <span class="rotulo">Programas</span>
-          <h2 id="h-programas" class="titulo-2">Dois programas. Um mesmo rigor.</h2>
-        </div>
-        <p class="lead">Comece pelo ciclo completo de uma operação ou aprofunde valuation e modelagem em um programa próprio.</p>
-      </div>
-      <div class="cards revela">
-        <article class="card">
-          <span class="rotulo">Programa principal</span>
-          <h3>IB na Prática</h3>
-          <p>O ciclo completo de uma operação de investment banking, da originação ao fechamento, com foco em assessoria financeira, M&amp;A e dívida estruturada.</p>
-          <ul class="card__fatos">
-            <li><span>Formato</span><span>Ao vivo e gravado</span></li>
-            <li><span>Professor</span><span>Adriano Leite, CFP</span></li>
-            <li><span>Início</span><span><span class="confirmar">[CONFIRMAR: jan/2027]</span></span></li>
-          </ul>
-          <a class="link-seta" href="#inscricao">Ver inscrição <svg aria-hidden="true"><use href="#i-seta"/></svg></a>
-        </article>
-        <article class="card">
-          <span class="rotulo">Programa específico</span>
-          <h3>Programa de Valuation</h3>
-          <p>Valuation e modelagem financeira em profundidade, em parceria com um professor especialista na disciplina.</p>
-          <ul class="card__fatos">
-            <li><span>Formato</span><span><span class="confirmar">[CONFIRMAR]</span></span></li>
-            <li><span>Professor</span><span><span class="confirmar">[CONFIRMAR: nome]</span></span></li>
-            <li><span>Início</span><span><span class="confirmar">[CONFIRMAR]</span></span></li>
-          </ul>
-          <a class="link-seta" href="#inscricao">Ver inscrição <svg aria-hidden="true"><use href="#i-seta"/></svg></a>
-        </article>
-        <article class="card card--vago">
-          <span class="rotulo">Em preparação</span>
-          <h3>Próximo programa</h3>
-          <p>Espaço reservado para o próximo programa da casa.</p>
-          <ul class="card__fatos">
-            <li><span>Tema</span><span><span class="confirmar">[CONFIRMAR]</span></span></li>
-            <li><span>Previsão</span><span><span class="confirmar">[CONFIRMAR]</span></span></li>
-          </ul>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- 5. Quem ensina -->
-  <section id="professor" class="secao escuro" aria-labelledby="h-professor">
-    <div class="conteiner professor revela">
-      <figure class="monograma" style="margin:0">
-        <svg viewBox="0 0 320 300" fill="none" aria-hidden="true">
-          <rect x="0.5" y="0.5" width="319" height="299" stroke="currentColor" stroke-opacity=".18"/>
-          <path d="M160 0.5V299.5M0.5 150H319.5" stroke="currentColor" stroke-opacity=".1"/>
-          <text x="160" y="186" text-anchor="middle" font-family="Newsreader, Georgia, serif" font-size="112" font-weight="350" letter-spacing="-3" fill="currentColor">AL</text>
-          <path d="M120 214h80" stroke="#B7975A" stroke-width="1"/>
-        </svg>
-        <figcaption>Monograma provisório. Retrato oficial <span class="confirmar">[CONFIRMAR: foto autorizada]</span></figcaption>
-      </figure>
-      <div>
-        <span class="rotulo">Quem ensina</span>
-        <h2 id="h-professor" class="professor__nome">Adriano Leite, CFP</h2>
-        <p class="professor__cargo">Consultor na Olimpo Investimentos <span class="confirmar">[CONFIRMAR: forma de citar a Olimpo]</span></p>
-        <div class="texto">
-          <p>Adriano atua em assessoria financeira, M&amp;A e dívida estruturada, do lado do investidor. É dessa rotina que vem o conteúdo do IB na Prática: as aulas partem do trabalho como ele é feito na mesa, e não de um roteiro de apostila.</p>
-          <p class="secundario">Minibiografia completa <span class="confirmar">[CONFIRMAR: texto aprovado pelo Adriano]</span></p>
-        </div>
-        <ul class="professor__areas">
-          <li><strong>Assessoria financeira</strong>Empresas e investidores</li>
-          <li><strong>M&amp;A</strong>Compra e venda de empresas</li>
-          <li><strong>Dívida estruturada</strong>Do lado do investidor</li>
+        <span class="selo"><i aria-hidden="true"></i>Curso ao vivo · Online</span>
+        <h1 id="h-hero"><b>IB</b> na Prática</h1>
+        <p class="hero__sub">Uma semana de imersão no universo do Private, Corporate e <b>Investment Banking</b>.</p>
+        <ul class="hero__linhas">
+          <li><svg aria-hidden="true"><use href="#i-pessoas"/></svg><span>Para quem quer entrar, mudar de carreira ou crescer no mercado financeiro.</span></li>
+          <li><svg aria-hidden="true"><use href="#i-aovivo"/></svg><span>6 aulas ao vivo, 12 horas, cada uma com aula e dúvidas com o professor.</span></li>
         </ul>
+        <div class="hero__acoes">
+          <a class="botao botao--primario" href="#inscricao">Garantir minha vaga <svg aria-hidden="true"><use href="#i-seta"/></svg></a>
+          <a class="botao botao--linha" href="#programa">Ver o programa</a>
+        </div>
+      </div>
+      <div class="hero__arte">
+        <svg class="fluxo" viewBox="0 0 520 640" aria-hidden="true">
+          <g fill="rgba(156,194,255,.035)" stroke="rgba(156,194,255,.09)"><rect x="12" y="580" width="30" height="60"/><rect x="62" y="550" width="30" height="90"/><rect x="112" y="520" width="30" height="120"/><rect x="162" y="490" width="30" height="150"/><rect x="212" y="455" width="30" height="185"/><rect x="262" y="420" width="30" height="220"/><rect x="312" y="380" width="30" height="260"/><rect x="362" y="340" width="30" height="300"/><rect x="412" y="295" width="30" height="345"/><rect x="462" y="250" width="30" height="390"/></g>
+          <path d="M70.0 470.0 A330 330 0 0 1 400.0 140.0" fill="none" stroke="rgba(156,194,255,.12)"/>
+          <path class="linha" pathLength="1" d="M11.9 566.8 A400 400 0 0 1 469.5 76.1" fill="none" stroke="#CBA75A" stroke-width="1.3"/>
+          <g fill="#061225" stroke="#CBA75A" stroke-width="1.3"><circle cx="6.1" cy="400.5" r="5.5"/><circle cx="40.5" cy="294.7" r="5.5"/><circle cx="102.7" cy="202.3" r="5.5"/><circle cx="188.0" cy="130.8" r="5.5"/><circle cx="289.7" cy="85.5" r="5.5"/><circle cx="400.0" cy="70.0" r="5.5"/></g>
+          <g font-family="Archivo, sans-serif" font-size="16" font-weight="700" letter-spacing="1.5" fill="#B7C1D6"><text x="33.7" y="409.4" text-anchor="middle">01</text><text x="65.6" y="310.9" text-anchor="middle">02</text><text x="123.6" y="225.1" text-anchor="middle">03</text><text x="202.9" y="158.5" text-anchor="middle">04</text><text x="297.5" y="116.4" text-anchor="middle">05</text><text x="400.0" y="102.0" text-anchor="middle">06</text></g>
+        </svg>
+        <figure class="retrato retrato--hero">
+          <div class="retrato__img"><img src="img/adriano.jpg" width="900" height="900" alt="Retrato de Adriano Leite" fetchpriority="high"></div>
+          <figcaption><b>Adriano Leite, CFP®</b>Fundador e professor</figcaption>
+        </figure>
       </div>
     </div>
   </section>
 
-  <!-- 6. Prova -->
-  <section class="secao" aria-labelledby="h-prova">
+  <!-- 2. Barra de ficha -->
+  <section class="ficha grao" aria-label="Ficha do curso">
     <div class="conteiner">
-      <div class="cabeca-secao lado revela">
+      <ul>
+        <li><svg aria-hidden="true"><use href="#i-calendario"/></svg><small>Próxima turma</small><span><span class="confirmar">[CONFIRMAR: data]</span></span></li>
+        <li><svg aria-hidden="true"><use href="#i-aovivo"/></svg><small>Formato</small><span>Ao vivo, online</span></li>
+        <li><svg aria-hidden="true"><use href="#i-relogio"/></svg><small>Duração</small><span>6 dias, 12 horas</span></li>
+        <li><svg aria-hidden="true"><use href="#i-gravacao"/></svg><small>Gravações</small><span>Incluídas</span></li>
+        <li><svg aria-hidden="true"><use href="#i-escudo"/></svg><small>Garantia</small><span>7 dias</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3. O que você vai estudar em 6 dias -->
+  <section id="programa" class="secao grao" aria-labelledby="h-programa">
+    <div class="conteiner">
+      <div class="cabeca lado revela">
         <div>
-          <span class="rotulo">Prova</span>
-          <h2 id="h-prova" class="titulo-2">Da sala de aula para a mesa.</h2>
+          <span class="rotulo">O programa</span>
+          <h2 id="h-programa" class="titulo-2">O que você vai estudar <b>em 6 dias</b></h2>
         </div>
-        <p class="lead">Casos e depoimentos são publicados somente com autorização por escrito das partes envolvidas.</p>
+        <p class="lead">Seis áreas do mercado, uma por dia. Cada encontro tem a aula e, em seguida, um tempo de dúvidas com o professor.</p>
       </div>
-      <div class="prova__grade revela">
-        <article class="caso">
-          <span class="rotulo" style="margin:0">Caso 01</span>
-          <p class="caso__titulo"><span class="confirmar" style="font-size:22px">[CONFIRMAR autorização: caso de Nota Comercial originado por alunos]</span></p>
-          <dl>
-            <div><dt>Instrumento</dt><dd>Nota Comercial</dd></div>
-            <div><dt>Originação</dt><dd>Alunos</dd></div>
-            <div><dt>Volume</dt><dd><span class="confirmar">[CONFIRMAR]</span></dd></div>
-            <div><dt>Situação</dt><dd>Aguardando autorização</dd></div>
-          </dl>
+      <ol class="dias revela">
+        <li class="dia painel painel--hover">
+          <div class="dia__topo"><span class="dia__n">1º dia</span><svg aria-hidden="true"><use href="#d-capitais"/></svg></div>
+          <h3>Mercado de Capitais</h3>
+          <p>Como empresas captam recursos com investidores, os principais instrumentos e quem participa de uma emissão.</p>
+          <div class="dia__pe"><span>Aula + dúvidas com o professor</span></div>
+        </li>
+        <li class="dia painel painel--hover">
+          <div class="dia__topo"><span class="dia__n">2º dia</span><svg aria-hidden="true"><use href="#d-corporativas"/></svg></div>
+          <h3>Finanças Corporativas</h3>
+          <p>Leitura de demonstrativos, geração de caixa, estrutura de capital e as decisões financeiras de uma empresa.</p>
+          <div class="dia__pe"><span>Aula + dúvidas com o professor</span></div>
+        </li>
+        <li class="dia painel painel--hover">
+          <div class="dia__topo"><span class="dia__n">3º dia</span><svg aria-hidden="true"><use href="#d-venture"/></svg></div>
+          <h3>Venture Capital</h3>
+          <p>Investimento em empresas em estágio inicial: rodadas, teses de investimento e a lógica de risco e retorno.</p>
+          <div class="dia__pe"><span>Aula + dúvidas com o professor</span></div>
+        </li>
+        <li class="dia painel painel--hover">
+          <div class="dia__topo"><span class="dia__n">4º dia</span><svg aria-hidden="true"><use href="#d-equity"/></svg></div>
+          <h3>Private Equity</h3>
+          <p>Participação em empresas maduras: estrutura dos fundos, criação de valor e o ciclo do investimento até a saída.</p>
+          <div class="dia__pe"><span>Aula + dúvidas com o professor</span></div>
+        </li>
+        <li class="dia painel painel--hover">
+          <div class="dia__topo"><span class="dia__n">5º dia</span><svg aria-hidden="true"><use href="#d-ma"/></svg></div>
+          <h3>M&amp;A</h3>
+          <p>Fusões e aquisições: as etapas de uma transação, o papel do assessor e o que pesa na negociação.</p>
+          <div class="dia__pe"><span>Aula + dúvidas com o professor</span></div>
+        </li>
+        <li class="dia painel painel--hover">
+          <div class="dia__topo"><span class="dia__n">6º dia</span><svg aria-hidden="true"><use href="#d-private"/></svg></div>
+          <h3>Private Banking</h3>
+          <p>Gestão de patrimônio de clientes de alta renda: relacionamento, alocação e estrutura do atendimento.</p>
+          <div class="dia__pe"><span>Aula + dúvidas com o professor</span></div>
+        </li>
+      </ol>
+      <div class="cta revela">
+        <a class="botao botao--primario" href="#inscricao">Quero participar da próxima turma <svg aria-hidden="true"><use href="#i-seta"/></svg></a>
+        <p>Ementa detalhada de cada dia <span class="confirmar">[CONFIRMAR]</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Por que funciona -->
+  <section class="secao secao--1 grao" aria-labelledby="h-porque">
+    <div class="conteiner porque">
+      <div class="revela">
+        <span class="rotulo">Por que funciona</span>
+        <h2 id="h-porque" class="titulo-2">Aprender com <b>quem faz</b>, todos os dias</h2>
+        <p class="lead" style="margin-top:24px">Os professores estão no mercado e fazem diariamente o que ensinam. As aulas acontecem ao vivo, com espaço para perguntar, e ficam gravadas para rever depois.</p>
+      </div>
+      <ul class="caixas revela">
+        <li><svg aria-hidden="true"><use href="#i-maleta"/></svg><h3>Professores do mercado</h3><p>Quem ensina atua no dia a dia das operações.</p></li>
+        <li><svg aria-hidden="true"><use href="#i-dialogo"/></svg><h3>Aula + dúvidas ao vivo</h3><p>Cada encontro reserva tempo para perguntas ao professor.</p></li>
+        <li><svg aria-hidden="true"><use href="#i-gravacao"/></svg><h3>Gravações e material</h3><p>Aulas gravadas e material didático para consulta.</p></li>
+        <li><svg aria-hidden="true"><use href="#i-rede"/></svg><h3>Networking</h3><p>Grupo com alunos das turmas anteriores.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5. Como você chega / como você sai -->
+  <section class="secao grao" aria-labelledby="h-percurso">
+    <div class="conteiner">
+      <div class="cabeca revela">
+        <span class="rotulo">O percurso</span>
+        <h2 id="h-percurso" class="titulo-2">Do termo solto à <b>visão ligada</b> do mercado</h2>
+      </div>
+      <div class="antes-depois revela">
+        <div class="lado-a painel">
+          <h3>Como você chega</h3>
+          <p class="titulo-3">Peças soltas</p>
+          <ul class="lista-fio">
+            <li><svg aria-hidden="true"><use href="#i-pergunta"/></svg>Termos como valuation, term sheet e M&amp;A soltos, sem ligação entre si.</li>
+            <li><svg aria-hidden="true"><use href="#i-pergunta"/></svg>Dúvida sobre o que faz, na prática, cada área: banco de investimento, gestora, private.</li>
+            <li><svg aria-hidden="true"><use href="#i-pergunta"/></svg>Conteúdo disperso em vídeos e posts, sem ordem nem contexto.</li>
+            <li><svg aria-hidden="true"><use href="#i-pergunta"/></svg>Pouco contato com quem trabalha nessas áreas.</li>
+          </ul>
+        </div>
+        <div class="lado-b painel">
+          <h3>Como você sai</h3>
+          <p class="titulo-3">O mapa inteiro</p>
+          <ul class="lista-fio">
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Uma visão ligada das seis áreas: mercado de capitais, finanças corporativas, VC, PE, M&amp;A e private banking.</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>O vocabulário de cada área, apresentado em contexto.</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>12 horas gravadas e o material didático para revisar.</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Acesso ao grupo de networking com turmas anteriores.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cta revela">
+        <a class="botao botao--primario" href="#inscricao">Garantir minha vaga <svg aria-hidden="true"><use href="#i-seta"/></svg></a>
+        <p>Garantia de 7 dias.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Quem ensina -->
+  <section id="professores" class="secao secao--1 grao" aria-labelledby="h-professores">
+    <div class="conteiner">
+      <div class="ensina">
+        <div class="cabeca revela">
+          <span class="rotulo">Quem ensina</span>
+          <h2 id="h-professores" class="titulo-2">Professores que <b>estão no mercado</b></h2>
+          <p class="lead">Quem ensina atua nas áreas que apresenta em aula.</p>
+          <p class="nota">Professores convidados podem variar por turma <span class="confirmar">[CONFIRMAR]</span></p>
+        </div>
+        <div class="professores revela">
+        <article class="professor painel">
+          <figure class="retrato" style="margin:0">
+            <div class="retrato__img"><img src="img/adriano.jpg" width="900" height="900" alt="Retrato de Adriano Leite" loading="lazy"></div>
+          </figure>
+          <div class="professor__corpo">
+            <h3>Adriano <em>Leite</em>, CFP®</h3>
+            <div class="professor__fio" aria-hidden="true"></div>
+            <p class="professor__cargo">Fundador do IB na Prática</p>
+            <p>Atua em assessoria financeira, M&amp;A e dívida estruturada. Fundador da Xs3 Consultoria e consultor na Olimpo Investimentos <span class="confirmar">[CONFIRMAR: forma de citar a Olimpo]</span>. No mercado há <span class="confirmar">[CONFIRMAR: anos de mercado]</span>.</p>
+            <div class="tags"><span class="tag">Assessoria financeira</span><span class="tag">M&amp;A</span><span class="tag">Dívida estruturada</span></div>
+          </div>
         </article>
-        <div class="depoimentos">
-          <figure class="depoimento" style="margin:0">
-            <span class="depoimento__aspas" aria-hidden="true">&ldquo;</span>
-            <strong>Depoimento — aguardando autorização</strong>
-            <p>Espaço reservado para o relato de um aluno, com nome e cargo, publicado após autorização.</p>
-          </figure>
-          <figure class="depoimento" style="margin:0">
-            <span class="depoimento__aspas" aria-hidden="true">&ldquo;</span>
-            <strong>Depoimento — aguardando autorização</strong>
-            <p>Espaço reservado para o relato de um aluno, com nome e cargo, publicado após autorização.</p>
-          </figure>
-        </div>
+        <article class="professor painel">
+          <div class="retrato__img plano" style="border-radius:var(--raio) var(--raio) 0 0;aspect-ratio:4/5">
+            <svg class="monograma-retrato" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Monograma HJ, foto a definir">
+              <rect width="400" height="500" fill="#0B2545"/>
+              <g stroke="rgba(156,194,255,.10)"><path d="M200 0v500M0 250h400"/><circle cx="200" cy="250" r="150" fill="none"/></g>
+              <text x="200" y="292" text-anchor="middle" font-family="Archivo, sans-serif" font-size="128" font-weight="300" letter-spacing="-4" fill="#B7C1D6">HJ</text>
+              <path d="M170 330h60" stroke="#CBA75A"/>
+              <text x="200" y="452" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="600" letter-spacing="3" fill="#B7C1D6">FOTO A DEFINIR</text>
+            </svg>
+          </div>
+          <div class="professor__corpo">
+            <h3>Huk <em>Jung</em></h3>
+            <div class="professor__fio" aria-hidden="true"></div>
+            <p class="professor__cargo">Programa de Valuation e Modelagem Financeira</p>
+            <p>Conduz a construção de um modelo financeiro do zero. Minibiografia <span class="confirmar">[CONFIRMAR: grafia e minibio]</span></p>
+            <div class="tags"><span class="tag">Valuation</span><span class="tag">Modelagem financeira</span></div>
+          </div>
+        </article>
+      </div>
       </div>
     </div>
   </section>
 
-  <!-- 7. Como funcionam as aulas -->
-  <section id="aulas" class="secao alt" aria-labelledby="h-aulas">
+  <!-- 7. Programa de Valuation -->
+  <section class="secao grao" aria-labelledby="h-valuation">
     <div class="conteiner">
-      <div class="cabeca-secao lado revela">
-        <div>
-          <span class="rotulo">Como funciona</span>
-          <h2 id="h-aulas" class="titulo-2">Ao vivo, gravado e em turma.</h2>
-        </div>
-        <p class="lead">Três camadas que se completam: a aula, o arquivo e as pessoas.</p>
+      <div class="cabeca revela">
+        <span class="rotulo">Especialização</span>
+        <h2 class="titulo-2" id="h-valuation">Depois da imersão, <b>o aprofundamento</b></h2>
       </div>
-      <ul class="formato revela">
-        <li>
-          <svg aria-hidden="true"><use href="#i-aovivo"/></svg>
-          <h3 class="titulo-3">Aulas ao vivo</h3>
-          <p>Encontros pelo Google Meet, em sala fechada, só para alunos. Espaço para perguntar sobre a operação em discussão.</p>
+      <article class="programa painel revela">
+        <div>
+          <span class="tag">Turma 5 · aulas em andamento</span>
+          <h3><b>Valuation e Modelagem Financeira</b> na Prática</h3>
+          <p class="com">com <b>Huk Jung</b></p>
+          <p>Construção de um modelo financeiro do zero, passo a passo: das premissas de receita até a análise dos resultados.</p>
+          <a class="botao botao--linha" href="#inscricao">Saber da próxima turma</a>
+        </div>
+        <ol class="lista-fio" aria-label="Etapas do modelo">
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><b>Receitas</b> — premissas e projeção</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><b>Investimentos</b> — o que a operação exige</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><b>Demonstrações</b> — resultado, balanço e caixa</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><b>Análise</b> — leitura do modelo pronto</span></li>
+        </ol>
+      </article>
+    </div>
+  </section>
+
+  <!-- 8. Leitura de mercado -->
+  <section id="mercado" class="secao secao--1 grao" aria-labelledby="h-mercado">
+    <div class="conteiner">
+      <div class="cabeca lado revela">
+        <div>
+          <span class="rotulo">Leitura de mercado</span>
+          <h2 id="h-mercado" class="titulo-2">A escola também <b>publica análise</b></h2>
+        </div>
+        <p class="lead">Juros, câmbio e economia real, explicados em séries históricas no Instagram @ibnapratica.</p>
+      </div>
+      <div class="graficos revela">
+        <article class="grafico painel">
+          <svg viewBox="0 0 320 200" role="img" aria-label="Ilustração de duas séries históricas">
+            <g stroke="rgba(156,194,255,.08)"><path d="M28 40h280M28 80h280M28 120h280"/></g>
+            <path d="M28 12v148h280" fill="none" stroke="rgba(156,194,255,.3)"/>
+            <path d="M30 40 L52 22 L70 58 L92 30 L114 76 L136 98 L160 112 L184 104 L206 124 L230 118 L254 132 L280 120 L306 126" fill="none" stroke="#8D99B2" stroke-width="1.4" stroke-dasharray="4 4"/>
+            <path d="M30 60 L52 46 L70 70 L92 52 L114 90 L136 84 L160 118 L184 96 L206 128 L230 106 L254 138 L280 112 L306 118" fill="none" stroke="#CBA75A" stroke-width="1.6"/>
+            <g font-family="Source Sans 3, sans-serif" font-size="12" fill="#B7C1D6"><text x="34" y="186">1976</text><text x="276" y="186">2026</text></g>
+          </svg>
+          <h3>Selic e inflação, 1976–2026</h3>
+          <div class="grafico__pe"><span class="tag">Ilustração</span><span class="legenda"><i class="l-ouro" aria-hidden="true"></i>Selic <i class="l-trac" aria-hidden="true"></i>Inflação</span></div>
+        </article>
+        <article class="grafico painel">
+          <svg viewBox="0 0 320 200" role="img" aria-label="Ilustração de uma série ascendente">
+            <g stroke="rgba(156,194,255,.08)"><path d="M28 40h280M28 80h280M28 120h280"/></g>
+            <path d="M28 12v148h280" fill="none" stroke="rgba(156,194,255,.3)"/>
+            <path d="M30 150 L60 148 L84 140 L104 142 L126 118 L148 124 L170 112 L194 96 L214 104 L236 74 L258 82 L282 52 L306 40" fill="none" stroke="#CBA75A" stroke-width="1.6"/>
+            <path d="M30 150 L60 148 L84 140 L104 142 L126 118 L148 124 L170 112 L194 96 L214 104 L236 74 L258 82 L282 52 L306 40 V160 H30z" fill="rgba(203,167,90,.06)"/>
+          </svg>
+          <h3>A trajetória do dólar no Brasil</h3>
+          <div class="grafico__pe"><span class="tag">Ilustração</span><span>Série histórica</span></div>
+        </article>
+        <article class="grafico painel">
+          <svg viewBox="0 0 320 200" role="img" aria-label="Ilustração de barras por período">
+            <g stroke="rgba(156,194,255,.08)"><path d="M28 40h280M28 80h280M28 120h280"/></g>
+            <path d="M28 12v148h280" fill="none" stroke="rgba(156,194,255,.3)"/>
+            <g fill="rgba(156,194,255,.10)" stroke="rgba(156,194,255,.35)">
+              <rect x="40" y="46" width="22" height="114"/><rect x="74" y="70" width="22" height="90"/><rect x="108" y="58" width="22" height="102"/><rect x="142" y="96" width="22" height="64"/>
+              <rect x="176" y="84" width="22" height="76"/><rect x="210" y="110" width="22" height="50"/><rect x="244" y="92" width="22" height="68"/><rect x="278" y="104" width="22" height="56"/>
+            </g>
+            <g stroke="#CBA75A" stroke-width="1.6"><path d="M40 46h22M74 70h22M108 58h22M142 96h22M176 84h22M210 110h22M244 92h22M278 104h22"/></g>
+          </svg>
+          <h3>Selic média por governo</h3>
+          <div class="grafico__pe"><span class="tag">Ilustração</span><span>Média por período</span></div>
+        </article>
+      </div>
+      <div class="cta revela" style="margin-top:36px">
+        <a class="link-seta" href="https://www.instagram.com/ibnapratica/" rel="noopener">Acompanhar @ibnapratica <svg aria-hidden="true"><use href="#i-seta"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Agenda e encontros -->
+  <section class="secao grao" aria-labelledby="h-agenda">
+    <div class="conteiner">
+      <div class="cabeca lado revela">
+        <div>
+          <span class="rotulo">Agenda e encontros</span>
+          <h2 id="h-agenda" class="titulo-2">Onde o <b>Adriano</b> tem falado</h2>
+        </div>
+        <p class="lead">Palestras e encontros com universidades e ligas de mercado financeiro. <span class="tag" style="vertical-align:middle">Exemplos recentes</span></p>
+      </div>
+      <ul class="agenda revela">
+        <li class="evento">
+          <span class="evento__data">09/10 · 19h30</span>
+          <div><h3>IB: Panorama e perspectivas</h3><p>Como funciona o investment banking na visão de um profissional do mercado.</p></div>
+          <span class="tag">Online</span>
         </li>
-        <li>
-          <svg aria-hidden="true"><use href="#i-gravacao"/></svg>
-          <h3 class="titulo-3">Gravações e material</h3>
-          <p>Toda aula é gravada. Gravações e material ficam reunidos na área do aluno, para rever quando precisar.</p>
+        <li class="evento">
+          <span class="evento__data"><span class="confirmar">[CONFIRMAR: data]</span></span>
+          <div><h3>UAM Finance convida — Adriano Leite, CFP®</h3><p>Encontro a convite da UAM Finance.</p></div>
+          <span class="tag">Palestra</span>
         </li>
-        <li>
-          <svg aria-hidden="true"><use href="#i-comunidade"/></svg>
-          <h3 class="titulo-3">Hub de alunos</h3>
-          <p>A comunidade da turma, onde se trocam análises, dúvidas e oportunidades entre colegas da área.</p>
+        <li class="evento">
+          <span class="evento__data"><span class="confirmar">[CONFIRMAR: data]</span></span>
+          <div><h3>Liga PUC + IB</h3><p>Encontro com a liga acadêmica de mercado financeiro.</p></div>
+          <span class="tag">Encontro</span>
         </li>
       </ul>
     </div>
   </section>
 
-  <!-- 8. Oferta / inscrição -->
-  <section id="inscricao" class="secao escuro" aria-labelledby="h-inscricao">
+  <!-- 10. Depoimentos -->
+  <section class="secao secao--1 grao" aria-labelledby="h-depoimentos">
+    <div class="conteiner">
+      <div class="cabeca lado revela">
+        <div>
+          <span class="rotulo">Alunos</span>
+          <h2 id="h-depoimentos" class="titulo-2">Quem já <b>passou pela imersão</b></h2>
+        </div>
+        <p class="lead">Relatos publicados somente com autorização por escrito de cada aluno.</p>
+      </div>
+      <div class="depoimentos revela">
+        <figure class="depoimento painel" style="margin:0">
+          <span class="depoimento__aspas" aria-hidden="true">&ldquo;</span>
+          <p>Depoimento aguardando autorização do aluno para publicação.</p>
+          <figcaption class="pessoa"><span class="avatar-vazio" aria-hidden="true"><svg><use href="#i-pessoa"/></svg></span><div><b>Nome do aluno</b><span>Cargo — <span class="confirmar">[CONFIRMAR]</span></span></div></figcaption>
+        </figure>
+        <figure class="depoimento painel" style="margin:0">
+          <span class="depoimento__aspas" aria-hidden="true">&ldquo;</span>
+          <p>Depoimento aguardando autorização do aluno para publicação.</p>
+          <figcaption class="pessoa"><span class="avatar-vazio" aria-hidden="true"><svg><use href="#i-pessoa"/></svg></span><div><b>Nome do aluno</b><span>Cargo — <span class="confirmar">[CONFIRMAR]</span></span></div></figcaption>
+        </figure>
+        <figure class="depoimento painel" style="margin:0">
+          <span class="depoimento__aspas" aria-hidden="true">&ldquo;</span>
+          <p>Depoimento aguardando autorização do aluno para publicação.</p>
+          <figcaption class="pessoa"><span class="avatar-vazio" aria-hidden="true"><svg><use href="#i-pessoa"/></svg></span><div><b>Nome do aluno</b><span>Cargo — <span class="confirmar">[CONFIRMAR]</span></span></div></figcaption>
+        </figure>
+      </div>
+      <p class="caso-linha revela">Caso de originação: <span class="confirmar">[CONFIRMAR autorização: caso de Nota Comercial originado por alunos]</span></p>
+    </div>
+  </section>
+
+  <!-- 11. Inscrição -->
+  <section id="inscricao" class="secao grao" aria-labelledby="h-inscricao">
     <div class="conteiner oferta revela">
       <div>
         <span class="rotulo">Inscrição</span>
-        <h2 id="h-inscricao" class="titulo-2">Turma de lançamento.</h2>
-        <p class="lead" style="margin-top:28px">Para quem já trabalha, ou quer trabalhar, perto de operações. <span class="confirmar">[CONFIRMAR: número de vagas e critério de seleção]</span></p>
+        <h2 id="h-inscricao" class="titulo-2">Garanta sua vaga na <b>próxima turma</b></h2>
         <ul class="inclui">
-          <li><svg aria-hidden="true"><use href="#i-check"/></svg><div><strong>Aulas ao vivo</strong><span>Google Meet, sala fechada para alunos.</span></div></li>
-          <li><svg aria-hidden="true"><use href="#i-check"/></svg><div><strong>Gravações de todas as aulas</strong><span>Prazo de acesso <span class="confirmar">[CONFIRMAR]</span></span></div></li>
-          <li><svg aria-hidden="true"><use href="#i-check"/></svg><div><strong>Material de apoio</strong><span>Disponível na área do aluno.</span></div></li>
-          <li><svg aria-hidden="true"><use href="#i-check"/></svg><div><strong>Hub de alunos</strong><span>Acesso à comunidade da turma.</span></div></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Uma semana de imersão: 6 aulas ao vivo, 12 horas</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Aula + dúvidas com o professor em cada encontro</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Aulas gravadas</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Material didático</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Certificado</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Grupo de networking com turmas anteriores</li>
         </ul>
       </div>
-      <div class="preco">
-        <span class="rotulo">IB na Prática</span>
-        <h3>Inscrição na turma</h3>
-        <p class="preco__inicio">Início previsto: janeiro de 2027 <span class="confirmar">[CONFIRMAR]</span></p>
+      <div class="preco painel">
+        <div class="preco__turma"><span class="tag">IB na Prática</span>Próxima turma <span class="confirmar">[CONFIRMAR: data]</span></div>
+        <h3>Imersão ao vivo em Private, Corporate e Investment Banking</h3>
         <div class="preco__valor">
-          <span class="confirmar grande">[CONFIRMAR: preço]</span><br>
-          <span class="confirmar">[CONFIRMAR: condições de parcelamento]</span>
+          <span class="preco__parcela">Investimento</span>
+          <p class="preco__grande"><small>R$</small>1.997,00</p>
+          <p>ou 10x de R$ 240,00 no cartão</p>
+          <span class="confirmar">[CONFIRMAR: valor e condições do novo site]</span>
         </div>
         <button class="botao botao--primario botao--cheio" type="button" data-abre-checkout>Inscrever-se <svg aria-hidden="true"><use href="#i-seta"/></svg></button>
-        <p class="preco__nota"><svg aria-hidden="true"><use href="#i-cadeado"/></svg><span>Pagamento integrado ao site — gateway a definir.</span></p>
-        <p class="preco__extra">Programa de Valuation: inscrição própria <span class="confirmar">[CONFIRMAR]</span></p>
+        <ul class="preco__notas">
+          <li><svg aria-hidden="true"><use href="#i-escudo"/></svg><span>Garantia de 7 dias. Condições <span class="confirmar">[CONFIRMAR]</span></span></li>
+          <li><svg aria-hidden="true"><use href="#i-cadeado"/></svg><span>Pagamento integrado ao site — gateway a definir.</span></li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- 9. FAQ -->
-  <section class="secao" aria-labelledby="h-faq">
+  <!-- 12. FAQ -->
+  <section class="secao secao--1 grao" aria-labelledby="h-faq">
     <div class="conteiner faq">
       <div class="revela">
         <span class="rotulo">Perguntas frequentes</span>
-        <h2 id="h-faq" class="titulo-2">Antes de se inscrever.</h2>
+        <h2 id="h-faq" class="titulo-2">Antes de <b>se inscrever</b></h2>
       </div>
       <div class="faq__lista revela">
         <details>
-          <summary>As aulas são ao vivo ou gravadas?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
-          <div><p>As duas coisas. As aulas acontecem ao vivo pelo Google Meet, em sala fechada para alunos, e todas são gravadas. As gravações e o material ficam disponíveis na área do aluno.</p></div>
+          <summary>Como são as aulas?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
+          <div><p>São 6 aulas ao vivo e online, uma por dia, somando 12 horas. Cada encontro tem a aula e, depois, um tempo de dúvidas com o professor.</p></div>
         </details>
         <details>
-          <summary>E se eu não puder assistir a uma aula ao vivo?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
-          <div><p>A gravação fica disponível na área do aluno. Prazo de acesso às gravações: <span class="confirmar">[CONFIRMAR]</span></p></div>
+          <summary>E se eu não puder assistir ao vivo?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
+          <div><p>As aulas são gravadas e ficam disponíveis para os alunos. Prazo de acesso às gravações: <span class="confirmar">[CONFIRMAR]</span></p></div>
         </details>
         <details>
-          <summary>Para quem é o programa?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
-          <div><p>Para profissionais de finanças, M&amp;A e crédito estruturado e para empresários que querem entender uma operação por dentro. Pré-requisitos: <span class="confirmar">[CONFIRMAR]</span></p></div>
+          <summary>Para quem é o curso?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
+          <div><p>Para quem quer mudar de carreira, para quem está começando no mercado financeiro e para o profissional que quer crescer na área.</p></div>
         </details>
         <details>
-          <summary>Qual a diferença entre o IB na Prática e o Programa de Valuation?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
-          <div><p>O IB na Prática percorre o ciclo inteiro de uma operação, da originação ao fechamento. O Programa de Valuation aprofunda valuation e modelagem, em parceria com um professor especialista. Ementa de cada um: <span class="confirmar">[CONFIRMAR]</span></p></div>
+          <summary>Preciso de experiência no mercado?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
+          <div><p><span class="confirmar">[CONFIRMAR: pré-requisitos]</span></p></div>
         </details>
         <details>
-          <summary>O que é o hub de alunos?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
-          <div><p>É a comunidade dos alunos, onde se trocam análises, dúvidas e oportunidades. Regras de acesso e permanência: <span class="confirmar">[CONFIRMAR]</span></p></div>
+          <summary>Recebo certificado?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
+          <div><p>Sim. O certificado está incluído na inscrição.</p></div>
         </details>
         <details>
-          <summary>Quando começa a próxima turma?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
-          <div><p>O lançamento está previsto para janeiro de 2027. <span class="confirmar">[CONFIRMAR: data de início]</span></p></div>
+          <summary>Como funciona a garantia?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
+          <div><p>A inscrição tem garantia de 7 dias. Condições de reembolso: <span class="confirmar">[CONFIRMAR]</span></p></div>
         </details>
         <details>
-          <summary>Como é feito o pagamento?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
-          <div><p>Diretamente neste site, com pagamento integrado. Formas de pagamento e parcelamento: <span class="confirmar">[CONFIRMAR: gateway e meios]</span></p></div>
+          <summary>Qual a diferença para o Programa de Valuation?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
+          <div><p>O IB na Prática é a imersão de 6 dias pelas seis áreas do mercado. O Programa de Valuation e Modelagem Financeira na Prática aprofunda um tema: a construção de um modelo financeiro do zero. Turmas e inscrições são separadas.</p></div>
         </details>
         <details>
-          <summary>Há certificado de conclusão?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
-          <div><p><span class="confirmar">[CONFIRMAR]</span></p></div>
+          <summary>Como posso pagar?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
+          <div><p>Hoje: R$ 1.997,00 ou 10x de R$ 240,00 no cartão. No novo site, o pagamento será integrado à própria página. <span class="confirmar">[CONFIRMAR: valor, meios e gateway]</span></p></div>
+        </details>
+        <details>
+          <summary>O que é o grupo de networking?<svg aria-hidden="true"><use href="#i-mais"/></svg></summary>
+          <div><p>Um grupo que reúne alunos desta turma e das turmas anteriores. Plataforma e regras: <span class="confirmar">[CONFIRMAR]</span></p></div>
         </details>
       </div>
     </div>
@@ -311,33 +499,25 @@
 
 </main>
 
-<footer class="rodape escuro">
+<footer class="rodape secao grao">
   <div class="conteiner">
-    <div class="rodape__grade">
-      <div>
-        <a class="marca" href="index.html">IB <em>na Prática</em></a>
-        <p>Formação prática em investment banking, com Adriano Leite, CFP.</p>
+    <div class="rodape__topo">
+      <div class="rodape__marca">
+        <a class="marca" href="index.html"><svg aria-hidden="true"><use href="#logo-ib"/></svg><span><b>IB</b> na Prática</span></a>
+        <span class="rodape__tagline">Transformando conhecimento em estratégia</span>
+        <p>Escola de formação e especialização com foco no universo do Private, Corporate e Investment Banking.</p>
       </div>
-      <div>
-        <h4>Programas</h4>
-        <ul>
-          <li><a href="#programas">IB na Prática</a></li>
-          <li><a href="#programas">Programa de Valuation</a></li>
-          <li><a href="#inscricao">Inscrição</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Alunos</h4>
-        <ul>
-          <li><a href="area-do-aluno.html">Área do aluno</a></li>
-          <li><a href="#aulas">Como funcionam as aulas</a></li>
-          <li><a href="#h-faq">Perguntas frequentes</a></li>
-        </ul>
+      <div class="rodape__colunas">
+        <div><h4>Programas</h4><ul><li><a href="#programa">IB na Prática</a></li><li><a href="#h-valuation">Valuation e Modelagem</a></li><li><a href="#inscricao">Inscrição</a></li></ul></div>
+        <div><h4>Escola</h4><ul><li><a href="#professores">Quem ensina</a></li><li><a href="#mercado">Leitura de mercado</a></li><li><a href="#h-agenda">Agenda</a></li></ul></div>
+        <div><h4>Área do aluno</h4><ul><li><a href="area-do-aluno.html">Entrar</a></li><li><a href="area-do-aluno.html#trilha">Trilha</a></li><li><a href="area-do-aluno.html#agenda">Aulas ao vivo</a></li></ul></div>
+        <div><h4>Contato</h4><ul><li><a href="https://www.instagram.com/ibnapratica/" rel="noopener">@ibnapratica</a></li><li><p class="rodape__pend">E-mail <span class="confirmar">[CONFIRMAR]</span></p></li></ul></div>
+        <div><h4>Termos</h4><ul><li><p class="rodape__pend">Termos de uso</p></li><li><p class="rodape__pend">Privacidade</p></li><li><p class="rodape__pend"><span class="confirmar">[CONFIRMAR: textos]</span></p></li></ul></div>
       </div>
     </div>
     <div class="rodape__legal">
       <p>Conteúdo de caráter educacional. Não constitui oferta, recomendação de investimento ou promessa de resultado.</p>
-      <p>Razão social, CNPJ, termos de uso e política de privacidade <span class="confirmar">[CONFIRMAR]</span></p>
+      <p>Razão social e CNPJ <span class="confirmar">[CONFIRMAR]</span> · Logo oficial <span class="confirmar">[CONFIRMAR: arquivo oficial do logo]</span></p>
       <p>Protótipo para revisão interna — textos e valores sujeitos a confirmação.</p>
     </div>
   </div>
@@ -348,29 +528,23 @@
   <form class="checkout__corpo" method="dialog" data-checkout-form>
     <div class="checkout__topo">
       <div>
-        <span class="rotulo" style="margin-bottom:12px">Turma de lançamento</span>
+        <span class="rotulo" style="margin-bottom:10px">Próxima turma</span>
         <h2 id="h-checkout">Inscrição</h2>
       </div>
       <button class="fechar" type="button" data-fecha-checkout aria-label="Fechar"><svg aria-hidden="true"><use href="#i-fechar"/></svg></button>
     </div>
-    <div class="campo">
-      <label for="f-nome">Nome completo</label>
-      <input id="f-nome" name="nome" autocomplete="name" required>
-    </div>
-    <div class="campo">
-      <label for="f-email">E-mail</label>
-      <input id="f-email" name="email" type="email" autocomplete="email" required>
-    </div>
+    <div class="campo"><label for="f-nome">Nome completo</label><input id="f-nome" name="nome" autocomplete="name" required></div>
+    <div class="campo"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
     <fieldset class="campo">
-      <legend>Forma de pagamento <span class="confirmar">[CONFIRMAR]</span></legend>
+      <legend>Forma de pagamento</legend>
       <div class="opcoes">
         <label class="opcao"><input type="radio" name="pagamento" value="pix" checked><span><svg aria-hidden="true"><use href="#i-pix"/></svg>Pix</span></label>
         <label class="opcao"><input type="radio" name="pagamento" value="cartao"><span><svg aria-hidden="true"><use href="#i-cartao"/></svg>Cartão</span></label>
       </div>
     </fieldset>
-    <div class="checkout__total"><span>Total</span><span class="confirmar">[CONFIRMAR: preço]</span></div>
+    <div class="checkout__total"><span>Total</span><b>R$ 1.997,00</b></div>
     <button class="botao botao--primario botao--cheio" type="submit">Continuar para pagamento</button>
-    <p class="checkout__aviso" data-checkout-aviso>Protótipo: o gateway de pagamento ainda não está conectado e nenhum dado é enviado.</p>
+    <p class="checkout__aviso" data-checkout-aviso>Protótipo: o gateway ainda não está conectado e nenhum dado é enviado. <span class="confirmar">[CONFIRMAR: valor e condições do novo site]</span></p>
   </form>
 </dialog>
 
