@@ -1,0 +1,9 @@
+{
+  "name": "Gabinete — Adriano Leite",
+  "short_name": "Gabinete",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f4ef",
+  "theme_color": "#0e0f11",
+  "icons": [{ "src": "/icone.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
