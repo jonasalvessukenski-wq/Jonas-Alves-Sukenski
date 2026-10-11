@@ -1,5 +1,7 @@
 # Gabinete do Adriano Leite — arquitetura
 
+> **Situação em 11/10/2026:** protótipo preservado, **não autorizado para operação**. Nenhum serviço será contratado nem nenhum número ligado sem autorização específica. A prioridade do momento é outro projeto (piloto comercial do IB na Prática).
+
 Versão 0.1 · 10/10/2026 · Este repositório é público: aqui não entra nenhum dado pessoal, de cliente ou de operação. Contexto, perfil e decisões comerciais ficam no Notion do Jonas.
 
 ## O que é
